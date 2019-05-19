@@ -1,0 +1,26 @@
+@font-face {
+    font-family: 'Droid Arabic Naskh';
+    font-style: normal;
+    font-weight: 400;
+    src: url('chrome-extension://__MSG_@@extension_id__/fonts/DroidNaskh-Regular.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Droid Arabic Naskh';
+    font-style: normal;
+    font-weight: 700;
+    src: url('chrome-extension://__MSG_@@extension_id__/fonts/DroidNaskh-Bold.woff2') format('woff2');
+}
+
+[class="ar"] {
+    font-size: 110%;
+    font-family: 'Droid Arabic Naskh', serif;
+    margin: 10px 2px;
+    padding: 0 2px;
+    line-height: 1.9em;
+}
+
+/* TODO 19-May-19 B.Helal: Noto is the new standard and should replace the Droid fonts above,
+ * however Droid is much larger and thicker making it clearer to read, the most likely solution is to just
+ * use Noto and make it bigger so that it looks like Droid, Noto is much better it's just annoyingly smaller
+ */
