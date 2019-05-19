@@ -8,10 +8,10 @@ This project is based on [Jackson Petty's](https://github.com/jopetty)
 [Huruf](https://github.com/jopetty/Huruf).
 
 Before:
-[](https://github.com/basshelal/Wudooh/tree/master/pictures/Before.PNG)
+![](https://github.com/basshelal/Wudooh/tree/master/pictures/Before.PNG)
 
 After:
-[](https://github.com/basshelal/Wudooh/tree/master/pictures/After.PNG)
+![](https://github.com/basshelal/Wudooh/tree/master/pictures/After.PNG)
 
 ## Current Features
 Wudooh will find any Arabic script text and update it to be in the more readable
@@ -40,10 +40,10 @@ with Arabic text will still update.
  turn off Wudooh while using quran.com.
  
 With Wudooh:
-[](https://github.com/basshelal/Wudooh/tree/master/pictures/QuranWith.PNG)
+![](https://github.com/basshelal/Wudooh/tree/master/pictures/QuranWith.PNG)
 
 Without Wudooh:
-[](https://github.com/basshelal/Wudooh/tree/master/pictures/QuranWithout.PNG)
+![](https://github.com/basshelal/Wudooh/tree/master/pictures/QuranWithout.PNG)
  
 ### YouTube
 
