@@ -1,3 +1,4 @@
+///<reference path="../../.WebStorm2019.1/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
 /**
  * This is the main script that reads the document and updates any Arabic script text
  */
@@ -62,9 +63,10 @@ function updateNode(node, textSize, lineHeight) {
     }
 }
 /**
- * Updates all nodes in this document's body by calling updateNode(document.body)
+ * Updates all Arabic script nodes in this document's body by calling updateNode() on each node in this document
+ * with Arabic script
  */
-function setLangAll(textSize, lineHeight) {
+function updateAll(textSize, lineHeight) {
     getArabicTextNodesIn(document.body).forEach(function (it) { return updateNode(it, textSize, lineHeight); });
 }
 /**
@@ -98,13 +100,13 @@ function startObserver(textSize, lineHeight) {
     };
     new MutationObserver(callback).observe(document.body, config);
 }
-chrome.storage.sync.get(['textSize', 'lineHeight', 'onOffSwitch'], function (e) {
-    var textSize = e.textSize;
-    var lineHeight = e.lineHeight;
-    var checked = e.onOffSwitch;
+chrome.storage.sync.get(['textSize', 'lineHeight', 'onOffSwitch'], function (fromStorage) {
+    var textSize = fromStorage.textSize;
+    var lineHeight = fromStorage.lineHeight;
+    var checked = fromStorage.onOffSwitch;
     // Only do anything if the on off switch is on
     if (checked) {
-        setLangAll(textSize, lineHeight);
+        updateAll(textSize, lineHeight);
         startObserver(textSize, lineHeight);
     }
 });

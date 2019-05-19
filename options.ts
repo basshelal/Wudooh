@@ -20,7 +20,6 @@ function saveOptions() {
         textSize: parseInt(size.value),
         lineHeight: parseInt(height.value),
         onOffSwitch: onOffSwitch.checked
-    }, function () {
     });
 }
 
@@ -59,7 +58,6 @@ function updateHeight() {
 function toggleOnOff() {
     chrome.storage.sync.set({
         onOffSwitch: onOffSwitch.checked,
-    }, function () {
     });
 }
 

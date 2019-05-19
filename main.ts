@@ -122,7 +122,7 @@ function startObserver(textSize: number, lineHeight: number) {
     new MutationObserver(callback).observe(document.body, config);
 }
 
-chrome.storage.sync.get(['textSize', 'lineHeight', 'onOffSwitch'], function (fromStorage) {
+chrome.storage.sync.get(['textSize', 'lineHeight', 'onOffSwitch'], (fromStorage) => {
     let textSize: number = fromStorage.textSize;
     let lineHeight: number = fromStorage.lineHeight;
     let checked: boolean = fromStorage.onOffSwitch;

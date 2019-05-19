@@ -1,3 +1,4 @@
+///<reference path="../../.WebStorm2019.1/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
 /**
  * This script is used by the extension's popup (popup.html) for options
  *
@@ -12,14 +13,10 @@ var heightValue = document.getElementById("heightValue");
  * Save options, this saves them into chrome's storage sync for the user
  */
 function saveOptions() {
-    var s = parseInt(size.value);
-    var h = parseInt(height.value);
-    var sw = onOffSwitch.checked;
     chrome.storage.sync.set({
-        textSize: s,
-        lineHeight: h,
-        onOffSwitch: sw
-    }, function () {
+        textSize: parseInt(size.value),
+        lineHeight: parseInt(height.value),
+        onOffSwitch: onOffSwitch.checked
     });
 }
 /**
@@ -28,15 +25,15 @@ function saveOptions() {
  */
 function getOptions() {
     chrome.storage.sync.get({
-        textSize: '130',
-        lineHeight: '150',
+        textSize: '115',
+        lineHeight: '125',
         onOffSwitch: true,
-    }, function (items) {
-        size.value = items.textSize;
-        sizeValue.innerHTML = items.textSize + '%';
-        height.value = items.lineHeight;
-        heightValue.innerHTML = items.lineHeight + '%';
-        onOffSwitch.checked = items.onOffSwitch;
+    }, function (fromStorage) {
+        size.value = fromStorage.textSize;
+        sizeValue.innerHTML = fromStorage.textSize + '%';
+        height.value = fromStorage.lineHeight;
+        heightValue.innerHTML = fromStorage.lineHeight + '%';
+        onOffSwitch.checked = fromStorage.onOffSwitch;
     });
 }
 /**
@@ -52,11 +49,8 @@ function updateHeight() {
     heightValue.innerHTML = height.value + '%';
 }
 function toggleOnOff() {
-    var checked = onOffSwitch.checked;
-    console.log(checked);
     chrome.storage.sync.set({
-        onOffSwitch: checked,
-    }, function () {
+        onOffSwitch: onOffSwitch.checked,
     });
 }
 function addListeners() {
