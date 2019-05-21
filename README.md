@@ -1,4 +1,6 @@
 # Wudooh (وضوح)
+![Wudooh Icon](https://github.com/basshelal/Wudooh/blob/master/assets/icon128c.PNG)
+
 Wudooh (clarity in Arabic and Persian) is a simple chrome extension 
 that makes reading Arabic text clearer and easier.
 
