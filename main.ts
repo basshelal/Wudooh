@@ -122,6 +122,11 @@ function startObserver(textSize: number, lineHeight: number) {
     new MutationObserver(callback).observe(document.body, config);
 }
 
+//TODO recieve new size and height and update all text
+chrome.runtime.onMessage.addListener(function (message) {
+    updateAll(message.size, message.height);
+});
+
 chrome.storage.sync.get(['textSize', 'lineHeight', 'onOffSwitch'], (fromStorage) => {
     let textSize: number = fromStorage.textSize;
     let lineHeight: number = fromStorage.lineHeight;

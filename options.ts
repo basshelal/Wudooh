@@ -1,4 +1,6 @@
 ///<reference path="../../.WebStorm2019.1/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
+import Tab = chrome.tabs.Tab;
+
 /**
  * This script is used by the extension's popup (popup.html) for options
  *
@@ -20,6 +22,21 @@ function saveOptions() {
         textSize: parseInt(size.value),
         lineHeight: parseInt(height.value),
         onOffSwitch: onOffSwitch.checked
+    });
+}
+
+function updateAllText() {
+    saveOptions();
+
+    //TODO send new size and height
+    chrome.tabs.query({}, (tabs: Array<Tab>) => {
+        tabs.forEach((tab: Tab) => {
+            var message = {
+                size: parseInt(size.value),
+                height: parseInt(height.value)
+            };
+            chrome.tabs.sendMessage(tab.id, message);
+        });
     });
 }
 
@@ -66,8 +83,8 @@ function addListeners() {
     document.addEventListener('DOMContentLoaded', getOptions);
 
     // Save options when mouse is released
-    size.onmouseup = () => saveOptions();
-    height.onmouseup = () => saveOptions();
+    size.onmouseup = () => updateAllText();
+    height.onmouseup = () => updateAllText();
 
     // Update size and height when input is changed
     size.oninput = () => updateSize();
