@@ -161,6 +161,17 @@
         .slider.round:before {
             border-radius: 50%;
         }
+
+        select {
+            font-size: .9rem;
+            font-family: "Roboto Light", sans-serif;
+            width: 150px;
+            text-align-last: center;
+            text-align: center;
+            text-align-all: center;
+            padding: 5px 5px;
+            margin: 10px 0;
+        }
     </style>
 </head>
 
@@ -175,6 +186,14 @@
 </header>
 
 <div role="main">
+
+    <select id="font-select">
+        <option style="font-family: 'Droid Arabic Naskh', sans-serif" value="Droid Arabic Naskh">درايد نسخ</option>
+        <option style="font-family: 'Noto Naskh Arabic', sans-serif" value="Noto Naskh Arabic">نوتو نسخ</option>
+    </select>
+
+    <br>
+
     <table>
         <tr>
             <td class="label">Font Size:</td>

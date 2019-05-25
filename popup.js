@@ -6,6 +6,7 @@
 var size = document.getElementById("size");
 var height = document.getElementById("height");
 var onOffSwitch = document.getElementById("onOffSwitch");
+var fontSelect = document.getElementById("font-select");
 var sizeValue = document.getElementById("sizeValue");
 var heightValue = document.getElementById("heightValue");
 /**
@@ -18,7 +19,6 @@ function saveOptions() {
         onOffSwitch: onOffSwitch.checked
     });
 }
-
 /**
  * Updates all Arabic text in all tabs to adhere to the new options. This is done by sending a message to all
  * tabs that main.ts will handle.
@@ -110,6 +110,9 @@ function addListeners() {
         toggleOnOff();
         if (onOffSwitch.checked)
             updateAllText();
+    };
+    fontSelect.oninput = function () {
+        alert(fontSelect.value);
     };
 }
 addListeners();

@@ -10,6 +10,7 @@ import Tab = chrome.tabs.Tab;
 const size: HTMLInputElement = document.getElementById("size") as HTMLInputElement;
 const height: HTMLInputElement = document.getElementById("height") as HTMLInputElement;
 const onOffSwitch: HTMLInputElement = document.getElementById("onOffSwitch") as HTMLInputElement;
+const fontSelect: HTMLSelectElement = document.getElementById("font-select") as HTMLSelectElement;
 
 const sizeValue: HTMLElement = document.getElementById("sizeValue");
 const heightValue: HTMLElement = document.getElementById("heightValue");
@@ -102,6 +103,11 @@ function toggleOnOff() {
     });
 }
 
+function changeFont(fontName: string) {
+    alert(fontName);
+
+}
+
 function addListeners() {
     // Get options when the popup.html document is loaded
     document.addEventListener("DOMContentLoaded", getOptions);
@@ -118,7 +124,9 @@ function addListeners() {
     onOffSwitch.onclick = () => {
         toggleOnOff();
         if (onOffSwitch.checked) updateAllText();
-    }
+    };
+
+    fontSelect.oninput = () => changeFont(fontSelect.value);
 }
 
 addListeners();
