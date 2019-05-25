@@ -30,8 +30,8 @@ Wudooh will do this constantly onto any Arabic text, meaning newly loaded conten
 with Arabic text will still update.
 
 ## Future Features
-* ~~Live text updates as options are updated~~ now available
-* More font options
+* ~~Live text updates as options are updated~~ Done!
+* ~~More font options~~ Done! Including Urdu font
 * Whitelist or exempt websites
 
 ## Known Issues
