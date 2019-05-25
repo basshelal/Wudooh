@@ -1,4 +1,3 @@
-///<reference path="../../.WebStorm2019.1/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
 /**
  * This is the main script that reads the document and updates any Arabic script text
  */
@@ -58,7 +57,10 @@ function setNodeHtml(node, html) {
  */
 function updateNode(node, textSize, lineHeight) {
     if (node.nodeValue) {
-        var text = node.nodeValue.replace(arabicRegEx, "<span class='ar'' style='font-size:" + (textSize / 100) + "em;" + " line-height:" + (lineHeight / 100) + "em;'>$&</span>");
+        var newSize = textSize / 100;
+        var newHeight = lineHeight / 100;
+        var newHTML = "<span class='ar'' style='font-size:" + newSize + "em;" + " line-height:" + newHeight + "em;'>$&</span>";
+        var text = node.nodeValue.replace(arabicRegEx, newHTML);
         setNodeHtml(node, text);
     }
 }
@@ -108,5 +110,12 @@ chrome.storage.sync.get(['textSize', 'lineHeight', 'onOffSwitch'], function (fro
     if (checked) {
         updateAll(textSize, lineHeight);
         startObserver(textSize, lineHeight);
+    }
+});
+//TODO recieve new size and height and update all text
+chrome.runtime.onMessage.addListener(function (message, sender) {
+    // If sender is Wudooh
+    if (sender.id === chrome.runtime.id) {
+        updateAll(message.size, message.height);
     }
 });

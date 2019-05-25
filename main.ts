@@ -1,4 +1,6 @@
 ///<reference path="../../.WebStorm2019.1/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
+import MessageSender = chrome.runtime.MessageSender;
+
 /**
  * This is the main script that reads the document and updates any Arabic script text
  */
@@ -70,8 +72,10 @@ function setNodeHtml(node: Node, html: string) {
  */
 function updateNode(node: Node, textSize: number, lineHeight: number) {
     if (node.nodeValue) {
-        let text: string = node.nodeValue.replace(arabicRegEx,
-            "<span class='ar'' style='font-size:" + (textSize / 100) + "em;" + " line-height:" + (lineHeight / 100) + "em;'>$&</span>");
+        let newSize = textSize / 100;
+        let newHeight = lineHeight / 100;
+        let newHTML = "<span class='ar'' style='font-size:" + newSize + "em;" + " line-height:" + newHeight + "em;'>$&</span>";
+        let text: string = node.nodeValue.replace(arabicRegEx, newHTML);
         setNodeHtml(node, text);
     }
 }
@@ -122,11 +126,6 @@ function startObserver(textSize: number, lineHeight: number) {
     new MutationObserver(callback).observe(document.body, config);
 }
 
-//TODO recieve new size and height and update all text
-chrome.runtime.onMessage.addListener(function (message) {
-    updateAll(message.size, message.height);
-});
-
 chrome.storage.sync.get(['textSize', 'lineHeight', 'onOffSwitch'], (fromStorage) => {
     let textSize: number = fromStorage.textSize;
     let lineHeight: number = fromStorage.lineHeight;
@@ -138,4 +137,12 @@ chrome.storage.sync.get(['textSize', 'lineHeight', 'onOffSwitch'], (fromStorage)
         startObserver(textSize, lineHeight);
     }
 
+});
+
+//TODO recieve new size and height and update all text
+chrome.runtime.onMessage.addListener(function (message, sender: MessageSender) {
+    // If sender is Wudooh
+    if (sender.id === chrome.runtime.id) {
+        updateAll(message.size, message.height);
+    }
 });
