@@ -26,18 +26,32 @@ function saveOptions() {
 }
 
 function updateAllText() {
-    saveOptions();
+    if (onOffSwitch.checked) {
+        let oldS: number;
+        let oldH: number;
 
-    //TODO send new size and height
-    chrome.tabs.query({}, (tabs: Array<Tab>) => {
-        tabs.forEach((tab: Tab) => {
-            let message = {
-                size: parseInt(size.value),
-                height: parseInt(height.value)
-            };
-            chrome.tabs.sendMessage(tab.id, message);
+        chrome.storage.sync.get(["textSize", "lineHeight"], (fromStorage) => {
+            oldS = fromStorage.textSize;
+            oldH = fromStorage.lineHeight;
         });
-    });
+
+
+        chrome.tabs.query({}, (tabs: Array<Tab>) => {
+            tabs.forEach((tab: Tab) => {
+                let message = {
+                    oldSize: oldS,
+                    oldHeight: oldH,
+                    newSize: parseInt(size.value),
+                    newHeight: parseInt(height.value)
+                };
+                chrome.tabs.sendMessage(tab.id, message, () => {
+                    window.close()
+                });
+            });
+        });
+    }
+
+    saveOptions();
 }
 
 /**
@@ -61,14 +75,14 @@ function getOptions() {
 /**
  * Updates the size value from the size range input, this is called when the size range input is changed
  */
-function updateSize() {
+function updateSizeHTML() {
     sizeValue.innerHTML = size.value + '%';
 }
 
 /**
  * Updates the height value from the height range input, this is called when the height range input is changed
  */
-function updateHeight() {
+function updateHeightHTML() {
     heightValue.innerHTML = height.value + '%';
 }
 
@@ -82,9 +96,9 @@ function addListeners() {
     // Get options when the popup.html document is loaded
     document.addEventListener("DOMContentLoaded", getOptions);
 
-    // Update size and height when input is changed
-    size.oninput = () => updateSize();
-    height.oninput = () => updateHeight();
+    // Update size and height HTML when input is changed, changes no variables
+    size.oninput = () => updateSizeHTML();
+    height.oninput = () => updateHeightHTML();
 
     // Save options when mouse is released
     size.onmouseup = () => updateAllText();

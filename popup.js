@@ -19,17 +19,28 @@ function saveOptions() {
     });
 }
 function updateAllText() {
-    saveOptions();
-    //TODO send new size and height
-    chrome.tabs.query({}, function (tabs) {
-        tabs.forEach(function (tab) {
-            var message = {
-                size: parseInt(size.value),
-                height: parseInt(height.value)
-            };
-            chrome.tabs.sendMessage(tab.id, message);
-        });
+    var oldS;
+    var oldH;
+    chrome.storage.sync.get(["textSize", "lineHeight"], function (fromStorage) {
+        oldS = fromStorage.textSize;
+        oldH = fromStorage.lineHeight;
     });
+    if (onOffSwitch.checked) {
+        chrome.tabs.query({}, function (tabs) {
+            tabs.forEach(function (tab) {
+                var message = {
+                    oldSize: oldS,
+                    oldHeight: oldH,
+                    newSize: parseInt(size.value),
+                    newHeight: parseInt(height.value)
+                };
+                chrome.tabs.sendMessage(tab.id, message, function () {
+                    window.close();
+                });
+            });
+        });
+    }
+    saveOptions();
 }
 /**
  * Gets options, this gets them from the chrome's storage sync for the user with default values if they do not
@@ -51,13 +62,13 @@ function getOptions() {
 /**
  * Updates the size value from the size range input, this is called when the size range input is changed
  */
-function updateSize() {
+function updateSizeHTML() {
     sizeValue.innerHTML = size.value + '%';
 }
 /**
  * Updates the height value from the height range input, this is called when the height range input is changed
  */
-function updateHeight() {
+function updateHeightHTML() {
     heightValue.innerHTML = height.value + '%';
 }
 function toggleOnOff() {
@@ -68,9 +79,13 @@ function toggleOnOff() {
 function addListeners() {
     // Get options when the popup.html document is loaded
     document.addEventListener("DOMContentLoaded", getOptions);
-    // Update size and height when input is changed
-    size.oninput = function () { return updateSize(); };
-    height.oninput = function () { return updateHeight(); };
+    // Update size and height HTML when input is changed, changes no variables
+    size.oninput = function () {
+        return updateSizeHTML();
+    };
+    height.oninput = function () {
+        return updateHeightHTML();
+    };
     // Save options when mouse is released
     size.onmouseup = function () { return updateAllText(); };
     height.onmouseup = function () { return updateAllText(); };

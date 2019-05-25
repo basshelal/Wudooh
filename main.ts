@@ -1,5 +1,4 @@
 ///<reference path="../../.WebStorm2019.1/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
-import MessageSender = chrome.runtime.MessageSender;
 
 /**
  * This is the main script that reads the document and updates any Arabic script text
@@ -140,9 +139,8 @@ chrome.storage.sync.get(['textSize', 'lineHeight', 'onOffSwitch'], (fromStorage)
 });
 
 //TODO recieve new size and height and update all text
-chrome.runtime.onMessage.addListener(function (message, sender: MessageSender) {
-    // If sender is Wudooh
-    if (sender.id === chrome.runtime.id) {
-        updateAll(message.size, message.height);
-    }
+chrome.runtime.onMessage.addListener(function (message) {
+    let newSize = 100 * (message.newSize / message.oldSize);
+    let newHeight = 100 * (message.newHeight / message.oldHeight);
+    updateAll(newSize, newHeight);
 });
