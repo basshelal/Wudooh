@@ -18,25 +18,41 @@ function saveOptions() {
         onOffSwitch: onOffSwitch.checked
     });
 }
-function updateAllText() {
-    var oldS;
-    var oldH;
-    chrome.storage.sync.get(["textSize", "lineHeight"], function (fromStorage) {
-        oldS = fromStorage.textSize;
-        oldH = fromStorage.lineHeight;
-    });
+
+/**
+ * Updates all Arabic text in all tabs to adhere to the new options. This is done by sending a message to all
+ * tabs that main.ts will handle.
+ * The popup is closed by default, in most cases not closing the popup does not update the text for some reason.
+ * Also, the updated text will have problems with spacing, making the actual look of a set of options differ
+ * somewhat from the live updated look, a page refresh will always solve this
+ * @param close whether to close the popup after updating text or not, defaults to true
+ */
+function updateAllText(close) {
+    if (close === void 0) {
+        close = true;
+    }
     if (onOffSwitch.checked) {
+        // We need the old values to know how much we should change the options in main.ts
+        var oldS_1;
+        var oldH_1;
+        chrome.storage.sync.get(["textSize", "lineHeight"], function (fromStorage) {
+            oldS_1 = fromStorage.textSize;
+            oldH_1 = fromStorage.lineHeight;
+        });
         chrome.tabs.query({}, function (tabs) {
             tabs.forEach(function (tab) {
                 var message = {
-                    oldSize: oldS,
-                    oldHeight: oldH,
+                    oldSize: oldS_1,
+                    oldHeight: oldH_1,
                     newSize: parseInt(size.value),
                     newHeight: parseInt(height.value)
                 };
-                chrome.tabs.sendMessage(tab.id, message, function () {
-                    window.close();
-                });
+                chrome.tabs.sendMessage(tab.id, message);
+                // close the popup after 400ms so that it's not disturbingly fast
+                setTimeout(function () {
+                    if (close)
+                        window.close();
+                }, 400);
             });
         });
     }
@@ -90,6 +106,10 @@ function addListeners() {
     size.onmouseup = function () { return updateAllText(); };
     height.onmouseup = function () { return updateAllText(); };
     // Update on off switch when on off switch is clicked
-    onOffSwitch.onclick = function () { return toggleOnOff(); };
+    onOffSwitch.onclick = function () {
+        toggleOnOff();
+        if (onOffSwitch.checked)
+            updateAllText();
+    };
 }
 addListeners();

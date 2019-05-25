@@ -138,7 +138,6 @@ chrome.storage.sync.get(['textSize', 'lineHeight', 'onOffSwitch'], (fromStorage)
 
 });
 
-//TODO recieve new size and height and update all text
 chrome.runtime.onMessage.addListener(function (message) {
     let newSize = 100 * (message.newSize / message.oldSize);
     let newHeight = 100 * (message.newHeight / message.oldHeight);

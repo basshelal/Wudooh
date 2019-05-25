@@ -25,8 +25,17 @@ function saveOptions() {
     });
 }
 
-function updateAllText() {
+/**
+ * Updates all Arabic text in all tabs to adhere to the new options. This is done by sending a message to all
+ * tabs that main.ts will handle.
+ * The popup is closed by default, in most cases not closing the popup does not update the text for some reason.
+ * Also, the updated text will have problems with spacing, making the actual look of a set of options differ
+ * somewhat from the live updated look, a page refresh will always solve this
+ * @param close whether to close the popup after updating text or not, defaults to true
+ */
+function updateAllText(close: boolean = true) {
     if (onOffSwitch.checked) {
+        // We need the old values to know how much we should change the options in main.ts
         let oldS: number;
         let oldH: number;
 
@@ -34,7 +43,6 @@ function updateAllText() {
             oldS = fromStorage.textSize;
             oldH = fromStorage.lineHeight;
         });
-
 
         chrome.tabs.query({}, (tabs: Array<Tab>) => {
             tabs.forEach((tab: Tab) => {
@@ -44,9 +52,11 @@ function updateAllText() {
                     newSize: parseInt(size.value),
                     newHeight: parseInt(height.value)
                 };
-                chrome.tabs.sendMessage(tab.id, message, () => {
-                    window.close()
-                });
+                chrome.tabs.sendMessage(tab.id, message);
+                // close the popup after 400ms so that it's not disturbingly fast
+                setTimeout(() => {
+                    if (close) window.close()
+                }, 400);
             });
         });
     }
@@ -105,7 +115,10 @@ function addListeners() {
     height.onmouseup = () => updateAllText();
 
     // Update on off switch when on off switch is clicked
-    onOffSwitch.onclick = () => toggleOnOff();
+    onOffSwitch.onclick = () => {
+        toggleOnOff();
+        if (onOffSwitch.checked) updateAllText();
+    }
 }
 
 addListeners();

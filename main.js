@@ -113,7 +113,6 @@ chrome.storage.sync.get(['textSize', 'lineHeight', 'onOffSwitch'], function (fro
         startObserver(textSize, lineHeight);
     }
 });
-//TODO recieve new size and height and update all text
 chrome.runtime.onMessage.addListener(function (message) {
     var newSize = 100 * (message.newSize / message.oldSize);
     var newHeight = 100 * (message.newHeight / message.oldHeight);
