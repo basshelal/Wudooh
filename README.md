@@ -17,7 +17,8 @@ After:
 
 ## Current Features
 Wudooh will find any Arabic script text and update it to be in the more readable
-Droid Arabic Naskh font.
+Droid Arabic Naskh font as well as many other fonts such as Urdu Typesetting,
+Kufi, Traditional and more.
 
 This is not just for Arabic, but for any Arabic script, meaning this can work 
 for Persian, Urdu and any other 
@@ -26,8 +27,8 @@ for Persian, Urdu and any other
 It will also update the text's size and line height to the user's choice ranging 
 from 100% to 200% larger.
 
-Wudooh will do this constantly onto any Arabic text, meaning newly loaded content
-with Arabic text will still update.
+Wudooh will do this automatically to any Arabic text, meaning even newly loaded 
+content with Arabic text will also update and become clearer.
 
 ## Future Features
 * ~~Live text updates as options are updated~~ Done!
