@@ -16,7 +16,8 @@ function saveOptions() {
     chrome.storage.sync.set({
         textSize: parseInt(size.value),
         lineHeight: parseInt(height.value),
-        onOffSwitch: onOffSwitch.checked
+        onOff: onOffSwitch.checked,
+        font: fontSelect.value
     });
 }
 /**
@@ -35,9 +36,11 @@ function updateAllText(close) {
         // We need the old values to know how much we should change the options in main.ts
         var oldS_1;
         var oldH_1;
-        chrome.storage.sync.get(["textSize", "lineHeight"], function (fromStorage) {
+        var font_1;
+        chrome.storage.sync.get(["textSize", "lineHeight", "font"], function (fromStorage) {
             oldS_1 = fromStorage.textSize;
             oldH_1 = fromStorage.lineHeight;
+            font_1 = fromStorage.font;
         });
         chrome.tabs.query({}, function (tabs) {
             tabs.forEach(function (tab) {
@@ -45,7 +48,8 @@ function updateAllText(close) {
                     oldSize: oldS_1,
                     oldHeight: oldH_1,
                     newSize: parseInt(size.value),
-                    newHeight: parseInt(height.value)
+                    newHeight: parseInt(height.value),
+                    font: font_1
                 };
                 chrome.tabs.sendMessage(tab.id, message);
                 // close the popup after 400ms so that it's not disturbingly fast
@@ -66,13 +70,15 @@ function getOptions() {
     chrome.storage.sync.get({
         textSize: '115',
         lineHeight: '125',
-        onOffSwitch: true,
+        onOff: true,
+        font: "Droid Arabic Naskh"
     }, function (fromStorage) {
         size.value = fromStorage.textSize;
         sizeValue.innerHTML = fromStorage.textSize + '%';
         height.value = fromStorage.lineHeight;
         heightValue.innerHTML = fromStorage.lineHeight + '%';
-        onOffSwitch.checked = fromStorage.onOffSwitch;
+        onOffSwitch.checked = fromStorage.onOff;
+        fontSelect.value = fromStorage.font;
     });
 }
 /**
@@ -89,8 +95,17 @@ function updateHeightHTML() {
 }
 function toggleOnOff() {
     chrome.storage.sync.set({
-        onOffSwitch: onOffSwitch.checked,
+        onOff: onOffSwitch.checked,
     });
+    if (onOffSwitch.checked)
+        updateAllText();
+}
+
+function changeFont() {
+    chrome.storage.sync.set({
+        font: fontSelect.value,
+    });
+    updateAllText();
 }
 function addListeners() {
     // Get options when the popup.html document is loaded
@@ -107,12 +122,10 @@ function addListeners() {
     height.onmouseup = function () { return updateAllText(); };
     // Update on off switch when on off switch is clicked
     onOffSwitch.onclick = function () {
-        toggleOnOff();
-        if (onOffSwitch.checked)
-            updateAllText();
+        return toggleOnOff();
     };
     fontSelect.oninput = function () {
-        alert(fontSelect.value);
+        return changeFont();
     };
 }
 addListeners();

@@ -68,12 +68,17 @@ function setNodeHtml(node: Node, html: string) {
  * @param node the node to update
  * @param textSize the size to update the text to
  * @param lineHeight the height to update the line to
+ * @param font the name of the font to update the text to
  */
-function updateNode(node: Node, textSize: number, lineHeight: number) {
+function updateNode(node: Node, textSize: number, lineHeight: number, font: string = "Droid Arabic Naskh") {
     if (node.nodeValue) {
         let newSize = textSize / 100;
         let newHeight = lineHeight / 100;
-        let newHTML = "<span class='ar'' style='font-size:" + newSize + "em;" + " line-height:" + newHeight + "em;'>$&</span>";
+        let newHTML = "<span class='ar'' style='" +
+            "font-size:" + newSize + "em;" +
+            "line-height:" + newHeight + "em;" +
+            "font-family:" + "\"" + font + "\"" + "," + "sans-serif;" +
+            "'>$&</span>";
         let text: string = node.nodeValue.replace(arabicRegEx, newHTML);
         setNodeHtml(node, text);
     }
@@ -82,16 +87,22 @@ function updateNode(node: Node, textSize: number, lineHeight: number) {
 /**
  * Updates all Arabic script nodes in this document's body by calling updateNode() on each node in this document
  * with Arabic script
+ * @param textSize the size to update the text to
+ * @param lineHeight the height to update the line to
+ * @param font the name of the font to update the text to
  */
-function updateAll(textSize: number, lineHeight: number) {
-    getArabicTextNodesIn(document.body).forEach((it: Node) => updateNode(it, textSize, lineHeight));
+function updateAll(textSize: number, lineHeight: number, font: string = "Droid Arabic Naskh") {
+    getArabicTextNodesIn(document.body).forEach((it: Node) => updateNode(it, textSize, lineHeight, font));
 }
 
 /**
  * Starts the observer that will observe for any additions to the document and update them if they have any
  * Arabic text and they have not been updated yet
+ * @param textSize the size to update the text to
+ * @param lineHeight the height to update the line to
+ * @param font the name of the font to update the text to
  */
-function startObserver(textSize: number, lineHeight: number) {
+function startObserver(textSize: number, lineHeight: number, font: string = "Droid Arabic Naskh") {
 
     let config: MutationObserverInit = {
         attributes: false,
@@ -114,7 +125,7 @@ function startObserver(textSize: number, lineHeight: number) {
 
                         // Update arabicNode only if it hasn't been updated
                         if (arabicNode.parentElement && arabicNode.parentElement.getAttribute("class") != "ar") {
-                            updateNode(arabicNode, textSize, lineHeight);
+                            updateNode(arabicNode, textSize, lineHeight, font);
                         }
                     });
                 });
@@ -125,15 +136,16 @@ function startObserver(textSize: number, lineHeight: number) {
     new MutationObserver(callback).observe(document.body, config);
 }
 
-chrome.storage.sync.get(['textSize', 'lineHeight', 'onOffSwitch'], (fromStorage) => {
+chrome.storage.sync.get(["textSize", "lineHeight", "onOff", "font"], (fromStorage) => {
     let textSize: number = fromStorage.textSize;
     let lineHeight: number = fromStorage.lineHeight;
-    let checked: boolean = fromStorage.onOffSwitch;
+    let checked: boolean = fromStorage.onOff;
+    let font: string = fromStorage.font;
 
     // Only do anything if the on off switch is on
     if (checked) {
-        updateAll(textSize, lineHeight);
-        startObserver(textSize, lineHeight);
+        updateAll(textSize, lineHeight, font);
+        startObserver(textSize, lineHeight, font);
     }
 
 });
@@ -141,5 +153,5 @@ chrome.storage.sync.get(['textSize', 'lineHeight', 'onOffSwitch'], (fromStorage)
 chrome.runtime.onMessage.addListener(function (message) {
     let newSize = 100 * (message.newSize / message.oldSize);
     let newHeight = 100 * (message.newHeight / message.oldHeight);
-    updateAll(newSize, newHeight);
+    updateAll(newSize, newHeight, message.font);
 });

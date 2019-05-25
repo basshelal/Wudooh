@@ -55,12 +55,18 @@ function setNodeHtml(node, html) {
  * @param node the node to update
  * @param textSize the size to update the text to
  * @param lineHeight the height to update the line to
+ * @param font the name of the font to update the text to
  */
-function updateNode(node, textSize, lineHeight) {
+function updateNode(node, textSize, lineHeight, font) {
+    if (font === void 0) { font = "Droid Arabic Naskh"; }
     if (node.nodeValue) {
         var newSize = textSize / 100;
         var newHeight = lineHeight / 100;
-        var newHTML = "<span class='ar'' style='font-size:" + newSize + "em;" + " line-height:" + newHeight + "em;'>$&</span>";
+        var newHTML = "<span class='ar'' style='" +
+            "font-size:" + newSize + "em;" +
+            "line-height:" + newHeight + "em;" +
+            "font-family:" + "\"" + font + "\"" + "," + "sans-serif;" +
+            "'>$&</span>";
         var text = node.nodeValue.replace(arabicRegEx, newHTML);
         setNodeHtml(node, text);
     }
@@ -68,15 +74,23 @@ function updateNode(node, textSize, lineHeight) {
 /**
  * Updates all Arabic script nodes in this document's body by calling updateNode() on each node in this document
  * with Arabic script
+ * @param textSize the size to update the text to
+ * @param lineHeight the height to update the line to
+ * @param font the name of the font to update the text to
  */
-function updateAll(textSize, lineHeight) {
-    getArabicTextNodesIn(document.body).forEach(function (it) { return updateNode(it, textSize, lineHeight); });
+function updateAll(textSize, lineHeight, font) {
+    if (font === void 0) { font = "Droid Arabic Naskh"; }
+    getArabicTextNodesIn(document.body).forEach(function (it) { return updateNode(it, textSize, lineHeight, font); });
 }
 /**
  * Starts the observer that will observe for any additions to the document and update them if they have any
  * Arabic text and they have not been updated yet
+ * @param textSize the size to update the text to
+ * @param lineHeight the height to update the line to
+ * @param font the name of the font to update the text to
  */
-function startObserver(textSize, lineHeight) {
+function startObserver(textSize, lineHeight, font) {
+    if (font === void 0) { font = "Droid Arabic Naskh"; }
     var config = {
         attributes: false,
         childList: true,
@@ -94,7 +108,7 @@ function startObserver(textSize, lineHeight) {
                     getArabicTextNodesIn(addedNode).forEach(function (arabicNode) {
                         // Update arabicNode only if it hasn't been updated
                         if (arabicNode.parentElement && arabicNode.parentElement.getAttribute("class") != "ar") {
-                            updateNode(arabicNode, textSize, lineHeight);
+                            updateNode(arabicNode, textSize, lineHeight, font);
                         }
                     });
                 });
@@ -103,18 +117,19 @@ function startObserver(textSize, lineHeight) {
     };
     new MutationObserver(callback).observe(document.body, config);
 }
-chrome.storage.sync.get(['textSize', 'lineHeight', 'onOffSwitch'], function (fromStorage) {
+chrome.storage.sync.get(["textSize", "lineHeight", "onOff", "font"], function (fromStorage) {
     var textSize = fromStorage.textSize;
     var lineHeight = fromStorage.lineHeight;
-    var checked = fromStorage.onOffSwitch;
+    var checked = fromStorage.onOff;
+    var font = fromStorage.font;
     // Only do anything if the on off switch is on
     if (checked) {
-        updateAll(textSize, lineHeight);
-        startObserver(textSize, lineHeight);
+        updateAll(textSize, lineHeight, font);
+        startObserver(textSize, lineHeight, font);
     }
 });
 chrome.runtime.onMessage.addListener(function (message) {
     var newSize = 100 * (message.newSize / message.oldSize);
     var newHeight = 100 * (message.newHeight / message.oldHeight);
-    updateAll(newSize, newHeight);
+    updateAll(newSize, newHeight, message.font);
 });

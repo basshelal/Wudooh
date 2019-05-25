@@ -12,9 +12,8 @@
     src: url('chrome-extension://__MSG_@@extension_id__/fonts/DroidNaskh-Bold.woff2') format('woff2');
 }
 
-/*TODO these margins here might be why the look changes when we live update!*/
 [class="ar"] {
-    font-family: "Droid Arabic Naskh", serif;
+    /*font-family: "Droid Arabic Naskh", serif;
     margin: 10px 2px;
-    padding: 0 2px;
+    padding: 0 2px;*/
 }
