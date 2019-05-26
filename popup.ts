@@ -56,7 +56,7 @@ function updateWudoohFont() {
  */
 function updateAllText(close: boolean = true) {
     // Only update text if this site is checked and is not whitelisted
-    if (onOffSwitch.checked && !whiteListSwitch.checked) {
+    if (onOffSwitch.checked && whiteListSwitch.checked) {
         // We need the old values to know how much we should change the options in main.ts
         let oldS: number;
         let oldH: number;

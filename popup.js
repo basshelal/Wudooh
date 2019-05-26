@@ -47,7 +47,7 @@ function updateAllText(close) {
         close = true;
     }
     // Only update text if this site is checked and is not whitelisted
-    if (onOffSwitch.checked && !whiteListSwitch.checked) {
+    if (onOffSwitch.checked && whiteListSwitch.checked) {
         // We need the old values to know how much we should change the options in main.ts
         var oldS_1;
         var oldH_1;
@@ -127,7 +127,6 @@ function updateSizeHTML() {
 function updateHeightHTML() {
     heightValue.innerHTML = height.value + '%';
 }
-
 /**
  * Toggles the on off switch, this will update all text if the switch is turned on
  */
@@ -138,7 +137,6 @@ function toggleOnOff() {
     if (onOffSwitch.checked)
         updateAllText();
 }
-
 /**
  * Changes the font, this will update all text and update the Wudooh header
  */
