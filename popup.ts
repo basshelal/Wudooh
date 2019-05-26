@@ -4,16 +4,32 @@ import Tab = chrome.tabs.Tab;
 /**
  * This script is used by the extension's popup (popup.html) for options
  *
- * Currently there are three options, textSize, lineHeight and onOff
+ * Currently there are 4 options, textSize, lineHeight, onOff and font
  */
 
 const size: HTMLInputElement = document.getElementById("size") as HTMLInputElement;
 const height: HTMLInputElement = document.getElementById("height") as HTMLInputElement;
 const onOffSwitch: HTMLInputElement = document.getElementById("onOffSwitch") as HTMLInputElement;
 const fontSelect: HTMLSelectElement = document.getElementById("font-select") as HTMLSelectElement;
+const whiteListSwitch: HTMLInputElement = document.getElementById("whitelistSwitch") as HTMLInputElement;
 
 const sizeValue: HTMLElement = document.getElementById("sizeValue");
 const heightValue: HTMLElement = document.getElementById("heightValue");
+
+interface Array<T> {
+    contains(element: T): boolean;
+}
+
+Array.prototype.contains = function <T>(element: T): boolean {
+    let result = false;
+    for (let i = 0; i < this.length; i++) {
+        if (element === this[i]) {
+            result = true;
+            break;
+        }
+    }
+    return result;
+};
 
 /**
  * Save options, this saves them into chrome's storage sync for the user
@@ -36,7 +52,7 @@ function saveOptions() {
  * @param close whether to close the popup after updating text or not, defaults to true
  */
 function updateAllText(close: boolean = true) {
-    if (onOffSwitch.checked) {
+    if (onOffSwitch.checked && !whiteListSwitch.checked) {
         // We need the old values to know how much we should change the options in main.ts
         let oldS: number;
         let oldH: number;
@@ -74,11 +90,13 @@ function updateAllText(close: boolean = true) {
  * already exist
  */
 function getOptions() {
+
     chrome.storage.sync.get({
         textSize: '115',
         lineHeight: '125',
         onOff: true,
-        font: "Droid Arabic Naskh"
+        font: "Droid Arabic Naskh",
+        whitelisted: []
     }, (fromStorage) => {
         size.value = fromStorage.textSize;
         sizeValue.innerHTML = fromStorage.textSize + '%';
@@ -86,6 +104,11 @@ function getOptions() {
         heightValue.innerHTML = fromStorage.lineHeight + '%';
         onOffSwitch.checked = fromStorage.onOff;
         fontSelect.value = fromStorage.font;
+
+        chrome.tabs.query({active: true, currentWindow: true}, (tabs: Array<Tab>) => {
+            whiteListSwitch.checked = (fromStorage.whitelisted as Array<string>)
+                .contains(new URL(tabs[0].url).hostname);
+        });
     });
 }
 
@@ -105,7 +128,7 @@ function updateHeightHTML() {
 
 function toggleOnOff() {
     chrome.storage.sync.set({
-        onOff: onOffSwitch.checked,
+        onOff: onOffSwitch.checked
     });
     if (onOffSwitch.checked) updateAllText();
 }
@@ -115,6 +138,37 @@ function changeFont() {
         font: fontSelect.value,
     });
     updateAllText();
+}
+
+function toggleWhitelist() {
+
+    chrome.tabs.query({active: true, currentWindow: true}, (tabs: Array<Tab>) => {
+        // Get the url I am on right now
+        let url = new URL(tabs[0].url).hostname;
+
+        chrome.storage.sync.get({"whitelisted": []}, (fromStorage) => {
+            // get the array of all whitelisted websites from the chrome.storage.sync
+            let whitelisted: Array<string> = fromStorage.whitelisted;
+
+
+            if (whiteListSwitch.checked) {
+                // add to that array this url
+                whitelisted.push(url);
+            } else {
+                // remove all occurrences of this url from that array, just in case
+                whitelisted = whitelisted.filter((it: string) => it != url)
+            }
+
+            // set the array of all whitelisted websites which now includes this one into chrome.storage.sync
+            chrome.storage.sync.set({
+                whitelisted: whitelisted
+            });
+
+            // done, notify refresh or update?
+        });
+
+    });
+
 }
 
 function addListeners() {
@@ -133,6 +187,8 @@ function addListeners() {
     onOffSwitch.onclick = () => toggleOnOff();
 
     fontSelect.oninput = () => changeFont();
+
+    whiteListSwitch.onclick = () => toggleWhitelist();
 }
 
 addListeners();

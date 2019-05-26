@@ -7,6 +7,21 @@
 const arabicRegEx = new RegExp('([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF]+(' +
     ' [\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\W\d]+)*)', 'g');
 
+interface Array<T> {
+    contains(element: T): boolean;
+}
+
+Array.prototype.contains = function <T>(element: T): boolean {
+    let result = false;
+    for (let i = 0; i < this.length; i++) {
+        if (element === this[i]) {
+            result = true;
+            break;
+        }
+    }
+    return result;
+};
+
 /**
  * Returns whether the given node has any Arabic script or not, this is any script that matches arabicRegEx
  * @param node the node to check
@@ -136,18 +151,20 @@ function startObserver(textSize: number, lineHeight: number, font: string = "Dro
     new MutationObserver(callback).observe(document.body, config);
 }
 
-chrome.storage.sync.get(["textSize", "lineHeight", "onOff", "font"], (fromStorage) => {
+chrome.storage.sync.get(["textSize", "lineHeight", "onOff", "font", "whitelisted"], (fromStorage) => {
     let textSize: number = fromStorage.textSize;
     let lineHeight: number = fromStorage.lineHeight;
     let checked: boolean = fromStorage.onOff;
     let font: string = fromStorage.font;
+    let whitelisted: Array<string> = fromStorage.whitelisted;
+
+    let isWhitelisted = whitelisted.contains(new URL(document.URL).hostname);
 
     // Only do anything if the on off switch is on
-    if (checked) {
+    if (checked && !isWhitelisted) {
         updateAll(textSize, lineHeight, font);
         startObserver(textSize, lineHeight, font);
     }
-
 });
 
 chrome.runtime.onMessage.addListener(function (message) {

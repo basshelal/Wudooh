@@ -1,14 +1,25 @@
 /**
  * This script is used by the extension's popup (popup.html) for options
  *
- * Currently there are three options, textSize, lineHeight and onOff
+ * Currently there are 4 options, textSize, lineHeight, onOff and font
  */
 var size = document.getElementById("size");
 var height = document.getElementById("height");
 var onOffSwitch = document.getElementById("onOffSwitch");
 var fontSelect = document.getElementById("font-select");
+var whiteListSwitch = document.getElementById("whitelistSwitch");
 var sizeValue = document.getElementById("sizeValue");
 var heightValue = document.getElementById("heightValue");
+Array.prototype.contains = function (element) {
+    var result = false;
+    for (var i = 0; i < this.length; i++) {
+        if (element === this[i]) {
+            result = true;
+            break;
+        }
+    }
+    return result;
+};
 /**
  * Save options, this saves them into chrome's storage sync for the user
  */
@@ -32,7 +43,7 @@ function updateAllText(close) {
     if (close === void 0) {
         close = true;
     }
-    if (onOffSwitch.checked) {
+    if (onOffSwitch.checked && !whiteListSwitch.checked) {
         // We need the old values to know how much we should change the options in main.ts
         var oldS_1;
         var oldH_1;
@@ -71,7 +82,8 @@ function getOptions() {
         textSize: '115',
         lineHeight: '125',
         onOff: true,
-        font: "Droid Arabic Naskh"
+        font: "Droid Arabic Naskh",
+        whitelisted: []
     }, function (fromStorage) {
         size.value = fromStorage.textSize;
         sizeValue.innerHTML = fromStorage.textSize + '%';
@@ -79,6 +91,10 @@ function getOptions() {
         heightValue.innerHTML = fromStorage.lineHeight + '%';
         onOffSwitch.checked = fromStorage.onOff;
         fontSelect.value = fromStorage.font;
+        chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+            whiteListSwitch.checked = fromStorage.whitelisted
+                .contains(new URL(tabs[0].url).hostname);
+        });
     });
 }
 /**
@@ -95,17 +111,41 @@ function updateHeightHTML() {
 }
 function toggleOnOff() {
     chrome.storage.sync.set({
-        onOff: onOffSwitch.checked,
+        onOff: onOffSwitch.checked
     });
     if (onOffSwitch.checked)
         updateAllText();
 }
-
 function changeFont() {
     chrome.storage.sync.set({
         font: fontSelect.value,
     });
     updateAllText();
+}
+
+function toggleWhitelist() {
+    chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+        // Get the url I am on right now
+        var url = new URL(tabs[0].url).hostname;
+        chrome.storage.sync.get({"whitelisted": []}, function (fromStorage) {
+            // get the array of all whitelisted websites from the chrome.storage.sync
+            var whitelisted = fromStorage.whitelisted;
+            if (whiteListSwitch.checked) {
+                // add to that array this url
+                whitelisted.push(url);
+            } else {
+                // remove all occurrences of this url from that array, just in case
+                whitelisted = whitelisted.filter(function (it) {
+                    return it != url;
+                });
+            }
+            // set the array of all whitelisted websites which now includes this one into chrome.storage.sync
+            chrome.storage.sync.set({
+                whitelisted: whitelisted
+            });
+            // done, notify refresh or update?
+        });
+    });
 }
 function addListeners() {
     // Get options when the popup.html document is loaded
@@ -126,6 +166,9 @@ function addListeners() {
     };
     fontSelect.oninput = function () {
         return changeFont();
+    };
+    whiteListSwitch.onclick = function () {
+        return toggleWhitelist();
     };
 }
 addListeners();

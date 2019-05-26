@@ -4,6 +4,16 @@
  */
 var arabicRegEx = new RegExp('([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF]+(' +
     ' [\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\W\d]+)*)', 'g');
+Array.prototype.contains = function (element) {
+    var result = false;
+    for (var i = 0; i < this.length; i++) {
+        if (element === this[i]) {
+            result = true;
+            break;
+        }
+    }
+    return result;
+};
 /**
  * Returns whether the given node has any Arabic script or not, this is any script that matches arabicRegEx
  * @param node the node to check
@@ -117,13 +127,15 @@ function startObserver(textSize, lineHeight, font) {
     };
     new MutationObserver(callback).observe(document.body, config);
 }
-chrome.storage.sync.get(["textSize", "lineHeight", "onOff", "font"], function (fromStorage) {
+chrome.storage.sync.get(["textSize", "lineHeight", "onOff", "font", "whitelisted"], function (fromStorage) {
     var textSize = fromStorage.textSize;
     var lineHeight = fromStorage.lineHeight;
     var checked = fromStorage.onOff;
     var font = fromStorage.font;
+    var whitelisted = fromStorage.whitelisted;
+    var isWhitelisted = whitelisted.contains(new URL(document.URL).hostname);
     // Only do anything if the on off switch is on
-    if (checked) {
+    if (checked && !isWhitelisted) {
         updateAll(textSize, lineHeight, font);
         startObserver(textSize, lineHeight, font);
     }
