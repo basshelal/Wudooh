@@ -7,7 +7,6 @@
   "minimum_chrome_version": "38",
   "permissions": [
     "storage",
-    "activeTab",
     "tabs"
   ],
   "options_page": "popup.html",

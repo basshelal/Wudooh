@@ -4,6 +4,8 @@
  * This is the main script that reads the document and updates any Arabic script text
  */
 
+// TODO good thing to add is to allow for symbols and numbers between Arabic or at the end or beginning of it
+// like hashtags # and numbers and exclamation marks etc
 const arabicRegEx = new RegExp('([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF]+(' +
     ' [\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\W\d]+)*)', 'g');
 
@@ -82,6 +84,17 @@ function setNodeHtml(node: Node, html: string) {
     parent.removeChild(node);
 }
 
+// TODO still doesn't work, should return true if a node is editable
+function isEditable(node: Node): boolean {
+    let element = node as HTMLElement;
+    let nodeName = element.nodeName.toLowerCase();
+    return element.isContentEditable || (element.nodeType == Node.ELEMENT_NODE &&
+        (nodeName == "textarea" ||
+            (nodeName == "input" && /^(?:text|email|number|search|tel|url|password)$/i.test(element.nodeName))
+        )
+    );
+}
+
 /**
  * Updates the passed in node's html to have the properties of a modified Arabic text node, this will
  * replace any text that matches arabicRegEx to be a span with the font size and line height specified by
@@ -93,7 +106,7 @@ function setNodeHtml(node: Node, html: string) {
  * @param font the name of the font to update the text to
  */
 function updateNode(node: Node, textSize: number, lineHeight: number, font: string = "Droid Arabic Naskh") {
-    if (node.nodeValue) {
+    if (node.nodeValue && !isEditable(node)) {
         let newSize = textSize / 100;
         let newHeight = lineHeight / 100;
         let newHTML = "<span class='ar'' style='" +
