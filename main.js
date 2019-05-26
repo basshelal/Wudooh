@@ -4,6 +4,12 @@
  */
 var arabicRegEx = new RegExp('([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF]+(' +
     ' [\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\W\d]+)*)', 'g');
+var observer;
+/**
+ * Extension function for a contains function in an array
+ * @param element the element to check whether is in this array or not
+ * @return true if the element exists in this array, false otherwise
+ */
 Array.prototype.contains = function (element) {
     var result = false;
     for (var i = 0; i < this.length; i++) {
@@ -125,8 +131,15 @@ function startObserver(textSize, lineHeight, font) {
             }
         });
     };
-    new MutationObserver(callback).observe(document.body, config);
+    observer = new MutationObserver(callback);
+    observer.observe(document.body, config);
 }
+/**
+ * Main execution:
+ * Updates all existing text according to the options
+ * Then starts an observer with those same options to update any new text that will come
+ * This only happens if the on off switch is on and the site is not whitelisted
+ */
 chrome.storage.sync.get(["textSize", "lineHeight", "onOff", "font", "whitelisted"], function (fromStorage) {
     var textSize = fromStorage.textSize;
     var lineHeight = fromStorage.lineHeight;
@@ -134,14 +147,23 @@ chrome.storage.sync.get(["textSize", "lineHeight", "onOff", "font", "whitelisted
     var font = fromStorage.font;
     var whitelisted = fromStorage.whitelisted;
     var isWhitelisted = whitelisted.contains(new URL(document.URL).hostname);
-    // Only do anything if the on off switch is on
+    // Only do anything if the switch is on and this site is not whitelisted
     if (checked && !isWhitelisted) {
         updateAll(textSize, lineHeight, font);
         startObserver(textSize, lineHeight, font);
     }
 });
+/**
+ * Listener to update text if options are modified, the options being text size, line height and font
+ * Since the original font is not saved, reverting the text to it's original form is not possible
+ * This will disconnect the previous observer and start a new one its place with the new options
+ * The check whether the switch is on or if this site is whitelisted is not done here but at the
+ * sender's sendMessage call
+ */
 chrome.runtime.onMessage.addListener(function (message) {
     var newSize = 100 * (message.newSize / message.oldSize);
     var newHeight = 100 * (message.newHeight / message.oldHeight);
     updateAll(newSize, newHeight, message.font);
+    observer.disconnect();
+    startObserver(newSize, newHeight, message.font);
 });

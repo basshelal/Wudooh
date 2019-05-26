@@ -4,7 +4,7 @@ import Tab = chrome.tabs.Tab;
 /**
  * This script is used by the extension's popup (popup.html) for options
  *
- * Currently there are 4 options, textSize, lineHeight, onOff and font
+ * Currently there are 5 options, textSize, lineHeight, onOff, font and whitelisted
  */
 
 const size: HTMLInputElement = document.getElementById("size") as HTMLInputElement;
@@ -15,11 +15,17 @@ const whiteListSwitch: HTMLInputElement = document.getElementById("whitelistSwit
 
 const sizeValue: HTMLElement = document.getElementById("sizeValue");
 const heightValue: HTMLElement = document.getElementById("heightValue");
+const whitelistedValue: HTMLElement = document.getElementById("whitelistedLabel");
 
 interface Array<T> {
     contains(element: T): boolean;
 }
 
+/**
+ * Extension function for a contains function in an array
+ * @param element the element to check whether is in this array or not
+ * @return true if the element exists in this array, false otherwise
+ */
 Array.prototype.contains = function <T>(element: T): boolean {
     let result = false;
     for (let i = 0; i < this.length; i++) {
@@ -32,14 +38,11 @@ Array.prototype.contains = function <T>(element: T): boolean {
 };
 
 /**
- * Save options, this saves them into chrome's storage sync for the user
+ * Updates the font of the Arabic Wudooh heading to match the font selected by the user
  */
-function saveOptions() {
-    chrome.storage.sync.set({
-        textSize: parseInt(size.value),
-        lineHeight: parseInt(height.value),
-        onOff: onOffSwitch.checked,
-        font: fontSelect.value
+function updateWudoohFont() {
+    chrome.storage.sync.get("font", (fromStorage) => {
+        document.getElementById("wudooh").style.fontFamily = fromStorage.font;
     });
 }
 
@@ -52,10 +55,12 @@ function saveOptions() {
  * @param close whether to close the popup after updating text or not, defaults to true
  */
 function updateAllText(close: boolean = true) {
+    // Only update text if this site is checked and is not whitelisted
     if (onOffSwitch.checked && !whiteListSwitch.checked) {
         // We need the old values to know how much we should change the options in main.ts
         let oldS: number;
         let oldH: number;
+
         let font: string;
 
         chrome.storage.sync.get(["textSize", "lineHeight", "font"], (fromStorage) => {
@@ -64,6 +69,7 @@ function updateAllText(close: boolean = true) {
             font = fromStorage.font;
         });
 
+        // Send a message to all tabs
         chrome.tabs.query({}, (tabs: Array<Tab>) => {
             tabs.forEach((tab: Tab) => {
                 let message = {
@@ -74,7 +80,8 @@ function updateAllText(close: boolean = true) {
                     font: font
                 };
                 chrome.tabs.sendMessage(tab.id, message);
-                // close the popup after 400ms so that it's not disturbingly fast
+
+                // close the popup after 400ms so that it's not disturbingly fast and ugly, only aesthetic
                 setTimeout(() => {
                     if (close) window.close()
                 }, 400);
@@ -82,12 +89,19 @@ function updateAllText(close: boolean = true) {
         });
     }
 
-    saveOptions();
+    // Save options at the end, even if the above if statement was false
+    chrome.storage.sync.set({
+        textSize: parseInt(size.value),
+        lineHeight: parseInt(height.value),
+        onOff: onOffSwitch.checked,
+        font: fontSelect.value
+    });
 }
 
 /**
  * Gets options, this gets them from the chrome's storage sync for the user with default values if they do not
- * already exist
+ * already exist, this is only called when the document (popup.html) is loaded, it only initializes values and
+ * updates UI
  */
 function getOptions() {
 
@@ -105,27 +119,38 @@ function getOptions() {
         onOffSwitch.checked = fromStorage.onOff;
         fontSelect.value = fromStorage.font;
 
+        updateWudoohFont();
+
+        // update HTML to say whether running on this site or whitelisted
         chrome.tabs.query({active: true, currentWindow: true}, (tabs: Array<Tab>) => {
-            whiteListSwitch.checked = (fromStorage.whitelisted as Array<string>)
-                .contains(new URL(tabs[0].url).hostname);
+            let running = !(fromStorage.whitelisted as Array<string>).contains(
+                new URL(tabs[0].url).hostname
+            );
+
+            whiteListSwitch.checked = running;
+            if (running) whitelistedValue.innerText = "Running on this site";
+            else whitelistedValue.innerText = "This site is whitelisted";
         });
     });
 }
 
 /**
- * Updates the size value from the size range input, this is called when the size range input is changed
+ * Updates the size value HTML from the size range input, this is called when the size range input is changed
  */
 function updateSizeHTML() {
     sizeValue.innerHTML = size.value + '%';
 }
 
 /**
- * Updates the height value from the height range input, this is called when the height range input is changed
+ * Updates the height value HTML from the height range input, this is called when the height range input is changed
  */
 function updateHeightHTML() {
     heightValue.innerHTML = height.value + '%';
 }
 
+/**
+ * Toggles the on off switch, this will update all text if the switch is turned on
+ */
 function toggleOnOff() {
     chrome.storage.sync.set({
         onOff: onOffSwitch.checked
@@ -133,42 +158,45 @@ function toggleOnOff() {
     if (onOffSwitch.checked) updateAllText();
 }
 
+/**
+ * Changes the font, this will update all text and update the Wudooh header
+ */
 function changeFont() {
     chrome.storage.sync.set({
         font: fontSelect.value,
     });
     updateAllText();
+    updateWudoohFont();
 }
 
 function toggleWhitelist() {
 
+    // This only requires this current tab
     chrome.tabs.query({active: true, currentWindow: true}, (tabs: Array<Tab>) => {
-        // Get the url I am on right now
+        // Get the url we are on right now
         let url = new URL(tabs[0].url).hostname;
 
         chrome.storage.sync.get({"whitelisted": []}, (fromStorage) => {
-            // get the array of all whitelisted websites from the chrome.storage.sync
+            // Get the array of all whitelisted websites
             let whitelisted: Array<string> = fromStorage.whitelisted;
 
-
+            // Allowed to run on this site
             if (whiteListSwitch.checked) {
-                // add to that array this url
-                whitelisted.push(url);
+                // Remove all occurrences of this url from that array, just in case
+                whitelisted = whitelisted.filter((it: string) => it != url);
+                whitelistedValue.innerText = "Running on this site, reload to see changes";
             } else {
-                // remove all occurrences of this url from that array, just in case
-                whitelisted = whitelisted.filter((it: string) => it != url)
+                // Whitelisted, add this url to the whitelisted array
+                whitelisted.push(url);
+                whitelistedValue.innerText = "This site is whitelisted, reload to see changes";
             }
 
-            // set the array of all whitelisted websites which now includes this one into chrome.storage.sync
+            // Set the array of all whitelisted websites in storage
             chrome.storage.sync.set({
                 whitelisted: whitelisted
             });
-
-            // done, notify refresh or update?
         });
-
     });
-
 }
 
 function addListeners() {

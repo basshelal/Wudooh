@@ -33,14 +33,14 @@ content with Arabic text will also update and become clearer.
 ## Future Features
 * ~~Live text updates as options are updated~~ Done!
 * ~~More font options~~ Done! Including Urdu font
-* Whitelist or exempt websites
+* ~~Whitelist or exempt websites~~ Done! Doesn't look too pretty but it works well!
 
 ## Known Issues
 
 ### Quran.com
 
 [quran.com](https://quran.com/) uses different character encodings than usual, to fix this,
- turn off Wudooh while using quran.com.
+ whitelist quran.com or turn off Wudooh while using quran.com.
  
 With Wudooh:
 ![With](https://github.com/basshelal/Wudooh/blob/master/pictures/QuranWith.PNG)

@@ -7,10 +7,17 @@
 const arabicRegEx = new RegExp('([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF]+(' +
     ' [\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\W\d]+)*)', 'g');
 
+let observer: MutationObserver;
+
 interface Array<T> {
     contains(element: T): boolean;
 }
 
+/**
+ * Extension function for a contains function in an array
+ * @param element the element to check whether is in this array or not
+ * @return true if the element exists in this array, false otherwise
+ */
 Array.prototype.contains = function <T>(element: T): boolean {
     let result = false;
     for (let i = 0; i < this.length; i++) {
@@ -148,9 +155,16 @@ function startObserver(textSize: number, lineHeight: number, font: string = "Dro
         });
     };
 
-    new MutationObserver(callback).observe(document.body, config);
+    observer = new MutationObserver(callback);
+    observer.observe(document.body, config);
 }
 
+/**
+ * Main execution:
+ * Updates all existing text according to the options
+ * Then starts an observer with those same options to update any new text that will come
+ * This only happens if the on off switch is on and the site is not whitelisted
+ */
 chrome.storage.sync.get(["textSize", "lineHeight", "onOff", "font", "whitelisted"], (fromStorage) => {
     let textSize: number = fromStorage.textSize;
     let lineHeight: number = fromStorage.lineHeight;
@@ -160,15 +174,25 @@ chrome.storage.sync.get(["textSize", "lineHeight", "onOff", "font", "whitelisted
 
     let isWhitelisted = whitelisted.contains(new URL(document.URL).hostname);
 
-    // Only do anything if the on off switch is on
+    // Only do anything if the switch is on and this site is not whitelisted
     if (checked && !isWhitelisted) {
         updateAll(textSize, lineHeight, font);
         startObserver(textSize, lineHeight, font);
     }
 });
 
+/**
+ * Listener to update text if options are modified, the options being text size, line height and font
+ * Since the original font is not saved, reverting the text to it's original form is not possible
+ * This will disconnect the previous observer and start a new one its place with the new options
+ * The check whether the switch is on or if this site is whitelisted is not done here but at the
+ * sender's sendMessage call
+ */
 chrome.runtime.onMessage.addListener(function (message) {
     let newSize = 100 * (message.newSize / message.oldSize);
     let newHeight = 100 * (message.newHeight / message.oldHeight);
     updateAll(newSize, newHeight, message.font);
+
+    observer.disconnect();
+    startObserver(newSize, newHeight, message.font);
 });
