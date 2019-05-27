@@ -48,31 +48,28 @@ function updateAllText(close) {
     }
     // Only update text if this site is checked and is not whitelisted
     if (onOffSwitch.checked && whiteListSwitch.checked) {
-        // We need the old values to know how much we should change the options in main.ts
-        var oldS_1;
-        var oldH_1;
-        var font_1;
         chrome.storage.sync.get(["textSize", "lineHeight", "font"], function (fromStorage) {
-            oldS_1 = fromStorage.textSize;
-            oldH_1 = fromStorage.lineHeight;
-            font_1 = fromStorage.font;
-        });
-        // Send a message to all tabs
-        chrome.tabs.query({}, function (tabs) {
-            tabs.forEach(function (tab) {
-                var message = {
-                    oldSize: oldS_1,
-                    oldHeight: oldH_1,
-                    newSize: parseInt(size.value),
-                    newHeight: parseInt(height.value),
-                    font: font_1
-                };
-                chrome.tabs.sendMessage(tab.id, message);
-                // close the popup after 400ms so that it's not disturbingly fast and ugly, only aesthetic
-                setTimeout(function () {
-                    if (close)
-                        window.close();
-                }, 400);
+            // We need the old values to know how much we should change the options in main.ts
+            var oldS = fromStorage.textSize;
+            var oldH = fromStorage.lineHeight;
+            var font = fromStorage.font;
+            // Send a message to all tabs
+            chrome.tabs.query({}, function (tabs) {
+                tabs.forEach(function (tab) {
+                    var message = {
+                        oldSize: oldS,
+                        oldHeight: oldH,
+                        newSize: parseInt(size.value),
+                        newHeight: parseInt(height.value),
+                        font: font
+                    };
+                    chrome.tabs.sendMessage(tab.id, message);
+                    // close the popup after 400ms so that it's not disturbingly fast and ugly, only aesthetic
+                    setTimeout(function () {
+                        if (close)
+                            window.close();
+                    }, 400);
+                });
             });
         });
     }
@@ -143,10 +140,20 @@ function toggleOnOff() {
 function changeFont() {
     chrome.storage.sync.set({
         font: fontSelect.value,
+    }, function () {
+        updateAllText();
+        updateWudoohFont();
     });
-    updateAllText();
-    updateWudoohFont();
 }
+
+/**
+ * Toggles this site's whitelist status, this is only done to the active tab's site.
+ * Note that the switch checked means that the site is running and is not whitelisted,
+ * the switched unchecked means the site does not run the script and is whitelisted.
+ * The whitelist saved contains the sites that are whitelisted, meaning the ones that do
+ * not run the script. The user must reload to see any changes as original formatting
+ * is not preserved
+ */
 function toggleWhitelist() {
     // This only requires this current tab
     chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {

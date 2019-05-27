@@ -50,7 +50,7 @@ function getArabicTextNodesIn(rootNode: Node): Array<Node> {
 
     let walker: TreeWalker = document.createTreeWalker(
         rootNode,
-        NodeFilter.SHOW_TEXT
+        NodeFilter.SHOW_ALL
     );
 
     let node: Node;
@@ -74,25 +74,38 @@ function setNodeHtml(node: Node, html: string) {
     let parent: Node = node.parentNode;
 
     if (!parent || !node) return;
+    // don't change anything if this node or its parent are editable
+    if (isEditable(parent) || isEditable(node)) return;
 
-    let next = node.nextSibling;
-    let parser = document.createElement('div');
-    parser.innerHTML = html;
-    while (parser.firstChild) {
-        parent.insertBefore(parser.firstChild, next);
+    let nextSibling = node.nextSibling;
+
+    // the div is temporary and doesn't show up in the html
+    let newElement = document.createElement("div");
+    newElement.innerHTML = html;
+
+    while (newElement.firstChild) {
+        // we only insert the passed in html, the div is not inserted
+        parent.insertBefore(newElement.firstChild, nextSibling);
     }
     parent.removeChild(node);
 }
 
-// TODO still doesn't work, should return true if a node is editable
+/**
+ * Checks whether the passed in node is editable or not.
+ * An editable node is one that returns true to isContentEditable or has a tag name as
+ * any one of the following:
+ * "textarea", "input", "text", "email", "number", "search", "tel", "url", "password"
+ *
+ * @param node the node to check
+ * @return true if the node is editable and false otherwise
+ */
 function isEditable(node: Node): boolean {
     let element = node as HTMLElement;
-    let nodeName = element.nodeName.toLowerCase();
-    return element.isContentEditable || (element.nodeType == Node.ELEMENT_NODE &&
-        (nodeName == "textarea" ||
-            (nodeName == "input" && /^(?:text|email|number|search|tel|url|password)$/i.test(element.nodeName))
-        )
-    );
+    let nodeName: string = element.nodeName.toLowerCase();
+
+    let editables = ["textarea", "input", "text", "email", "number", "search", "tel", "url", "password"];
+
+    return (element.isContentEditable || (element.nodeType === Node.ELEMENT_NODE && editables.contains(nodeName)));
 }
 
 /**
@@ -106,7 +119,7 @@ function isEditable(node: Node): boolean {
  * @param font the name of the font to update the text to
  */
 function updateNode(node: Node, textSize: number, lineHeight: number, font: string = "Droid Arabic Naskh") {
-    if (node.nodeValue && !isEditable(node)) {
+    if (node.nodeValue) {
         let newSize = textSize / 100;
         let newHeight = lineHeight / 100;
         let newHTML = "<span class='ar'' style='" +

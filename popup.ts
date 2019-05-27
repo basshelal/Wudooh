@@ -57,34 +57,30 @@ function updateWudoohFont() {
 function updateAllText(close: boolean = true) {
     // Only update text if this site is checked and is not whitelisted
     if (onOffSwitch.checked && whiteListSwitch.checked) {
-        // We need the old values to know how much we should change the options in main.ts
-        let oldS: number;
-        let oldH: number;
-
-        let font: string;
 
         chrome.storage.sync.get(["textSize", "lineHeight", "font"], (fromStorage) => {
-            oldS = fromStorage.textSize;
-            oldH = fromStorage.lineHeight;
-            font = fromStorage.font;
-        });
+            // We need the old values to know how much we should change the options in main.ts
+            let oldS: number = fromStorage.textSize;
+            let oldH: number = fromStorage.lineHeight;
+            let font: string = fromStorage.font;
 
-        // Send a message to all tabs
-        chrome.tabs.query({}, (tabs: Array<Tab>) => {
-            tabs.forEach((tab: Tab) => {
-                let message = {
-                    oldSize: oldS,
-                    oldHeight: oldH,
-                    newSize: parseInt(size.value),
-                    newHeight: parseInt(height.value),
-                    font: font
-                };
-                chrome.tabs.sendMessage(tab.id, message);
+            // Send a message to all tabs
+            chrome.tabs.query({}, (tabs: Array<Tab>) => {
+                tabs.forEach((tab: Tab) => {
+                    let message = {
+                        oldSize: oldS,
+                        oldHeight: oldH,
+                        newSize: parseInt(size.value),
+                        newHeight: parseInt(height.value),
+                        font: font
+                    };
+                    chrome.tabs.sendMessage(tab.id, message);
 
-                // close the popup after 400ms so that it's not disturbingly fast and ugly, only aesthetic
-                setTimeout(() => {
-                    if (close) window.close()
-                }, 400);
+                    // close the popup after 400ms so that it's not disturbingly fast and ugly, only aesthetic
+                    setTimeout(() => {
+                        if (close) window.close()
+                    }, 400);
+                });
             });
         });
     }
@@ -164,11 +160,20 @@ function toggleOnOff() {
 function changeFont() {
     chrome.storage.sync.set({
         font: fontSelect.value,
+    }, () => {
+        updateAllText();
+        updateWudoohFont();
     });
-    updateAllText();
-    updateWudoohFont();
 }
 
+/**
+ * Toggles this site's whitelist status, this is only done to the active tab's site.
+ * Note that the switch checked means that the site is running and is not whitelisted,
+ * the switched unchecked means the site does not run the script and is whitelisted.
+ * The whitelist saved contains the sites that are whitelisted, meaning the ones that do
+ * not run the script. The user must reload to see any changes as original formatting
+ * is not preserved
+ */
 function toggleWhitelist() {
 
     // This only requires this current tab
