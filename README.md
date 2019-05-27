@@ -45,6 +45,7 @@ for Persian, Urdu and any other
 [Arabic script language](https://en.wikipedia.org/wiki/Arabic_script).
 
 Wudooh popup:
+
 ![](https://github.com/basshelal/Wudooh/blob/master/pictures/Wudooh.PNG)
 
 ### On Off Switch
