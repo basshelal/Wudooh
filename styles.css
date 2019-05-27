@@ -29,7 +29,6 @@
 /*endregion Noto Nastaliq Urdu*/
 
 /*region Aref Ruqaa*/
-/* arabic */
 @font-face {
     font-family: 'Aref Ruqaa';
     font-style: normal;
@@ -39,21 +38,9 @@
     unicode-range: U+0600-06FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE80-FEFC;
 }
 
-/* latin */
-@font-face {
-    font-family: 'Aref Ruqaa';
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: local('Aref Ruqaa Regular'), local('ArefRuqaa-Regular'), url(https://fonts.gstatic.com/s/arefruqaa/v7/WwkbxPW1E165rajQKDulIIcoVQ.woff2) format('woff2');
-    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
 /*endregion Aref Ruqaa*/
 
 /*region Cairo*/
-
-/* arabic */
 @font-face {
     font-family: 'Cairo';
     font-style: normal;
@@ -62,31 +49,9 @@
     src: local('Cairo'), local('Cairo-Regular'), url(https://fonts.gstatic.com/s/cairo/v5/SLXGc1nY6HkvalIkTpu0xg.woff2) format('woff2');
     unicode-range: U+0600-06FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE80-FEFC;
 }
-
-/* latin-ext */
-@font-face {
-    font-family: 'Cairo';
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: local('Cairo'), local('Cairo-Regular'), url(https://fonts.gstatic.com/s/cairo/v5/SLXGc1nY6HkvalIvTpu0xg.woff2) format('woff2');
-    unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-
-/* latin */
-@font-face {
-    font-family: 'Cairo';
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: local('Cairo'), local('Cairo-Regular'), url(https://fonts.gstatic.com/s/cairo/v5/SLXGc1nY6HkvalIhTps.woff2) format('woff2');
-    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
 /*endregion Cairo*/
 
 /*region Lemonada*/
-/* arabic */
 @font-face {
     font-family: 'Lemonada';
     font-style: normal;
@@ -96,40 +61,9 @@
     unicode-range: U+0600-06FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE80-FEFC;
 }
 
-/* vietnamese */
-@font-face {
-    font-family: 'Lemonada';
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: local('Lemonada'), local('Lemonada-Regular'), url(https://fonts.gstatic.com/s/lemonada/v6/0QIjMXFD9oygTWy_R8tGv_SW8g.woff2) format('woff2');
-    unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
-}
-
-/* latin-ext */
-@font-face {
-    font-family: 'Lemonada';
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: local('Lemonada'), local('Lemonada-Regular'), url(https://fonts.gstatic.com/s/lemonada/v6/0QIjMXFD9oygTWy_R8tHv_SW8g.woff2) format('woff2');
-    unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-
-/* latin */
-@font-face {
-    font-family: 'Lemonada';
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: local('Lemonada'), local('Lemonada-Regular'), url(https://fonts.gstatic.com/s/lemonada/v6/0QIjMXFD9oygTWy_R8tJv_Q.woff2) format('woff2');
-    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
 /*endregion Lemonada*/
 
 /*region Lalezar*/
-/* arabic */
 @font-face {
     font-family: 'Lalezar';
     font-style: normal;
@@ -139,40 +73,9 @@
     unicode-range: U+0600-06FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE80-FEFC;
 }
 
-/* vietnamese */
-@font-face {
-    font-family: 'Lalezar';
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: local('Lalezar'), local('Lalezar-Regular'), url(https://fonts.gstatic.com/s/lalezar/v5/zrfl0HLVx-HwTP82Yaj4IxL0.woff2) format('woff2');
-    unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
-}
-
-/* latin-ext */
-@font-face {
-    font-family: 'Lalezar';
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: local('Lalezar'), local('Lalezar-Regular'), url(https://fonts.gstatic.com/s/lalezar/v5/zrfl0HLVx-HwTP82Yan4IxL0.woff2) format('woff2');
-    unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-
-/* latin */
-@font-face {
-    font-family: 'Lalezar';
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: local('Lalezar'), local('Lalezar-Regular'), url(https://fonts.gstatic.com/s/lalezar/v5/zrfl0HLVx-HwTP82Yaf4Iw.woff2) format('woff2');
-    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
 /*endregion Lalezar*/
 
 /*region Tajawal*/
-/* arabic */
 @font-face {
     font-family: 'Tajawal';
     font-style: normal;
@@ -181,21 +84,9 @@
     src: local('Tajawal'), local('Tajawal-Regular'), url(https://fonts.gstatic.com/s/tajawal/v2/Iura6YBj_oCad4k1nzSBC45I.woff2) format('woff2');
     unicode-range: U+0600-06FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE80-FEFC;
 }
-
-/* latin */
-@font-face {
-    font-family: 'Tajawal';
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: local('Tajawal'), local('Tajawal-Regular'), url(https://fonts.gstatic.com/s/tajawal/v2/Iura6YBj_oCad4k1nzGBCw.woff2) format('woff2');
-    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
 /*endregion Tajawal*/
 
 /*region Changa*/
-/* arabic */
 @font-face {
     font-family: 'Changa';
     font-style: normal;
@@ -205,30 +96,9 @@
     unicode-range: U+0600-06FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE80-FEFC;
 }
 
-/* latin-ext */
-@font-face {
-    font-family: 'Changa';
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: local('Changa'), local('Changa-Regular'), url(https://fonts.gstatic.com/s/changa/v6/2-cm9JNi2YuVOUckaJy-au8.woff2) format('woff2');
-    unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-
-/* latin */
-@font-face {
-    font-family: 'Changa';
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: local('Changa'), local('Changa-Regular'), url(https://fonts.gstatic.com/s/changa/v6/2-cm9JNi2YuVOUckZpy-.woff2) format('woff2');
-    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
 /*endregion Changa*/
 
 /*region El Messiri*/
-/* arabic */
 @font-face {
     font-family: 'El Messiri';
     font-style: normal;
@@ -238,30 +108,9 @@
     unicode-range: U+0600-06FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE80-FEFC;
 }
 
-/* cyrillic */
-@font-face {
-    font-family: 'El Messiri';
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: local('El Messiri'), local('ElMessiri-Regular'), url(https://fonts.gstatic.com/s/elmessiri/v5/K2F0fZBRmr9vQ1pHEey6MomAAhLz.woff2) format('woff2');
-    unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-
-/* latin */
-@font-face {
-    font-family: 'El Messiri';
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: local('El Messiri'), local('ElMessiri-Regular'), url(https://fonts.gstatic.com/s/elmessiri/v5/K2F0fZBRmr9vQ1pHEey6Mo2AAg.woff2) format('woff2');
-    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
 /*endregion El Messiri*/
 
 /*region Lateef*/
-/* arabic */
 @font-face {
     font-family: 'Lateef';
     font-style: normal;
@@ -270,21 +119,9 @@
     src: local('Lateef'), url(https://fonts.gstatic.com/s/lateef/v14/hESw6XVnNCxEvkb8pB2FVo8.woff2) format('woff2');
     unicode-range: U+0600-06FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE80-FEFC;
 }
-
-/* latin */
-@font-face {
-    font-family: 'Lateef';
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: local('Lateef'), url(https://fonts.gstatic.com/s/lateef/v14/hESw6XVnNCxEvkb8oR2F.woff2) format('woff2');
-    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
 /*endregion Lateef*/
 
 /*region Mada*/
-/* arabic */
 @font-face {
     font-family: 'Mada';
     font-style: normal;
@@ -293,21 +130,9 @@
     src: local('Mada Regular'), local('Mada-Regular'), url(https://fonts.gstatic.com/s/mada/v7/7Auwp_0qnzeSfTfGLRrX.woff2) format('woff2');
     unicode-range: U+0600-06FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE80-FEFC;
 }
-
-/* latin */
-@font-face {
-    font-family: 'Mada';
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: local('Mada Regular'), local('Mada-Regular'), url(https://fonts.gstatic.com/s/mada/v7/7Auwp_0qnzeSfTLGLQ.woff2) format('woff2');
-    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
 /*endregion Mada*/
 
 /*region Markazi Text*/
-/* arabic */
 @font-face {
     font-family: 'Markazi Text';
     font-style: normal;
@@ -316,41 +141,9 @@
     src: url(https://fonts.gstatic.com/s/markazitext/v5/sykh-ydym6AtQaiEtX7yhqb_rV1k_81ZVYYZtfSQf4EvBNkm.woff2) format('woff2');
     unicode-range: U+0600-06FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE80-FEFC;
 }
-
-/* vietnamese */
-@font-face {
-    font-family: 'Markazi Text';
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: url(https://fonts.gstatic.com/s/markazitext/v5/sykh-ydym6AtQaiEtX7yhqb_rV1k_81ZVYYZtfSQf4svBNkm.woff2) format('woff2');
-    unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
-}
-
-/* latin-ext */
-@font-face {
-    font-family: 'Markazi Text';
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: url(https://fonts.gstatic.com/s/markazitext/v5/sykh-ydym6AtQaiEtX7yhqb_rV1k_81ZVYYZtfSQf4ovBNkm.woff2) format('woff2');
-    unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-
-/* latin */
-@font-face {
-    font-family: 'Markazi Text';
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: url(https://fonts.gstatic.com/s/markazitext/v5/sykh-ydym6AtQaiEtX7yhqb_rV1k_81ZVYYZtfSQf4QvBA.woff2) format('woff2');
-    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
 /*endregion Markazi Text*/
 
 /*region Mirza*/
-/* arabic */
 @font-face {
     font-family: 'Mirza';
     font-style: normal;
@@ -359,31 +152,9 @@
     src: local('Mirza Regular'), local('Mirza-Regular'), url(https://fonts.gstatic.com/s/mirza/v6/co3ImWlikiN5EtrfIsaAsg.woff2) format('woff2');
     unicode-range: U+0600-06FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE80-FEFC;
 }
-
-/* latin-ext */
-@font-face {
-    font-family: 'Mirza';
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: local('Mirza Regular'), local('Mirza-Regular'), url(https://fonts.gstatic.com/s/mirza/v6/co3ImWlikiN5EtrUIsaAsg.woff2) format('woff2');
-    unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-
-/* latin */
-@font-face {
-    font-family: 'Mirza';
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: local('Mirza Regular'), local('Mirza-Regular'), url(https://fonts.gstatic.com/s/mirza/v6/co3ImWlikiN5EtraIsY.woff2) format('woff2');
-    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
 /*endregion Mirza*/
 
 /*region Harmattan*/
-/* arabic */
 @font-face {
     font-family: 'Harmattan';
     font-style: normal;
@@ -392,21 +163,9 @@
     src: local('Harmattan'), local('Harmattan-Regular'), url(https://fonts.gstatic.com/s/harmattan/v5/goksH6L2DkFvVvRp9XpjSUqioP0.woff2) format('woff2');
     unicode-range: U+0600-06FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE80-FEFC;
 }
-
-/* latin */
-@font-face {
-    font-family: 'Harmattan';
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: local('Harmattan'), local('Harmattan-Regular'), url(https://fonts.gstatic.com/s/harmattan/v5/goksH6L2DkFvVvRp9XpjTEqi.woff2) format('woff2');
-    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
 /*endregion Harmattan*/
 
 /*region Rakkas*/
-/* arabic */
 @font-face {
     font-family: 'Rakkas';
     font-style: normal;
@@ -415,31 +174,9 @@
     src: local('Rakkas Regular'), local('Rakkas-Regular'), url(https://fonts.gstatic.com/s/rakkas/v6/Qw3cZQlNHiblL3jPlNFOCeM.woff2) format('woff2');
     unicode-range: U+0600-06FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE80-FEFC;
 }
-
-/* latin-ext */
-@font-face {
-    font-family: 'Rakkas';
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: local('Rakkas Regular'), local('Rakkas-Regular'), url(https://fonts.gstatic.com/s/rakkas/v6/Qw3cZQlNHiblL3jPn9FOCeM.woff2) format('woff2');
-    unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-
-/* latin */
-@font-face {
-    font-family: 'Rakkas';
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: local('Rakkas Regular'), local('Rakkas-Regular'), url(https://fonts.gstatic.com/s/rakkas/v6/Qw3cZQlNHiblL3jPkdFO.woff2) format('woff2');
-    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
 /*endregion Rakkas*/
 
 /*region Katibeh*/
-/* arabic */
 @font-face {
     font-family: 'Katibeh';
     font-style: normal;
@@ -448,31 +185,9 @@
     src: local('Katibeh-Regular'), url(https://fonts.gstatic.com/s/katibeh/v6/ZGjXol5MQJog4bxDWC9bVQNd.woff2) format('woff2');
     unicode-range: U+0600-06FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE80-FEFC;
 }
-
-/* latin-ext */
-@font-face {
-    font-family: 'Katibeh';
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: local('Katibeh-Regular'), url(https://fonts.gstatic.com/s/katibeh/v6/ZGjXol5MQJog4bxDWCRbVQNd.woff2) format('woff2');
-    unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-
-/* latin */
-@font-face {
-    font-family: 'Katibeh';
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: local('Katibeh-Regular'), url(https://fonts.gstatic.com/s/katibeh/v6/ZGjXol5MQJog4bxDWCpbVQ.woff2) format('woff2');
-    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
 /*endregion Katibeh*/
 
 /*region Jomhuria*/
-/* arabic */
 @font-face {
     font-family: 'Jomhuria';
     font-style: normal;
@@ -481,27 +196,6 @@
     src: local('Jomhuria'), local('Jomhuria-Regular'), url(https://fonts.gstatic.com/s/jomhuria/v6/Dxxp8j-TMXf-llKur1b3OuCrCw.woff2) format('woff2');
     unicode-range: U+0600-06FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE80-FEFC;
 }
-
-/* latin-ext */
-@font-face {
-    font-family: 'Jomhuria';
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: local('Jomhuria'), local('Jomhuria-Regular'), url(https://fonts.gstatic.com/s/jomhuria/v6/Dxxp8j-TMXf-llKur1b8OuCrCw.woff2) format('woff2');
-    unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-
-/* latin */
-@font-face {
-    font-family: 'Jomhuria';
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: local('Jomhuria'), local('Jomhuria-Regular'), url(https://fonts.gstatic.com/s/jomhuria/v6/Dxxp8j-TMXf-llKur1byOuA.woff2) format('woff2');
-    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
 /*endregion Jomhuria*/
 
 [class="ar"] {
