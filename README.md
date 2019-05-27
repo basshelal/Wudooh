@@ -26,10 +26,10 @@ This project is based on and is the successor to
  and fixes commonly complained about problems found in Huruf.
 
 Without Wudooh:
-![](https://github.com/basshelal/Wudooh/blob/master/pictures/Before.PNG)
+![](https://github.com/basshelal/Wudooh/blob/master/pictures/Without.PNG)
 
 With Wudooh:
-![](https://github.com/basshelal/Wudooh/blob/master/pictures/After.PNG)
+![](https://github.com/basshelal/Wudooh/blob/master/pictures/With.PNG)
 
 ## Current Features
 Wudooh will update all Arabic script text across the browser and modify it according 
