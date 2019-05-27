@@ -1,22 +1,21 @@
 # Wudooh (وضوح)
 ![Wudooh Icon](https://github.com/basshelal/Wudooh/blob/master/assets/icon128c.png)
 
-* [Wudooh (وضوح)](#wudooh-)
-    * [Current Features](#current-features)
-        * [On Off Switch](#on-off-switch)
-        * [Change Font](#change-font)
-        * [Change Font Size](#change-font-size)
-        * [Change Line Height](#change-line-height)
-        * [Whitelist](#whitelist)
-        * [Live Updates](#live-updates)
-        * [Safe Editables](#safe-editables)
-    * [Future Features](#future-features)
-    * [Known Issues](#known-issues)
-        * [Quran.com](#qurancom)
-        * [YouTube](#youtube)
-    * [Contributing](#contributing)
-    * [All Fonts](#all-fonts)
-    * [Thanks](#thanks)
+* [Current Features](#current-features)
+    * [On Off Switch](#on-off-switch)
+    * [Change Font](#change-font)
+    * [Change Font Size](#change-font-size)
+    * [Change Line Height](#change-line-height)
+    * [Whitelist](#whitelist)
+    * [Live Updates](#live-updates)
+    * [Safe Editables](#safe-editables)
+* [Future Features](#future-features)
+* [Known Issues](#known-issues)
+    * [Quran.com](#qurancom)
+    * [YouTube](#youtube)
+* [Contributing](#contributing)
+* [All Fonts](#all-fonts)
+* [Thanks](#thanks)
 
 Wudooh (clarity in Arabic and Persian) is a simple chrome extension 
 that makes reading Arabic text clearer and more pleasant.
@@ -27,10 +26,10 @@ This project is based on and is the successor to
  and fixes commonly complained about problems found in Huruf.
 
 Without Wudooh:
-![Before](https://github.com/basshelal/Wudooh/blob/master/pictures/Before.PNG)
+![](https://github.com/basshelal/Wudooh/blob/master/pictures/Before.PNG)
 
 With Wudooh:
-![After](https://github.com/basshelal/Wudooh/blob/master/pictures/After.PNG)
+![](https://github.com/basshelal/Wudooh/blob/master/pictures/After.PNG)
 
 ## Current Features
 Wudooh will update all Arabic script text across the browser and modify it according 
@@ -42,6 +41,9 @@ content with Arabic text will also update and become clearer.
 This is not just for Arabic, but for any Arabic script, meaning this can work 
 for Persian, Urdu and any other 
 [Arabic script language](https://en.wikipedia.org/wiki/Arabic_script).
+
+Wudooh popup:
+![](https://github.com/basshelal/Wudooh/blob/master/pictures/Wudooh.PNG)
 
 ### On Off Switch
 
@@ -56,6 +58,15 @@ Calibri and Times New Roman. The user can also choose the no-font font (lol wut)
 this will not change the font of the text.
 
 A list of all currently supported fonts can be found [here](#all-fonts).
+
+Nastaliq fonts are supported:
+![](https://github.com/basshelal/Wudooh/blob/master/pictures/Urdu.PNG)
+
+Without Wudooh:
+![](https://github.com/basshelal/Wudooh/blob/master/pictures/ImranKhanBefore.PNG)
+
+With Wudooh:
+![](https://github.com/basshelal/Wudooh/blob/master/pictures/ImranKhanAfter.PNG)
 
 ### Change Font Size
 
@@ -75,6 +86,9 @@ Wudooh allows the user to whitelist domains from being clarified. This will make
 any page on that domain. This is useful for websites that render text differently such as 
 Quran.com or websites with already clear Arabic text.
 
+Quran.com whitelisted:
+![](https://github.com/basshelal/Wudooh/blob/master/pictures/Whitelisted.PNG)
+
 ### Live Updates
 
 All Arabic script text will be updated by Wudooh, including newly loaded dynamic text such as 
@@ -85,10 +99,16 @@ change and line height change. This means that as the user updates those options
 in all tabs will update to match those new settings. It is still recommended to refresh the page 
 however, as some empty spacing may be different.
 
+YouTube comments clarified by Wudooh, using Noto Sans Arabic font:
+![](https://github.com/basshelal/Wudooh/blob/master/pictures/YoutubeComments.gif)
+
 ### Safe Editables
 
 Wudooh will ignore any text in editable fields such as text areas, search boxes and others. 
 This was a major problem in Huruf that has been solved in Wudooh.
+
+Wudooh safely ignores editable fields:
+![](https://github.com/basshelal/Wudooh/blob/master/pictures/Editables.PNG)
 
 ## Future Features
 * ~~Live text updates as options are updated~~ Done!
@@ -103,11 +123,11 @@ This was a major problem in Huruf that has been solved in Wudooh.
 [quran.com](https://quran.com/) uses different character encodings than usual, to fix this,
  whitelist quran.com or turn off Wudooh while using quran.com.
  
-With Wudooh:
-![With](https://github.com/basshelal/Wudooh/blob/master/pictures/QuranWith.PNG)
+Quran.com with Wudooh:
+![](https://github.com/basshelal/Wudooh/blob/master/pictures/Quran.PNG)
 
-Without Wudooh:
-![Without](https://github.com/basshelal/Wudooh/blob/master/pictures/QuranWithout.PNG)
+Quran.com whitelisted:
+![](https://github.com/basshelal/Wudooh/blob/master/pictures/Whitelisted.PNG)
  
 ### YouTube
 
@@ -116,9 +136,21 @@ YouTube causes a few problems with this extension, but a simple page refresh wil
 Generally speaking, going from a page with updated Arabic text to another page will cause some problems.
 A page refresh will always fix this issue.
 
+Initial page in Arabic:
+![](https://github.com/basshelal/Wudooh/blob/master/pictures/Youtube1.PNG)
+
+After visiting another playlist that contains no Arabic:
+![](https://github.com/basshelal/Wudooh/blob/master/pictures/Youtube2.PNG)
+
+After playing Arabic videos after another, the text circled in red is the correct title of the video,
+note it is not clarified, the clarified text on the right is from the previous video:
+![](https://github.com/basshelal/Wudooh/blob/master/pictures/Youtube3.PNG)
+
+All of these problems can be fixed by a page refresh.
+
 ## Contributing
 
-This project is open source and I am accepting pull requests. The code is well documented 
+This project is fully open source and I am accepting pull requests. The code is well documented 
 and commented and should be easy to understand.
 
 All new code must be in TypeScript, with strong typing and be well documented and commented 
@@ -128,7 +160,7 @@ I personally recommend [JetBrains WebStorm](https://www.jetbrains.com/webstorm/)
 
 ## All Fonts
 
-All fonts used by Wudooh are open source.
+All fonts used by Wudooh are open source but belong to their respective owners. I own none of these fonts.
 
 * Droid Arabic Naskh
 * Noto Naskh Arabic
