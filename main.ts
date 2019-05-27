@@ -122,11 +122,19 @@ function updateNode(node: Node, textSize: number, lineHeight: number, font: stri
     if (node.nodeValue) {
         let newSize = textSize / 100;
         let newHeight = lineHeight / 100;
-        let newHTML = "<span class='ar'' style='" +
-            "font-size:" + newSize + "em;" +
-            "line-height:" + newHeight + "em;" +
-            "font-family:" + "\"" + font + "\"" + "," + "sans-serif;" +
-            "'>$&</span>";
+        let newHTML: string;
+        if (font === "Original") {
+            newHTML = "<span class='ar'' style='" +
+                "font-size:" + newSize + "em;" +
+                "line-height:" + newHeight + "em;" +
+                "'>$&</span>";
+        } else {
+            newHTML = "<span class='ar'' style='" +
+                "font-size:" + newSize + "em;" +
+                "line-height:" + newHeight + "em;" +
+                "font-family:" + "\"" + font + "\"" + "," + "sans-serif;" +
+                "'>$&</span>";
+        }
         let text: string = node.nodeValue.replace(arabicRegEx, newHTML);
         setNodeHtml(node, text);
     }

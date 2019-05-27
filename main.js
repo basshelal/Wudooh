@@ -70,7 +70,6 @@ function setNodeHtml(node, html) {
     }
     parent.removeChild(node);
 }
-
 /**
  * Checks whether the passed in node is editable or not.
  * An editable node is one that returns true to isContentEditable or has a tag name as
@@ -101,11 +100,19 @@ function updateNode(node, textSize, lineHeight, font) {
     if (node.nodeValue) {
         var newSize = textSize / 100;
         var newHeight = lineHeight / 100;
-        var newHTML = "<span class='ar'' style='" +
-            "font-size:" + newSize + "em;" +
-            "line-height:" + newHeight + "em;" +
-            "font-family:" + "\"" + font + "\"" + "," + "sans-serif;" +
-            "'>$&</span>";
+        var newHTML = void 0;
+        if (font === "Original") {
+            newHTML = "<span class='ar'' style='" +
+                "font-size:" + newSize + "em;" +
+                "line-height:" + newHeight + "em;" +
+                "'>$&</span>";
+        } else {
+            newHTML = "<span class='ar'' style='" +
+                "font-size:" + newSize + "em;" +
+                "line-height:" + newHeight + "em;" +
+                "font-family:" + "\"" + font + "\"" + "," + "sans-serif;" +
+                "'>$&</span>";
+        }
         var text = node.nodeValue.replace(arabicRegEx, newHTML);
         setNodeHtml(node, text);
     }

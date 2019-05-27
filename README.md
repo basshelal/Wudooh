@@ -34,6 +34,7 @@ content with Arabic text will also update and become clearer.
 * ~~Live text updates as options are updated~~ Done!
 * ~~More font options~~ Done! Including Urdu font
 * ~~Whitelist or exempt websites~~ Done! Doesn't look too pretty but it works well!
+* Custom fonts added by users, this may or may not be possible
 
 ## Known Issues
 
