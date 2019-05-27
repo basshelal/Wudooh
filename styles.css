@@ -49,6 +49,7 @@
     src: local('Cairo'), local('Cairo-Regular'), url(https://fonts.gstatic.com/s/cairo/v5/SLXGc1nY6HkvalIkTpu0xg.woff2) format('woff2');
     unicode-range: U+0600-06FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE80-FEFC;
 }
+
 /*endregion Cairo*/
 
 /*region Lemonada*/
@@ -84,6 +85,7 @@
     src: local('Tajawal'), local('Tajawal-Regular'), url(https://fonts.gstatic.com/s/tajawal/v2/Iura6YBj_oCad4k1nzSBC45I.woff2) format('woff2');
     unicode-range: U+0600-06FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE80-FEFC;
 }
+
 /*endregion Tajawal*/
 
 /*region Changa*/
@@ -119,6 +121,7 @@
     src: local('Lateef'), url(https://fonts.gstatic.com/s/lateef/v14/hESw6XVnNCxEvkb8pB2FVo8.woff2) format('woff2');
     unicode-range: U+0600-06FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE80-FEFC;
 }
+
 /*endregion Lateef*/
 
 /*region Mada*/
@@ -130,6 +133,7 @@
     src: local('Mada Regular'), local('Mada-Regular'), url(https://fonts.gstatic.com/s/mada/v7/7Auwp_0qnzeSfTfGLRrX.woff2) format('woff2');
     unicode-range: U+0600-06FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE80-FEFC;
 }
+
 /*endregion Mada*/
 
 /*region Markazi Text*/
@@ -141,6 +145,7 @@
     src: url(https://fonts.gstatic.com/s/markazitext/v5/sykh-ydym6AtQaiEtX7yhqb_rV1k_81ZVYYZtfSQf4EvBNkm.woff2) format('woff2');
     unicode-range: U+0600-06FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE80-FEFC;
 }
+
 /*endregion Markazi Text*/
 
 /*region Mirza*/
@@ -152,6 +157,7 @@
     src: local('Mirza Regular'), local('Mirza-Regular'), url(https://fonts.gstatic.com/s/mirza/v6/co3ImWlikiN5EtrfIsaAsg.woff2) format('woff2');
     unicode-range: U+0600-06FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE80-FEFC;
 }
+
 /*endregion Mirza*/
 
 /*region Harmattan*/
@@ -163,6 +169,7 @@
     src: local('Harmattan'), local('Harmattan-Regular'), url(https://fonts.gstatic.com/s/harmattan/v5/goksH6L2DkFvVvRp9XpjSUqioP0.woff2) format('woff2');
     unicode-range: U+0600-06FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE80-FEFC;
 }
+
 /*endregion Harmattan*/
 
 /*region Rakkas*/
@@ -174,6 +181,7 @@
     src: local('Rakkas Regular'), local('Rakkas-Regular'), url(https://fonts.gstatic.com/s/rakkas/v6/Qw3cZQlNHiblL3jPlNFOCeM.woff2) format('woff2');
     unicode-range: U+0600-06FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE80-FEFC;
 }
+
 /*endregion Rakkas*/
 
 /*region Katibeh*/
@@ -185,6 +193,7 @@
     src: local('Katibeh-Regular'), url(https://fonts.gstatic.com/s/katibeh/v6/ZGjXol5MQJog4bxDWC9bVQNd.woff2) format('woff2');
     unicode-range: U+0600-06FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE80-FEFC;
 }
+
 /*endregion Katibeh*/
 
 /*region Jomhuria*/
@@ -196,8 +205,8 @@
     src: local('Jomhuria'), local('Jomhuria-Regular'), url(https://fonts.gstatic.com/s/jomhuria/v6/Dxxp8j-TMXf-llKur1b3OuCrCw.woff2) format('woff2');
     unicode-range: U+0600-06FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE80-FEFC;
 }
+
 /*endregion Jomhuria*/
 
 [class="ar"] {
-    font-family: "Droid Arabic Naskh", sans-serif;
 }

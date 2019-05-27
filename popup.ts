@@ -204,6 +204,9 @@ function toggleWhitelist() {
     });
 }
 
+/**
+ * Add all listeners to the UI elements
+ */
 function addListeners() {
     // Get options when the popup.html document is loaded
     document.addEventListener("DOMContentLoaded", getOptions);

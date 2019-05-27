@@ -145,7 +145,6 @@ function changeFont() {
         updateWudoohFont();
     });
 }
-
 /**
  * Toggles this site's whitelist status, this is only done to the active tab's site.
  * Note that the switch checked means that the site is running and is not whitelisted,
@@ -181,6 +180,10 @@ function toggleWhitelist() {
         });
     });
 }
+
+/**
+ * Add all listeners to the UI elements
+ */
 function addListeners() {
     // Get options when the popup.html document is loaded
     document.addEventListener("DOMContentLoaded", getOptions);

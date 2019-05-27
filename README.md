@@ -1,40 +1,100 @@
 # Wudooh (وضوح)
 ![Wudooh Icon](https://github.com/basshelal/Wudooh/blob/master/assets/icon128c.png)
 
+* [Wudooh (وضوح)](#wudooh-)
+    * [Current Features](#current-features)
+        * [On Off Switch](#on-off-switch)
+        * [Change Font](#change-font)
+        * [Change Font Size](#change-font-size)
+        * [Change Line Height](#change-line-height)
+        * [Whitelist](#whitelist)
+        * [Live Updates](#live-updates)
+        * [Safe Editables](#safe-editables)
+    * [Future Features](#future-features)
+    * [Known Issues](#known-issues)
+        * [Quran.com](#qurancom)
+        * [YouTube](#youtube)
+    * [Contributing](#contributing)
+    * [All Fonts](#all-fonts)
+    * [Thanks](#thanks)
+
 Wudooh (clarity in Arabic and Persian) is a simple chrome extension 
-that makes reading Arabic text clearer and easier.
+that makes reading Arabic text clearer and more pleasant.
 
-Note that this project is still a work in progress.
+This project is based on and is the successor to
+ [Jackson Petty's](https://github.com/jopetty) 
+ [Huruf](https://github.com/jopetty/Huruf). Wudooh adds many more features 
+ and fixes commonly complained about problems found in Huruf.
 
-This project is based on [Jackson Petty's](https://github.com/jopetty) 
-[Huruf](https://github.com/jopetty/Huruf).
-
-Before:
+Without Wudooh:
 ![Before](https://github.com/basshelal/Wudooh/blob/master/pictures/Before.PNG)
 
-After:
+With Wudooh:
 ![After](https://github.com/basshelal/Wudooh/blob/master/pictures/After.PNG)
 
 ## Current Features
-Wudooh will find any Arabic script text and update it to be in the more readable
-Droid Arabic Naskh font as well as many other fonts such as Urdu Typesetting,
-Kufi, Traditional and more.
+Wudooh will update all Arabic script text across the browser and modify it according 
+to the user's options.
+
+Wudooh will do this automatically to any Arabic text, meaning even newly loaded 
+content with Arabic text will also update and become clearer.
 
 This is not just for Arabic, but for any Arabic script, meaning this can work 
 for Persian, Urdu and any other 
 [Arabic script language](https://en.wikipedia.org/wiki/Arabic_script).
 
-It will also update the text's size and line height to the user's choice ranging 
-from 100% to 200% larger.
+### On Off Switch
 
-Wudooh will do this automatically to any Arabic text, meaning even newly loaded 
-content with Arabic text will also update and become clearer.
+Wudooh allows the user to turn on or off the extension using a quick toggle switch.
+A small feature, but a useful one that was requested in Huruf.
+
+### Change Font
+
+Wudooh gives the user 35 font choices to choose from, this includes Naskh fonts,
+Ruqaa fonts, Nastaliq fonts and many more. This also includes default fonts such as 
+Calibri and Times New Roman. The user can also choose the no-font font (lol wut), 
+this will not change the font of the text.
+
+A list of all currently supported fonts can be found [here](#all-fonts).
+
+### Change Font Size
+
+Wudooh allows the user to change the size of the font from 100% (no change) to 
+200% larger. This will increase the scale of the fonts meaning the ratios between sizes
+will remain the same.
+
+### Change Line Height
+
+Wudooh allows the user to change the line height of Arabic text from 100% (no change) to 
+200% larger. This goes well with the font size increase as the Arabic script contains many
+elements that go above and below the centre of the line.
+
+### Whitelist
+
+Wudooh allows the user to whitelist domains from being clarified. This will make Wudooh ignore
+any page on that domain. This is useful for websites that render text differently such as 
+Quran.com or websites with already clear Arabic text.
+
+### Live Updates
+
+All Arabic script text will be updated by Wudooh, including newly loaded dynamic text such as 
+from YouTube comments and other social media websites. Make Arabic Text Clear (Again?)!
+
+Almost all option changes trigger live updates, this includes font change, font size 
+change and line height change. This means that as the user updates those options all Arabic text
+in all tabs will update to match those new settings. It is still recommended to refresh the page 
+however, as some empty spacing may be different.
+
+### Safe Editables
+
+Wudooh will ignore any text in editable fields such as text areas, search boxes and others. 
+This was a major problem in Huruf that has been solved in Wudooh.
 
 ## Future Features
 * ~~Live text updates as options are updated~~ Done!
-* ~~More font options~~ Done! Including Urdu font
-* ~~Whitelist or exempt websites~~ Done! Doesn't look too pretty but it works well!
-* Custom fonts added by users, this may or may not be possible
+* ~~More font options~~ Done! Including Urdu fonts!
+* ~~Whitelist or exempt websites~~ Done!
+* Custom fonts added by users? this may or may not be possible
 
 ## Known Issues
 
@@ -56,10 +116,57 @@ YouTube causes a few problems with this extension, but a simple page refresh wil
 Generally speaking, going from a page with updated Arabic text to another page will cause some problems.
 A page refresh will always fix this issue.
 
-### Pre-filled Input Fields
+## Contributing
 
-Wudooh will erase any Arabic text in pre-filled input fields,
-this includes even your own input fields if you leave the page for a long time.
+This project is open source and I am accepting pull requests. The code is well documented 
+and commented and should be easy to understand.
 
-This is a problem I am actively working on fixing. 
-Until then however, it is advised to turn off Wudooh while using Arabic text in input fields.
+All new code must be in TypeScript, with strong typing and be well documented and commented 
+and structured.
+
+I personally recommend [JetBrains WebStorm](https://www.jetbrains.com/webstorm/).
+
+## All Fonts
+
+All fonts used by Wudooh are open source.
+
+* Droid Arabic Naskh
+* Noto Naskh Arabic
+* Arabic Typesetting
+* Simplified Arabic
+* Traditional Arabic
+* Noto Sans Arabic
+* Noto Kufi Arabic
+* Aldhabi
+* Amiri
+* Amiri Quran
+* Andalus
+* Reem Kufi Regular
+* Scheherazade
+* Urdu Typesetting
+* Noto Nastaliq Urdu
+* Aref Ruqaa
+* Cairo
+* Lemonada
+* Lalezar
+* Tajawal
+* Changa
+* El Messiri
+* Lateef
+* Mada
+* Markazi Text
+* Mirza
+* Harmattan
+* Rakkas
+* Katibeh
+* Jomhuria
+* Sans-Serif
+* Times New Roman
+* Arial
+* Calibri
+* Original (No font)
+
+## Thanks
+
+Special thanks to [Jackson Petty](https://github.com/jopetty) for providing the general structure
+and initial code from [Huruf](https://github.com/jopetty/Huruf).
