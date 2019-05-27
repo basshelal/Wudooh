@@ -26,9 +26,11 @@ This project is based on and is the successor to
  and fixes commonly complained about problems found in Huruf.
 
 Without Wudooh:
+
 ![](https://github.com/basshelal/Wudooh/blob/master/pictures/Without.PNG)
 
 With Wudooh:
+
 ![](https://github.com/basshelal/Wudooh/blob/master/pictures/With.PNG)
 
 ## Current Features
@@ -59,13 +61,12 @@ this will not change the font of the text.
 
 A list of all currently supported fonts can be found [here](#all-fonts).
 
-Nastaliq fonts are supported:
-![](https://github.com/basshelal/Wudooh/blob/master/pictures/Urdu.PNG)
-
 Without Wudooh:
+
 ![](https://github.com/basshelal/Wudooh/blob/master/pictures/ImranKhanBefore.PNG)
 
 With Wudooh:
+
 ![](https://github.com/basshelal/Wudooh/blob/master/pictures/ImranKhanAfter.PNG)
 
 ### Change Font Size
@@ -87,6 +88,7 @@ any page on that domain. This is useful for websites that render text differentl
 Quran.com or websites with already clear Arabic text.
 
 Quran.com whitelisted:
+
 ![](https://github.com/basshelal/Wudooh/blob/master/pictures/Whitelisted.PNG)
 
 ### Live Updates
@@ -100,6 +102,7 @@ in all tabs will update to match those new settings. It is still recommended to 
 however, as some empty spacing may be different.
 
 YouTube comments clarified by Wudooh, using Noto Sans Arabic font:
+
 ![](https://github.com/basshelal/Wudooh/blob/master/pictures/YoutubeComments.gif)
 
 ### Safe Editables
@@ -108,6 +111,7 @@ Wudooh will ignore any text in editable fields such as text areas, search boxes 
 This was a major problem in Huruf that has been solved in Wudooh.
 
 Wudooh safely ignores editable fields:
+
 ![](https://github.com/basshelal/Wudooh/blob/master/pictures/Editables.PNG)
 
 ## Future Features
@@ -124,9 +128,11 @@ Wudooh safely ignores editable fields:
  whitelist quran.com or turn off Wudooh while using quran.com.
  
 Quran.com with Wudooh:
+
 ![](https://github.com/basshelal/Wudooh/blob/master/pictures/Quran.PNG)
 
 Quran.com whitelisted:
+
 ![](https://github.com/basshelal/Wudooh/blob/master/pictures/Whitelisted.PNG)
  
 ### YouTube
@@ -137,13 +143,16 @@ Generally speaking, going from a page with updated Arabic text to another page w
 A page refresh will always fix this issue.
 
 Initial page in Arabic:
+
 ![](https://github.com/basshelal/Wudooh/blob/master/pictures/Youtube1.PNG)
 
 After visiting another playlist that contains no Arabic:
+
 ![](https://github.com/basshelal/Wudooh/blob/master/pictures/Youtube2.PNG)
 
 After playing Arabic videos after another, the text circled in red is the correct title of the video,
 note it is not clarified, the clarified text on the right is from the previous video:
+
 ![](https://github.com/basshelal/Wudooh/blob/master/pictures/Youtube3.PNG)
 
 All of these problems can be fixed by a page refresh.
