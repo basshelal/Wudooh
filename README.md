@@ -34,6 +34,7 @@ With Wudooh:
 ![](https://github.com/basshelal/Wudooh/blob/master/pictures/With.PNG)
 
 ## Current Features
+
 Wudooh will update all Arabic script text across the browser and modify it according 
 to the user's options.
 
@@ -116,6 +117,7 @@ Wudooh safely ignores editable fields:
 ![](https://github.com/basshelal/Wudooh/blob/master/pictures/Editables.PNG)
 
 ## Future Features
+
 * ~~Live text updates as options are updated~~ Done!
 * ~~More font options~~ Done! Including Urdu fonts!
 * ~~Whitelist or exempt websites~~ Done!
@@ -165,6 +167,15 @@ and commented and should be easy to understand.
 
 All new code must be in TypeScript, with strong typing and be well documented and commented 
 and structured.
+
+You are also welcome to fork this and use the same code to clarify any other scripts such as CJK.
+Few modifications would need to be made, only the `arabicRegEx` `const` in 
+[`main.ts`](https://github.com/basshelal/Wudooh/blob/master/main.ts)
+ would need to change within the TypeScript code (don't forget to compile to JavaScript). 
+[`popup.html`](https://github.com/basshelal/Wudooh/blob/master/popup.html) and 
+[`styles.css`](https://github.com/basshelal/Wudooh/blob/master/styles.css) would need to be modified 
+to accommodate different fonts and a different UI feel, but generally speaking, few modifications would need
+to be made. You are free to do this and publish it but credit to Wudooh would be greatly appreciated.
 
 I personally recommend [JetBrains WebStorm](https://www.jetbrains.com/webstorm/).
 

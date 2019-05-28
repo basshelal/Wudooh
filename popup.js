@@ -180,7 +180,6 @@ function toggleWhitelist() {
         });
     });
 }
-
 /**
  * Add all listeners to the UI elements
  */
