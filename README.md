@@ -20,6 +20,8 @@
 Wudooh (clarity in Arabic and Persian) is a simple chrome extension 
 that makes reading Arabic text clearer and more pleasant.
 
+[Wudooh in the Chrome Web Store](https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn)
+
 This project is based on and is the successor to
  [Jackson Petty's](https://github.com/jopetty) 
  [Huruf](https://github.com/jopetty/Huruf). Wudooh adds many more features 
