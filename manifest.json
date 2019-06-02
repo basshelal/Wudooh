@@ -9,7 +9,6 @@
     "storage",
     "tabs"
   ],
-  "options_page": "popup.html",
   "browser_action": {
     "default_icon": "/assets/icon128c.png",
     "default_popup": "popup.html"
