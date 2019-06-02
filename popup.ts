@@ -77,9 +77,10 @@ function updateAllText(close: boolean = true) {
                     chrome.tabs.sendMessage(tab.id, message);
 
                     // close the popup after 400ms so that it's not disturbingly fast and ugly, only aesthetic
-                    setTimeout(() => {
+                    // stop this for now
+                    /*setTimeout(() => {
                         if (close) window.close()
-                    }, 400);
+                    }, 400);*/
                 });
             });
         });

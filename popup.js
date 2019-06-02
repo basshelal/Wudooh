@@ -65,10 +65,10 @@ function updateAllText(close) {
                     };
                     chrome.tabs.sendMessage(tab.id, message);
                     // close the popup after 400ms so that it's not disturbingly fast and ugly, only aesthetic
-                    setTimeout(function () {
-                        if (close)
-                            window.close();
-                    }, 400);
+                    // stop this for now
+                    /*setTimeout(() => {
+                        if (close) window.close()
+                    }, 400);*/
                 });
             });
         });
