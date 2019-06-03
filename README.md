@@ -17,7 +17,7 @@
 * [All Fonts](#all-fonts)
 * [Thanks](#thanks)
 
-Wudooh (clarity in Arabic and Persian) is a simple chrome extension 
+Wudooh (clarity in Arabic and Persian) is a simple chrome and firefox extension 
 that makes reading Arabic text clearer and more pleasant.
 
 [Wudooh in the Chrome Web Store](https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn)
