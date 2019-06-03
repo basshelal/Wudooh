@@ -1,5 +1,6 @@
-///<reference path="../../.WebStorm2019.1/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
-import Tab = chrome.tabs.Tab;
+///<reference path="../../../.WebStorm2019.1/config/javascript/extLibs/global-types/node_modules/@types/firefox-webext-browser/index.d.ts"/>
+
+import Tab = browser.tabs.Tab;
 
 /**
  * This script is used by the extension's popup (popup.html) for options
@@ -41,7 +42,7 @@ Array.prototype.contains = function <T>(element: T): boolean {
  * Updates the font of the Arabic Wudooh heading to match the font selected by the user
  */
 function updateWudoohFont() {
-    chrome.storage.sync.get("font", (fromStorage) => {
+    browser.storage.sync.get("font").then((fromStorage) => {
         document.getElementById("wudooh").style.fontFamily = fromStorage.font;
     });
 }
@@ -58,14 +59,14 @@ function updateAllText(close: boolean = true) {
     // Only update text if this site is checked and is not whitelisted
     if (onOffSwitch.checked && whiteListSwitch.checked) {
 
-        chrome.storage.sync.get(["textSize", "lineHeight", "font"], (fromStorage) => {
+        browser.storage.sync.get(["textSize", "lineHeight", "font"]).then((fromStorage) => {
             // We need the old values to know how much we should change the options in main.ts
             let oldS: number = fromStorage.textSize;
             let oldH: number = fromStorage.lineHeight;
             let font: string = fromStorage.font;
 
             // Send a message to all tabs
-            chrome.tabs.query({}, (tabs: Array<Tab>) => {
+            browser.tabs.query({}).then((tabs: Array<Tab>) => {
                 tabs.forEach((tab: Tab) => {
                     let message = {
                         oldSize: oldS,
@@ -74,7 +75,7 @@ function updateAllText(close: boolean = true) {
                         newHeight: parseInt(height.value),
                         font: font
                     };
-                    chrome.tabs.sendMessage(tab.id, message);
+                    browser.tabs.sendMessage(tab.id, message);
 
                     // close the popup after 400ms so that it's not disturbingly fast and ugly, only aesthetic
                     // stop this for now
@@ -87,7 +88,7 @@ function updateAllText(close: boolean = true) {
     }
 
     // Save options at the end, even if the above if statement was false
-    chrome.storage.sync.set({
+    browser.storage.sync.set({
         textSize: parseInt(size.value),
         lineHeight: parseInt(height.value),
         onOff: onOffSwitch.checked,
@@ -102,13 +103,13 @@ function updateAllText(close: boolean = true) {
  */
 function getOptions() {
 
-    chrome.storage.sync.get({
+    browser.storage.sync.get({
         textSize: '115',
         lineHeight: '125',
         onOff: true,
         font: "Droid Arabic Naskh",
         whitelisted: []
-    }, (fromStorage) => {
+    }).then((fromStorage) => {
         size.value = fromStorage.textSize;
         sizeValue.innerHTML = fromStorage.textSize + '%';
         height.value = fromStorage.lineHeight;
@@ -119,7 +120,7 @@ function getOptions() {
         updateWudoohFont();
 
         // update HTML to say whether running on this site or whitelisted
-        chrome.tabs.query({active: true, currentWindow: true}, (tabs: Array<Tab>) => {
+        browser.tabs.query({active: true, currentWindow: true}).then((tabs: Array<Tab>) => {
             let running = !(fromStorage.whitelisted as Array<string>).contains(
                 new URL(tabs[0].url).hostname
             );
@@ -149,7 +150,7 @@ function updateHeightHTML() {
  * Toggles the on off switch, this will update all text if the switch is turned on
  */
 function toggleOnOff() {
-    chrome.storage.sync.set({
+    browser.storage.sync.set({
         onOff: onOffSwitch.checked
     });
     if (onOffSwitch.checked) updateAllText();
@@ -159,9 +160,9 @@ function toggleOnOff() {
  * Changes the font, this will update all text and update the Wudooh header
  */
 function changeFont() {
-    chrome.storage.sync.set({
+    browser.storage.sync.set({
         font: fontSelect.value,
-    }, () => {
+    }).then(() => {
         updateAllText();
         updateWudoohFont();
     });
@@ -178,11 +179,11 @@ function changeFont() {
 function toggleWhitelist() {
 
     // This only requires this current tab
-    chrome.tabs.query({active: true, currentWindow: true}, (tabs: Array<Tab>) => {
+    browser.tabs.query({active: true, currentWindow: true}).then((tabs: Array<Tab>) => {
         // Get the url we are on right now
         let url = new URL(tabs[0].url).hostname;
 
-        chrome.storage.sync.get({"whitelisted": []}, (fromStorage) => {
+        browser.storage.sync.get({"whitelisted": []}).then((fromStorage) => {
             // Get the array of all whitelisted websites
             let whitelisted: Array<string> = fromStorage.whitelisted;
 
@@ -198,7 +199,7 @@ function toggleWhitelist() {
             }
 
             // Set the array of all whitelisted websites in storage
-            chrome.storage.sync.set({
+            browser.storage.sync.set({
                 whitelisted: whitelisted
             });
         });

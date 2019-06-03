@@ -9,5 +9,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="@types/chrome" level="application" />
+    <orderEntry type="library" name="@types/firefox-webext-browser" level="application" />
   </component>
 </module>

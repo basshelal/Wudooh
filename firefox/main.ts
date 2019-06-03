@@ -1,4 +1,4 @@
-///<reference path="../../.WebStorm2019.1/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
+///<reference path="../../../.WebStorm2019.1/config/javascript/extLibs/global-types/node_modules/@types/firefox-webext-browser/index.d.ts"/>
 
 /**
  * This is the main script that reads the document and updates any Arabic script text
@@ -199,7 +199,7 @@ function startObserver(textSize: number, lineHeight: number, font: string = "Dro
  * Then starts an observer with those same options to update any new text that will come
  * This only happens if the on off switch is on and the site is not whitelisted
  */
-chrome.storage.sync.get(["textSize", "lineHeight", "onOff", "font", "whitelisted"], (fromStorage) => {
+browser.storage.sync.get(["textSize", "lineHeight", "onOff", "font", "whitelisted"]).then((fromStorage) => {
     let textSize: number = fromStorage.textSize;
     let lineHeight: number = fromStorage.lineHeight;
     let checked: boolean = fromStorage.onOff;
@@ -222,7 +222,7 @@ chrome.storage.sync.get(["textSize", "lineHeight", "onOff", "font", "whitelisted
  * The check whether the switch is on or if this site is whitelisted is not done here but at the
  * sender's sendMessage call
  */
-chrome.runtime.onMessage.addListener(function (message) {
+browser.runtime.onMessage.addListener(function (message) {
     let newSize = 100 * (message.newSize / message.oldSize);
     let newHeight = 100 * (message.newHeight / message.oldHeight);
     updateAll(newSize, newHeight, message.font);

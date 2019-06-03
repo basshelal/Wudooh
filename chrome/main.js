@@ -1,4 +1,4 @@
-///<reference path="../../.WebStorm2019.1/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
+///<reference path="../../../.WebStorm2019.1/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
 /**
  * This is the main script that reads the document and updates any Arabic script text
  */
