@@ -1,5 +1,5 @@
 # Wudooh (وضوح)
-![Wudooh Icon](https://github.com/basshelal/Wudooh/blob/master/assets/icon128c.png)
+![Wudooh Icon](https://github.com/basshelal/Wudooh/blob/master/chrome/assets/icon136c.png)
 
 * [Current Features](#current-features)
     * [On Off Switch](#on-off-switch)
