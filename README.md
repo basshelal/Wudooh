@@ -17,6 +17,14 @@
 * [All Fonts](#all-fonts)
 * [Thanks](#thanks)
 
+![Chrome Web Store](https://img.shields.io/chrome-web-store/v/nigfaloeeeakmmgndbdcijjegolpjfhn.svg)
+![Chrome Web Store](https://img.shields.io/chrome-web-store/users/nigfaloeeeakmmgndbdcijjegolpjfhn.svg)
+![Chrome Web Store](https://img.shields.io/chrome-web-store/stars/nigfaloeeeakmmgndbdcijjegolpjfhn.svg)
+![Chrome Web Store](https://img.shields.io/chrome-web-store/rating-count/nigfaloeeeakmmgndbdcijjegolpjfhn.svg)
+
+![Mozilla Add-on](https://img.shields.io/amo/v/wudooh.svg)
+![Mozilla Add-on](https://img.shields.io/amo/users/wudooh.svg)
+
 Wudooh (clarity in Arabic and Persian) is a simple chrome and firefox extension 
 that makes reading Arabic text clearer and more pleasant.
 
