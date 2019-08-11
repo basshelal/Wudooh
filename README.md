@@ -1,5 +1,5 @@
-# Wudooh (وضوح)
-![Wudooh Icon](https://github.com/basshelal/Wudooh/blob/master/chrome/assets/icon136c.png)
+# Wudooh وضوح
+![Wudooh Icon](https://github.com/basshelal/Wudooh/blob/master/pictures/MarqueePromo.png)
 
 * [Current Features](#current-features)
     * [On Off Switch](#on-off-switch)
@@ -25,8 +25,8 @@
 ![Mozilla Add-on](https://img.shields.io/amo/v/wudooh.svg)
 ![Mozilla Add-on](https://img.shields.io/amo/users/wudooh.svg)
 
-Wudooh (clarity in Arabic and Persian) is a simple chrome and firefox extension 
-that makes reading Arabic text clearer and more pleasant.
+Wudooh [(clarity in Arabic and Persian)](https://en.wiktionary.org/wiki/%D9%88%D8%B6%D9%88%D8%AD)
+ is a simple chrome and firefox extension that makes reading Arabic text clearer and more pleasant.
 
 [Wudooh in the Chrome Web Store](https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn)
 

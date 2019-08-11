@@ -26,12 +26,10 @@
         "<all_urls>"
       ],
       "js": [
-        "main.js",
-        "mdl/material.js"
+        "main.js"
       ],
       "css": [
-        "styles.css",
-        "mdl/material.css"
+        "styles.css"
       ]
     }
   ],
