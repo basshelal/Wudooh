@@ -130,10 +130,11 @@ Wudooh safely ignores editable fields:
 
 ## Future Features
 
+* Custom fonts added by user
+* Export and import settings (including whitelist) to be used across browsers
 * ~~Live text updates as options are updated~~ Done!
 * ~~More font options~~ Done! Including Urdu fonts!
 * ~~Whitelist or exempt websites~~ Done!
-* Custom fonts added by users? this may or may not be possible
 
 ## Known Issues
 
