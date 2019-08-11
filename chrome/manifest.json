@@ -7,6 +7,8 @@
   "minimum_chrome_version": "38",
   "permissions": [
     "storage",
+    "webRequest",
+    "<all_urls>",
     "tabs"
   ],
   "browser_action": {
@@ -24,10 +26,12 @@
         "<all_urls>"
       ],
       "js": [
-        "main.js"
+        "main.js",
+        "mdl/material.js"
       ],
       "css": [
-        "styles.css"
+        "styles.css",
+        "mdl/material.css"
       ]
     }
   ],
@@ -35,7 +39,7 @@
     "scripts": [
       "background.js"
     ],
-    "persistent": false
+    "persistent": true
   },
   "web_accessible_resources": [
     "main.js",
