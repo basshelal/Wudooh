@@ -1,5 +1,5 @@
 # Wudooh وضوح
-![Wudooh Icon](https://github.com/basshelal/Wudooh/blob/master/pictures/LargePromo.png)
+![Wudooh Icon](https://github.com/basshelal/Wudooh/blob/master/pictures/SmallPromo.png)
 
 * [Current Features](#current-features)
     * [On Off Switch](#on-off-switch)
