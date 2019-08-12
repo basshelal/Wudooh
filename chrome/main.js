@@ -28,7 +28,6 @@ var keys = [
 var CustomSettings = /** @class */ (function () {
     function CustomSettings() {
     }
-
     return CustomSettings;
 }());
 /** The observer used in {@linkcode startObserver} to dynamically update any newly added Nodes */
@@ -87,6 +86,7 @@ function getArabicTextNodesIn(rootNode) {
  */
 function setNodeHtml(node, html) {
     var parent = node.parentNode;
+    // return if parent or node are null
     if (!parent || !node)
         return;
     // don't change anything if this node or its parent are editable
@@ -219,7 +219,7 @@ chrome.storage.sync.get(keys, function (fromStorage) {
     // Only do anything if the switch is on and this site is not whitelisted
     if (isOn && !isWhitelisted) {
         // If it's a custom site then change the textSize, lineHeight and font
-        if (!customSite) {
+        if (customSite) {
             textSize = customSite.textSize;
             lineHeight = customSite.lineHeight;
             font = customSite.font;
@@ -246,6 +246,6 @@ chrome.runtime.onMessage.addListener(function (message) {
 // TODO remove this later!
 chrome.storage.sync.get(null, function (items) {
     keys.forEach(function (key) {
-        // console.log(key + " : " + items[key]);
+        console.log(key + " : " + items[key]);
     });
 });

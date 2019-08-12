@@ -114,6 +114,7 @@ function getArabicTextNodesIn(rootNode: Node): Array<Node> {
 function setNodeHtml(node: Node, html: string) {
     let parent: Node = node.parentNode;
 
+    // return if parent or node are null
     if (!parent || !node) return;
     // don't change anything if this node or its parent are editable
     if (isEditable(parent) || isEditable(node)) return;
@@ -259,7 +260,7 @@ chrome.storage.sync.get(keys, (fromStorage) => {
     if (isOn && !isWhitelisted) {
 
         // If it's a custom site then change the textSize, lineHeight and font
-        if (!customSite) {
+        if (customSite) {
             textSize = customSite.textSize;
             lineHeight = customSite.lineHeight;
             font = customSite.font;
@@ -289,6 +290,6 @@ chrome.runtime.onMessage.addListener((message) => {
 // TODO remove this later!
 chrome.storage.sync.get(null, (items) => {
     keys.forEach((key) => {
-        // console.log(key + " : " + items[key]);
+        console.log(key + " : " + items[key]);
     })
 });
