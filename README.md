@@ -1,4 +1,12 @@
 # Wudooh وضوح
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/nigfaloeeeakmmgndbdcijjegolpjfhn.svg)](https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn)
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/users/nigfaloeeeakmmgndbdcijjegolpjfhn.svg)](https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn)
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/stars/nigfaloeeeakmmgndbdcijjegolpjfhn.svg)](https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn)
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/rating-count/nigfaloeeeakmmgndbdcijjegolpjfhn.svg)](https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn)
+
+[![Mozilla Add-on](https://img.shields.io/amo/v/wudooh.svg)](https://addons.mozilla.org/en-US/firefox/addon/wudooh/)
+[![Mozilla Add-on](https://img.shields.io/amo/users/wudooh.svg)](https://addons.mozilla.org/en-US/firefox/addon/wudooh/)
+
 ![Wudooh Icon](https://github.com/basshelal/Wudooh/blob/master/pictures/GitHubPromo.png)
 
 * [Current Features](#current-features)
@@ -17,15 +25,7 @@
 * [All Fonts](#all-fonts)
 * [Thanks](#thanks)
 
-![Chrome Web Store](https://img.shields.io/chrome-web-store/v/nigfaloeeeakmmgndbdcijjegolpjfhn.svg)
-![Chrome Web Store](https://img.shields.io/chrome-web-store/users/nigfaloeeeakmmgndbdcijjegolpjfhn.svg)
-![Chrome Web Store](https://img.shields.io/chrome-web-store/stars/nigfaloeeeakmmgndbdcijjegolpjfhn.svg)
-![Chrome Web Store](https://img.shields.io/chrome-web-store/rating-count/nigfaloeeeakmmgndbdcijjegolpjfhn.svg)
-
-![Mozilla Add-on](https://img.shields.io/amo/v/wudooh.svg)
-![Mozilla Add-on](https://img.shields.io/amo/users/wudooh.svg)
-
-![Wudooh Icon](https://github.com/basshelal/Wudooh/blob/master/pictures/Testimonial.png)
+![User Testimonial](https://github.com/basshelal/Wudooh/blob/master/pictures/Testimonial.png)
 
 Wudooh [(clarity in Arabic and Persian)](https://en.wiktionary.org/wiki/%D9%88%D8%B6%D9%88%D8%AD)
  is a simple chrome and firefox extension that makes reading Arabic text clearer and more pleasant.
