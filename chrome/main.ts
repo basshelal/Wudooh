@@ -5,16 +5,48 @@
  */
 
 // TODO good thing to add is to allow for symbols and numbers between Arabic or at the end or beginning of it
-// like hashtags # and numbers and exclamation marks etc
+//  like hashtags # and numbers and exclamation marks etc
 const arabicRegEx = new RegExp('([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF]+(' +
     ' [\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\W\d]+)*)', 'g');
 
-const keys = ["textSize", "lineHeight", "onOff", "font", "whitelisted"];
+/** The keys of the {@linkcode chrome.storage.sync} */
+const keys = [
+    /** The font size percent, between 100 and 200 */
+    "textSize",
+    /** The line height percent, between 100 and 200 */
+    "lineHeight",
+    /** Determines whether the extension is on or off, true is on */
+    "onOff",
+    /** The font to update to, this is a string */
+    "font",
+    /** The array of strings of whitelisted websites, this contains their hostnames in the format example.com */
+    "whitelisted",
+    /** The array of {@linkcode CustomSettings} that represents the sites with custom settings */
+    "customSettings"
+];
 
+/**
+ * Represents a site that uses different settings from the default settings
+ * The settings themselves may be the same as the default but they will change independently
+ */
+class CustomSettings {
+    /** The hostname url of this web site, this will always be in the form of example.com */
+    url: string;
+    /** The font size to use on this site */
+    textSize: number;
+    /** The line height to use on this site */
+    lineHeight: number;
+    /** The font to use on this site */
+    font: string;
+}
+
+/** The observer used in {@linkcode startObserver} to dynamically update any newly added Nodes */
 let observer: MutationObserver;
 
 interface Array<T> {
     contains(element: T): boolean;
+
+    findFirst(predicate: (element: T, index: number) => boolean): T | null;
 }
 
 /**
@@ -23,14 +55,21 @@ interface Array<T> {
  * @return true if the element exists in this array, false otherwise
  */
 Array.prototype.contains = function <T>(element: T): boolean {
-    let result = false;
     for (let i = 0; i < this.length; i++) {
         if (element === this[i]) {
-            result = true;
-            break;
+            return true;
         }
     }
-    return result;
+    return false;
+};
+
+Array.prototype.findFirst = function <T>(predicate: (element: T, index: number) => boolean): T | null {
+    for (let i = 0; i < this.length; i++) {
+        if (predicate(this[i], i)) {
+            return this[i];
+        }
+    }
+    return null;
 };
 
 /**
@@ -79,10 +118,10 @@ function setNodeHtml(node: Node, html: string) {
     // don't change anything if this node or its parent are editable
     if (isEditable(parent) || isEditable(node)) return;
 
-    let nextSibling = node.nextSibling;
+    let nextSibling: ChildNode = node.nextSibling;
 
     // the div is temporary and doesn't show up in the html
-    let newElement = document.createElement("div");
+    let newElement: HTMLDivElement = document.createElement("div");
     newElement.innerHTML = html;
 
     while (newElement.firstChild) {
@@ -102,10 +141,10 @@ function setNodeHtml(node: Node, html: string) {
  * @return true if the node is editable and false otherwise
  */
 function isEditable(node: Node): boolean {
-    let element = node as HTMLElement;
+    let element: HTMLElement = node as HTMLElement;
     let nodeName: string = element.nodeName.toLowerCase();
 
-    let editables = ["textarea", "input", "text", "email", "number", "search", "tel", "url", "password"];
+    let editables: Array<string> = ["textarea", "input", "text", "email", "number", "search", "tel", "url", "password"];
 
     return (element.isContentEditable || (element.nodeType === Node.ELEMENT_NODE && editables.contains(nodeName)));
 }
@@ -122,8 +161,8 @@ function isEditable(node: Node): boolean {
  */
 function updateNode(node: Node, textSize: number, lineHeight: number, font: string = "Droid Arabic Naskh") {
     if (node.nodeValue) {
-        let newSize = textSize / 100;
-        let newHeight = lineHeight / 100;
+        let newSize: number = textSize / 100;
+        let newHeight: number = lineHeight / 100;
         let newHTML: string;
         if (font === "Original") {
             newHTML = "<span class='ar'' style='" +
@@ -206,14 +245,25 @@ function startObserver(textSize: number, lineHeight: number, font: string = "Dro
 chrome.storage.sync.get(keys, (fromStorage) => {
     let textSize: number = fromStorage.textSize;
     let lineHeight: number = fromStorage.lineHeight;
-    let checked: boolean = fromStorage.onOff;
+    let isOn: boolean = fromStorage.onOff;
     let font: string = fromStorage.font;
     let whitelisted: Array<string> = fromStorage.whitelisted;
+    let customSettings: Array<CustomSettings> = fromStorage.customSettings;
 
-    let isWhitelisted = whitelisted.contains(new URL(document.URL).hostname);
+    let thisHostname: string = new URL(document.URL).hostname;
+    let isWhitelisted: boolean = whitelisted.contains(thisHostname);
+
+    let customSite: CustomSettings = customSettings.findFirst((custom: CustomSettings) => custom.url === thisHostname);
 
     // Only do anything if the switch is on and this site is not whitelisted
-    if (checked && !isWhitelisted) {
+    if (isOn && !isWhitelisted) {
+
+        // If it's a custom site then change the textSize, lineHeight and font
+        if (!customSite) {
+            textSize = customSite.textSize;
+            lineHeight = customSite.lineHeight;
+            font = customSite.font;
+        }
         updateAll(textSize, lineHeight, font);
         startObserver(textSize, lineHeight, font);
     }
@@ -227,11 +277,12 @@ chrome.storage.sync.get(keys, (fromStorage) => {
  * sender's sendMessage call
  */
 chrome.runtime.onMessage.addListener((message) => {
-    let newSize = 100 * (message.newSize / message.oldSize);
-    let newHeight = 100 * (message.newHeight / message.oldHeight);
+    let newSize: number = 100 * (message.newSize / message.oldSize);
+    let newHeight: number = 100 * (message.newHeight / message.oldHeight);
     updateAll(newSize, newHeight, message.font);
 
     observer.disconnect();
+    observer = null;
     startObserver(newSize, newHeight, message.font);
 });
 
@@ -241,28 +292,3 @@ chrome.storage.sync.get(null, (items) => {
         // console.log(key + " : " + items[key]);
     })
 });
-
-/*
- * TODO draft storage structure
- *
- * textSize: 125,
- * lineHeight: 125,
- * onOff: true,
- * font: Droid Arabic Naskh,
- * whitelisted: google.com,wikipedia.com,youtube.com,
- * overriden: [
- *     {
- *      url: github.com,
- *      textSize: 150,
- *      lineHeight: 150,
- *      font: Traditional Arabic
- *     },
- *     {
- *      url: reddit.com,
- *      textSize: 200,
- *      lineHeight: 200,
- *      font: Noto Nastaliq Urdu
- *     }
- * ]
- *
- */

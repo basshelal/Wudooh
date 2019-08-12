@@ -3,10 +3,35 @@
  * This is the main script that reads the document and updates any Arabic script text
  */
 // TODO good thing to add is to allow for symbols and numbers between Arabic or at the end or beginning of it
-// like hashtags # and numbers and exclamation marks etc
+//  like hashtags # and numbers and exclamation marks etc
 var arabicRegEx = new RegExp('([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF]+(' +
     ' [\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\W\d]+)*)', 'g');
-var keys = ["textSize", "lineHeight", "onOff", "font", "whitelisted"];
+/** The keys of the {@linkcode chrome.storage.sync} */
+var keys = [
+    /** The font size percent, between 100 and 200 */
+    "textSize",
+    /** The line height percent, between 100 and 200 */
+    "lineHeight",
+    /** Determines whether the extension is on or off, true is on */
+    "onOff",
+    /** The font to update to, this is a string */
+    "font",
+    /** The array of strings of whitelisted websites, this contains their hostnames in the format example.com */
+    "whitelisted",
+    /** The array of {@linkcode CustomSettings} that represents the sites with custom settings */
+    "customSettings"
+];
+/**
+ * Represents a site that uses different settings from the default settings
+ * The settings themselves may be the same as the default but they will change independently
+ */
+var CustomSettings = /** @class */ (function () {
+    function CustomSettings() {
+    }
+
+    return CustomSettings;
+}());
+/** The observer used in {@linkcode startObserver} to dynamically update any newly added Nodes */
 var observer;
 /**
  * Extension function for a contains function in an array
@@ -14,14 +39,20 @@ var observer;
  * @return true if the element exists in this array, false otherwise
  */
 Array.prototype.contains = function (element) {
-    var result = false;
     for (var i = 0; i < this.length; i++) {
         if (element === this[i]) {
-            result = true;
-            break;
+            return true;
         }
     }
-    return result;
+    return false;
+};
+Array.prototype.findFirst = function (predicate) {
+    for (var i = 0; i < this.length; i++) {
+        if (predicate(this[i], i)) {
+            return this[i];
+        }
+    }
+    return null;
 };
 /**
  * Returns whether the given node has any Arabic script or not, this is any script that matches arabicRegEx
@@ -176,12 +207,23 @@ function startObserver(textSize, lineHeight, font) {
 chrome.storage.sync.get(keys, function (fromStorage) {
     var textSize = fromStorage.textSize;
     var lineHeight = fromStorage.lineHeight;
-    var checked = fromStorage.onOff;
+    var isOn = fromStorage.onOff;
     var font = fromStorage.font;
     var whitelisted = fromStorage.whitelisted;
-    var isWhitelisted = whitelisted.contains(new URL(document.URL).hostname);
+    var customSettings = fromStorage.customSettings;
+    var thisHostname = new URL(document.URL).hostname;
+    var isWhitelisted = whitelisted.contains(thisHostname);
+    var customSite = customSettings.findFirst(function (custom) {
+        return custom.url === thisHostname;
+    });
     // Only do anything if the switch is on and this site is not whitelisted
-    if (checked && !isWhitelisted) {
+    if (isOn && !isWhitelisted) {
+        // If it's a custom site then change the textSize, lineHeight and font
+        if (!customSite) {
+            textSize = customSite.textSize;
+            lineHeight = customSite.lineHeight;
+            font = customSite.font;
+        }
         updateAll(textSize, lineHeight, font);
         startObserver(textSize, lineHeight, font);
     }
@@ -198,6 +240,7 @@ chrome.runtime.onMessage.addListener(function (message) {
     var newHeight = 100 * (message.newHeight / message.oldHeight);
     updateAll(newSize, newHeight, message.font);
     observer.disconnect();
+    observer = null;
     startObserver(newSize, newHeight, message.font);
 });
 // TODO remove this later!
@@ -206,27 +249,3 @@ chrome.storage.sync.get(null, function (items) {
         // console.log(key + " : " + items[key]);
     });
 });
-/*
- * TODO draft storage structure
- *
- * textSize: 125,
- * lineHeight: 125,
- * onOff: true,
- * font: Droid Arabic Naskh,
- * whitelisted: google.com,wikipedia.com,youtube.com,
- * overriden: [
- *     {
- *      url: github.com,
- *      textSize: 150,
- *      lineHeight: 150,
- *      font: Traditional Arabic
- *     },
- *     {
- *      url: reddit.com,
- *      textSize: 200,
- *      lineHeight: 200,
- *      font: Noto Nastaliq Urdu
- *     }
- * ]
- *
- */ 

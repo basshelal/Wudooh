@@ -11,10 +11,12 @@ const size: HTMLInputElement = document.getElementById("size") as HTMLInputEleme
 const height: HTMLInputElement = document.getElementById("height") as HTMLInputElement;
 const onOffSwitch: HTMLInputElement = document.getElementById("onOffSwitch") as HTMLInputElement;
 const fontSelect: HTMLSelectElement = document.getElementById("font-select") as HTMLSelectElement;
+const overrideSiteSwitch: HTMLInputElement = document.getElementById("overrideSettingsSwitch") as HTMLInputElement;
 const whiteListSwitch: HTMLInputElement = document.getElementById("whitelistSwitch") as HTMLInputElement;
 
 const sizeValue: HTMLElement = document.getElementById("sizeValue");
 const heightValue: HTMLElement = document.getElementById("heightValue");
+const overrideSettingsValue: HTMLElement = document.getElementById("overrideSettingsLabel");
 const whitelistedValue: HTMLElement = document.getElementById("whitelistedLabel");
 
 interface Array<T> {
@@ -52,9 +54,8 @@ function updateWudoohFont() {
  * The popup is closed by default, in most cases not closing the popup does not update the text for some reason.
  * Also, the updated text will have problems with spacing, making the actual look of a set of options differ
  * somewhat from the live updated look, a page refresh will always solve this
- * @param close whether to close the popup after updating text or not, defaults to true
  */
-function updateAllText(close: boolean = true) {
+function updateAllText() {
     // Only update text if this site is checked and is not whitelisted
     if (onOffSwitch.checked && whiteListSwitch.checked) {
 
@@ -75,12 +76,6 @@ function updateAllText(close: boolean = true) {
                         font: font
                     };
                     chrome.tabs.sendMessage(tab.id, message);
-
-                    // close the popup after 400ms so that it's not disturbingly fast and ugly, only aesthetic
-                    // stop this for now
-                    /*setTimeout(() => {
-                        if (close) window.close()
-                    }, 400);*/
                 });
             });
         });
@@ -167,6 +162,15 @@ function changeFont() {
     });
 }
 
+// TODO
+function toggleOverrideSiteSettings() {
+    if (overrideSiteSwitch.checked) {
+        overrideSettingsValue.innerText = "Using site specific settings";
+    } else {
+        overrideSettingsValue.innerText = "Using default settings";
+    }
+}
+
 /**
  * Toggles this site's whitelist status, this is only done to the active tab's site.
  * Note that the switch checked means that the site is running and is not whitelisted,
@@ -220,12 +224,13 @@ function addListeners() {
     size.onmouseup = () => updateAllText();
     height.onmouseup = () => updateAllText();
 
-    // Update on off switch when on off switch is clicked
+    // Update switches when they're clicked
+    overrideSiteSwitch.onclick = () => toggleOverrideSiteSettings();
     onOffSwitch.onclick = () => toggleOnOff();
-
-    fontSelect.oninput = () => changeFont();
-
     whiteListSwitch.onclick = () => toggleWhitelist();
+
+    // Update font when a new item is selected
+    fontSelect.oninput = () => changeFont();
 }
 
 addListeners();

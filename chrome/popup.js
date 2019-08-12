@@ -7,9 +7,11 @@ var size = document.getElementById("size");
 var height = document.getElementById("height");
 var onOffSwitch = document.getElementById("onOffSwitch");
 var fontSelect = document.getElementById("font-select");
+var overrideSiteSwitch = document.getElementById("overrideSettingsSwitch");
 var whiteListSwitch = document.getElementById("whitelistSwitch");
 var sizeValue = document.getElementById("sizeValue");
 var heightValue = document.getElementById("heightValue");
+var overrideSettingsValue = document.getElementById("overrideSettingsLabel");
 var whitelistedValue = document.getElementById("whitelistedLabel");
 /**
  * Extension function for a contains function in an array
@@ -40,12 +42,8 @@ function updateWudoohFont() {
  * The popup is closed by default, in most cases not closing the popup does not update the text for some reason.
  * Also, the updated text will have problems with spacing, making the actual look of a set of options differ
  * somewhat from the live updated look, a page refresh will always solve this
- * @param close whether to close the popup after updating text or not, defaults to true
  */
-function updateAllText(close) {
-    if (close === void 0) {
-        close = true;
-    }
+function updateAllText() {
     // Only update text if this site is checked and is not whitelisted
     if (onOffSwitch.checked && whiteListSwitch.checked) {
         chrome.storage.sync.get(["textSize", "lineHeight", "font"], function (fromStorage) {
@@ -64,11 +62,6 @@ function updateAllText(close) {
                         font: font
                     };
                     chrome.tabs.sendMessage(tab.id, message);
-                    // close the popup after 400ms so that it's not disturbingly fast and ugly, only aesthetic
-                    // stop this for now
-                    /*setTimeout(() => {
-                        if (close) window.close()
-                    }, 400);*/
                 });
             });
         });
@@ -145,6 +138,15 @@ function changeFont() {
         updateWudoohFont();
     });
 }
+
+// TODO
+function toggleOverrideSiteSettings() {
+    if (overrideSiteSwitch.checked) {
+        overrideSettingsValue.innerText = "Using site specific settings";
+    } else {
+        overrideSettingsValue.innerText = "Using default settings";
+    }
+}
 /**
  * Toggles this site's whitelist status, this is only done to the active tab's site.
  * Note that the switch checked means that the site is running and is not whitelisted,
@@ -196,15 +198,19 @@ function addListeners() {
     // Save options when mouse is released
     size.onmouseup = function () { return updateAllText(); };
     height.onmouseup = function () { return updateAllText(); };
-    // Update on off switch when on off switch is clicked
+    // Update switches when they're clicked
+    overrideSiteSwitch.onclick = function () {
+        return toggleOverrideSiteSettings();
+    };
     onOffSwitch.onclick = function () {
         return toggleOnOff();
     };
-    fontSelect.oninput = function () {
-        return changeFont();
-    };
     whiteListSwitch.onclick = function () {
         return toggleWhitelist();
+    };
+    // Update font when a new item is selected
+    fontSelect.oninput = function () {
+        return changeFont();
     };
 }
 addListeners();

@@ -5,9 +5,9 @@
     <meta content="text/html;charset=UTF-8" http-equiv="Content-Type">
     <link href="styles.css" rel="stylesheet">
     <style>
-        html, body {
+        html, body, footer {
             width: 250px;
-            height: fit-content;
+            height: auto;
             background-color: #efefef;
             color: #222;
             margin: 0 0 15px;
@@ -180,7 +180,7 @@
 <body>
 <header>
     <bdi dir="rtl" id="wudooh" lang="ar">وضوح</bdi>
-    <!-- Rounded switch -->
+    <!-- On off Switch -->
     <label class="switch">
         <input id="onOffSwitch" type="checkbox">
         <span class="slider round"></span>
@@ -189,6 +189,7 @@
 
 <div role="main">
 
+    <!-- Font selector -->
     <select id="font-select">
         <option style="font-family: 'Droid Arabic Naskh', sans-serif" value="Droid Arabic Naskh">درويد نسخ</option>
         <option style="font-family: 'Noto Naskh Arabic', sans-serif" value="Noto Naskh Arabic">نوتو نسخ</option>
@@ -230,6 +231,7 @@
 
     <br>
 
+    <!-- Font Size -->
     <table>
         <tr>
             <td class="label">Font Size:</td>
@@ -241,6 +243,7 @@
 
     <br>
 
+    <!-- Line Height -->
     <table>
         <tr>
             <td class="label">Line Height:</td>
@@ -248,15 +251,29 @@
         </tr>
     </table>
     <input id="height" max="200" min="100" name="height" type="range"/>
+
+
     <br>
 
+    <!-- Override Site Settings Switch -->
+    <table>
+        <tr>
+            <td class="label" id="overrideSettingsLabel">Using default settings</td>
+        </tr>
+    </table>
+    <label class="switch">
+        <input id="overrideSettingsSwitch" type="checkbox">
+        <span class="slider round"></span>
+    </label>
+
+    <br>
+
+    <!-- Whitelist Switch -->
     <table>
         <tr>
             <td class="label" id="whitelistedLabel">Running on this site</td>
         </tr>
     </table>
-
-    <!-- Rectangular switch -->
     <label class="switch">
         <input id="whitelistSwitch" type="checkbox">
         <span class="slider"></span>
