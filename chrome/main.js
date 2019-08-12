@@ -6,6 +6,7 @@
 // like hashtags # and numbers and exclamation marks etc
 var arabicRegEx = new RegExp('([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF]+(' +
     ' [\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\W\d]+)*)', 'g');
+var keys = ["textSize", "lineHeight", "onOff", "font", "whitelisted"];
 var observer;
 /**
  * Extension function for a contains function in an array
@@ -137,6 +138,7 @@ function updateAll(textSize, lineHeight, font) {
  */
 function startObserver(textSize, lineHeight, font) {
     if (font === void 0) { font = "Droid Arabic Naskh"; }
+    console.log("CALLBACK!!");
     var config = {
         attributes: false,
         childList: true,
@@ -197,3 +199,33 @@ chrome.runtime.onMessage.addListener(function (message) {
     observer.disconnect();
     startObserver(newSize, newHeight, message.font);
 });
+// TODO remove this later!
+chrome.storage.sync.get(null, function (items) {
+    keys.forEach(function (key) {
+        // console.log(key + " : " + items[key]);
+    });
+});
+/*
+ * TODO draft storage structure
+ *
+ * textSize: 125,
+ * lineHeight: 125,
+ * onOff: true,
+ * font: Droid Arabic Naskh,
+ * whitelisted: google.com,wikipedia.com,youtube.com,
+ * overriden: [
+ *     {
+ *      url: github.com,
+ *      textSize: 150,
+ *      lineHeight: 150,
+ *      font: Traditional Arabic
+ *     },
+ *     {
+ *      url: reddit.com,
+ *      textSize: 200,
+ *      lineHeight: 200,
+ *      font: Noto Nastaliq Urdu
+ *     }
+ * ]
+ *
+ */ 

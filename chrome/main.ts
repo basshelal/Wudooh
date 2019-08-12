@@ -9,6 +9,8 @@
 const arabicRegEx = new RegExp('([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF]+(' +
     ' [\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\W\d]+)*)', 'g');
 
+const keys = ["textSize", "lineHeight", "onOff", "font", "whitelisted"];
+
 let observer: MutationObserver;
 
 interface Array<T> {
@@ -160,6 +162,8 @@ function updateAll(textSize: number, lineHeight: number, font: string = "Droid A
  */
 function startObserver(textSize: number, lineHeight: number, font: string = "Droid Arabic Naskh") {
 
+    console.log("CALLBACK!!");
+
     let config: MutationObserverInit = {
         attributes: false,
         childList: true,
@@ -230,3 +234,35 @@ chrome.runtime.onMessage.addListener(function (message) {
     observer.disconnect();
     startObserver(newSize, newHeight, message.font);
 });
+
+// TODO remove this later!
+chrome.storage.sync.get(null, (items) => {
+    keys.forEach((key) => {
+        // console.log(key + " : " + items[key]);
+    })
+});
+
+/*
+ * TODO draft storage structure
+ *
+ * textSize: 125,
+ * lineHeight: 125,
+ * onOff: true,
+ * font: Droid Arabic Naskh,
+ * whitelisted: google.com,wikipedia.com,youtube.com,
+ * overriden: [
+ *     {
+ *      url: github.com,
+ *      textSize: 150,
+ *      lineHeight: 150,
+ *      font: Traditional Arabic
+ *     },
+ *     {
+ *      url: reddit.com,
+ *      textSize: 200,
+ *      lineHeight: 200,
+ *      font: Noto Nastaliq Urdu
+ *     }
+ * ]
+ *
+ */
