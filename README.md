@@ -25,6 +25,8 @@
 ![Mozilla Add-on](https://img.shields.io/amo/v/wudooh.svg)
 ![Mozilla Add-on](https://img.shields.io/amo/users/wudooh.svg)
 
+![Wudooh Icon](https://github.com/basshelal/Wudooh/blob/master/pictures/Testimonial.png)
+
 Wudooh [(clarity in Arabic and Persian)](https://en.wiktionary.org/wiki/%D9%88%D8%B6%D9%88%D8%AD)
  is a simple chrome and firefox extension that makes reading Arabic text clearer and more pleasant.
 
