@@ -138,7 +138,6 @@ function updateAll(textSize, lineHeight, font) {
  */
 function startObserver(textSize, lineHeight, font) {
     if (font === void 0) { font = "Droid Arabic Naskh"; }
-    console.log("CALLBACK!!");
     var config = {
         attributes: false,
         childList: true,
@@ -163,8 +162,10 @@ function startObserver(textSize, lineHeight, font) {
             }
         });
     };
-    observer = new MutationObserver(callback);
-    observer.observe(document.body, config);
+    if (!observer) {
+        observer = new MutationObserver(callback);
+        observer.observe(document.body, config);
+    }
 }
 /**
  * Main execution:
@@ -172,7 +173,7 @@ function startObserver(textSize, lineHeight, font) {
  * Then starts an observer with those same options to update any new text that will come
  * This only happens if the on off switch is on and the site is not whitelisted
  */
-chrome.storage.sync.get(["textSize", "lineHeight", "onOff", "font", "whitelisted"], function (fromStorage) {
+chrome.storage.sync.get(keys, function (fromStorage) {
     var textSize = fromStorage.textSize;
     var lineHeight = fromStorage.lineHeight;
     var checked = fromStorage.onOff;

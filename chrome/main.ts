@@ -162,8 +162,6 @@ function updateAll(textSize: number, lineHeight: number, font: string = "Droid A
  */
 function startObserver(textSize: number, lineHeight: number, font: string = "Droid Arabic Naskh") {
 
-    console.log("CALLBACK!!");
-
     let config: MutationObserverInit = {
         attributes: false,
         childList: true,
@@ -172,7 +170,7 @@ function startObserver(textSize: number, lineHeight: number, font: string = "Dro
         characterDataOldValue: false,
     };
 
-    let callback: MutationCallback = function (mutationsList: MutationRecord[]) {
+    let callback: MutationCallback = (mutationsList: MutationRecord[]) => {
         mutationsList.forEach((record: MutationRecord) => {
             // If something has been added
             if (record.addedNodes.length > 0) {
@@ -193,8 +191,10 @@ function startObserver(textSize: number, lineHeight: number, font: string = "Dro
         });
     };
 
-    observer = new MutationObserver(callback);
-    observer.observe(document.body, config);
+    if (!observer) {
+        observer = new MutationObserver(callback);
+        observer.observe(document.body, config);
+    }
 }
 
 /**
@@ -203,7 +203,7 @@ function startObserver(textSize: number, lineHeight: number, font: string = "Dro
  * Then starts an observer with those same options to update any new text that will come
  * This only happens if the on off switch is on and the site is not whitelisted
  */
-chrome.storage.sync.get(["textSize", "lineHeight", "onOff", "font", "whitelisted"], (fromStorage) => {
+chrome.storage.sync.get(keys, (fromStorage) => {
     let textSize: number = fromStorage.textSize;
     let lineHeight: number = fromStorage.lineHeight;
     let checked: boolean = fromStorage.onOff;
@@ -226,7 +226,7 @@ chrome.storage.sync.get(["textSize", "lineHeight", "onOff", "font", "whitelisted
  * The check whether the switch is on or if this site is whitelisted is not done here but at the
  * sender's sendMessage call
  */
-chrome.runtime.onMessage.addListener(function (message) {
+chrome.runtime.onMessage.addListener((message) => {
     let newSize = 100 * (message.newSize / message.oldSize);
     let newHeight = 100 * (message.newHeight / message.oldHeight);
     updateAll(newSize, newHeight, message.font);
