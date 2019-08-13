@@ -1,0 +1,169 @@
+html, body, footer {
+    width: 250px;
+    height: auto;
+    background-color: #efefef;
+    color: #222000;
+    margin: 0;
+    padding: 0;
+    font-family: "Roboto Light", serif;
+}
+
+#size, #height {
+    width: 70%;
+    text-align: center;
+}
+
+header {
+    background-color: #880e4f;
+    color: #efefef;
+    padding: 20px;
+    text-align: center;
+    font-family: "Droid Arabic Naskh", serif;
+    font-size: 5.0em;
+}
+
+div[role="main"] {
+    margin: 0 auto;
+    padding: 5px;
+    text-align: center;
+}
+
+footer {
+    color: #999;
+    text-align: center;
+    font-size: 0.9em;
+}
+
+hr {
+    border: none;
+    border-bottom: solid 1px #aaa;
+}
+
+a {
+    color: #3a7295;
+    text-decoration: none;
+}
+
+a:hover, a:active {
+    text-decoration: underline;
+}
+
+td {
+    font-weight: 300;
+}
+
+input[type=range] {
+    -webkit-appearance: none;
+    margin-bottom: 10px;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+    width: 300px;
+    height: 5px;
+    background: #ddd;
+    border: none;
+    border-radius: 3px;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    border: none;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    background: #999;
+    margin-top: -6px;
+}
+
+input[type=range]:focus {
+    outline: none;
+}
+
+table {
+    border: none;
+    width: 80%;
+    margin: 12px auto;
+    border-bottom: solid 1px #ccc;
+}
+
+.label {
+    text-align: left;
+}
+
+.value {
+    text-align: right;
+}
+
+/* The switch - the box around the slider */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* The slider */
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+input:checked + .slider {
+    background-color: #63a4ff;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+select {
+    font-size: 1.5em;
+    font-family: "Roboto Light", sans-serif;
+    width: 220px;
+    text-align-last: center;
+    text-align: center;
+    text-align-all: center;
+    padding: 5px 5px;
+    margin: 10px 0;
+}
