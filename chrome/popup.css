@@ -24,14 +24,13 @@ header {
 
 div[role="main"] {
     margin: 0 auto;
-    padding: 5px;
+    padding: 0;
     text-align: center;
 }
 
 footer {
-    color: #999;
+    color: #880e4f;
     text-align: center;
-    font-size: 0.9em;
 }
 
 hr {
@@ -54,7 +53,7 @@ td {
 
 input[type=range] {
     -webkit-appearance: none;
-    margin-bottom: 10px;
+    margin-bottom: 0;
 }
 
 input[type=range]::-webkit-slider-runnable-track {
@@ -155,6 +154,10 @@ input:checked + .slider:before {
 
 .slider.round:before {
     border-radius: 50%;
+}
+
+option {
+    font-size: 1.25em;
 }
 
 select {
