@@ -4,7 +4,7 @@ import Tab = chrome.tabs.Tab;
 /**
  * This script is used by the extension's popup (popup.html) for options
  *
- * Currently there are 5 options, textSize, lineHeight, onOff, font and whitelisted
+ * Currently there are 6 options, textSize, lineHeight, onOff, font, whitelisted and customSettings
  */
 
 const size: HTMLInputElement = document.getElementById("size") as HTMLInputElement;
@@ -21,6 +21,8 @@ const whitelistedValue: HTMLElement = document.getElementById("whitelistedLabel"
 
 interface Array<T> {
     contains(element: T): boolean;
+
+    findFirst(predicate: (element: T, index: number) => boolean): T | null;
 }
 
 /**
@@ -29,29 +31,55 @@ interface Array<T> {
  * @return true if the element exists in this array, false otherwise
  */
 Array.prototype.contains = function <T>(element: T): boolean {
-    let result = false;
     for (let i = 0; i < this.length; i++) {
-        if (element === this[i]) {
-            result = true;
-            break;
+        if (element === this[i]) return true;
+    }
+    return false;
+};
+
+Array.prototype.findFirst = function <T>(predicate: (element: T, index: number) => boolean): T | null {
+    for (let i = 0; i < this.length; i++) {
+        if (predicate(this[i], i)) {
+            return this[i];
         }
     }
-    return result;
+    return null;
 };
+
+/**
+ * Represents a site that uses different settings from the default settings
+ * The settings themselves may be the same as the default but they will change independently
+ */
+class CustomSettings {
+    /** The hostname url of this web site, this will always be in the form of example.com */
+    url: string;
+    /** The font size to use on this site */
+    textSize: number;
+    /** The line height to use on this site */
+    lineHeight: number;
+    /** The font to use on this site */
+    font: string;
+
+    constructor(url: string, textSize: number,
+                lineHeight: number, font: string) {
+        this.url = url;
+        this.textSize = textSize;
+        this.lineHeight = lineHeight;
+        this.font = font;
+    }
+}
 
 /**
  * Updates the font of the Arabic Wudooh heading to match the font selected by the user
  */
-function updateWudoohFont() {
-    chrome.storage.sync.get("font", (fromStorage) => {
-        document.getElementById("wudooh").style.fontFamily = fromStorage.font;
-    });
+function updateWudoohFont(font: string) {
+    document.getElementById("wudooh").style.fontFamily = font;
 }
 
 /**
  * Updates all Arabic text in all tabs to adhere to the new options. This is done by sending a message to all
  * tabs that main.ts will handle.
- * The popup is closed by default, in most cases not closing the popup does not update the text for some reason.
+ * In most cases not closing the popup does not update the text for some reason.
  * Also, the updated text will have problems with spacing, making the actual look of a set of options differ
  * somewhat from the live updated look, a page refresh will always solve this
  */
@@ -59,15 +87,23 @@ function updateAllText() {
     // Only update text if this site is checked and is not whitelisted
     if (onOffSwitch.checked && whiteListSwitch.checked) {
 
-        chrome.storage.sync.get(["textSize", "lineHeight", "font"], (fromStorage) => {
+        chrome.storage.sync.get(["textSize", "lineHeight", "font", "customSettings"], (fromStorage) => {
             // We need the old values to know how much we should change the options in main.ts
             let oldS: number = fromStorage.textSize;
             let oldH: number = fromStorage.lineHeight;
             let font: string = fromStorage.font;
+            let customSettings: Array<CustomSettings> = fromStorage.customSettings as Array<CustomSettings>;
 
             // Send a message to all tabs
             chrome.tabs.query({}, (tabs: Array<Tab>) => {
                 tabs.forEach((tab: Tab) => {
+                    let thisURL: string = new URL(tab.url).hostname;
+                    let custom = customSettings.findFirst((custom: CustomSettings) => custom.url === thisURL);
+                    if (custom) {
+                        oldS = custom.textSize;
+                        oldH = custom.lineHeight;
+                        font = custom.font;
+                    }
                     let message = {
                         oldSize: oldS,
                         oldHeight: oldH,
@@ -95,80 +131,106 @@ function updateAllText() {
  * already exist, this is only called when the document (popup.html) is loaded, it only initializes values and
  * updates UI
  */
-function getOptions() {
+function updateUI() {
 
     chrome.storage.sync.get({
-        textSize: '115',
+        textSize: '125',
         lineHeight: '125',
         onOff: true,
         font: "Droid Arabic Naskh",
-        whitelisted: []
+        whitelisted: [],
+        customSettings: []
     }, (fromStorage) => {
-        size.value = fromStorage.textSize;
-        sizeValue.innerHTML = fromStorage.textSize + '%';
-        height.value = fromStorage.lineHeight;
-        heightValue.innerHTML = fromStorage.lineHeight + '%';
-        onOffSwitch.checked = fromStorage.onOff;
-        fontSelect.value = fromStorage.font;
-
-        updateWudoohFont();
-
-        // update HTML to say whether running on this site or whitelisted
         chrome.tabs.query({active: true, currentWindow: true}, (tabs: Array<Tab>) => {
-            let running = !(fromStorage.whitelisted as Array<string>).contains(
-                new URL(tabs[0].url).hostname
-            );
+            let thisURL: string = new URL(tabs[0].url).hostname;
 
-            whiteListSwitch.checked = running;
-            if (running) whitelistedValue.innerText = "Running on this site";
-            else whitelistedValue.innerText = "This site is whitelisted";
+            let customSettings: Array<CustomSettings> = fromStorage.customSettings as Array<CustomSettings>;
+            let whiteListed: Array<string> = fromStorage.whitelisted as Array<string>;
+
+            let textSize: number;
+            let lineHeight: number;
+            let font: string;
+
+            let custom = customSettings.findFirst((custom: CustomSettings) => custom.url === thisURL);
+            if (custom) {
+                textSize = custom.textSize;
+                lineHeight = custom.lineHeight;
+                font = custom.font;
+            } else {
+                textSize = fromStorage.textSize;
+                lineHeight = fromStorage.lineHeight;
+                font = fromStorage.font;
+            }
+
+            size.value = textSize.toString();
+            sizeValue.innerHTML = textSize.toString() + '%';
+            height.value = lineHeight.toString();
+            heightValue.innerHTML = lineHeight.toString() + '%';
+            fontSelect.value = font;
+            onOffSwitch.checked = fromStorage.onOff;
+
+            updateWudoohFont(font);
+
+            let isWhitelisted = whiteListed.contains(thisURL);
+            let isCustom = !!custom;
+
+            whiteListSwitch.checked = !isWhitelisted;
+            if (isWhitelisted) whitelistedValue.innerText = "This site is whitelisted";
+            else whitelistedValue.innerText = "Running on this site";
+
+            overrideSiteSwitch.checked = isCustom;
+            if (isCustom) overrideSettingsValue.innerText = "Using site specific settings";
+            else overrideSettingsValue.innerText = "Using default settings";
         });
     });
-}
-
-/**
- * Updates the size value HTML from the size range input, this is called when the size range input is changed
- */
-function updateSizeHTML() {
-    sizeValue.innerHTML = size.value + '%';
-}
-
-/**
- * Updates the height value HTML from the height range input, this is called when the height range input is changed
- */
-function updateHeightHTML() {
-    heightValue.innerHTML = height.value + '%';
 }
 
 /**
  * Toggles the on off switch, this will update all text if the switch is turned on
  */
 function toggleOnOff() {
-    chrome.storage.sync.set({
-        onOff: onOffSwitch.checked
+    chrome.storage.sync.set({onOff: onOffSwitch.checked}, () => {
+        if (onOffSwitch.checked) updateAllText();
     });
-    if (onOffSwitch.checked) updateAllText();
 }
 
 /**
  * Changes the font, this will update all text and update the Wudooh header
  */
 function changeFont() {
-    chrome.storage.sync.set({
-        font: fontSelect.value,
-    }, () => {
+    chrome.storage.sync.set({font: fontSelect.value,}, () => {
         updateAllText();
-        updateWudoohFont();
+        updateWudoohFont(fontSelect.value);
     });
 }
 
-// TODO
+// TODO not yet finished
 function toggleOverrideSiteSettings() {
-    if (overrideSiteSwitch.checked) {
-        overrideSettingsValue.innerText = "Using site specific settings";
-    } else {
-        overrideSettingsValue.innerText = "Using default settings";
-    }
+    // This only requires this current tab
+    chrome.tabs.query({active: true, currentWindow: true}, (tabs: Array<Tab>) => {
+        // Get the url we are on right now
+        let thisURL = new URL(tabs[0].url).hostname;
+
+        chrome.storage.sync.get({"customSettings": []}, (fromStorage) => {
+            // Get the array of all custom websites
+            let customSettings: Array<CustomSettings> = fromStorage.customSettings as Array<CustomSettings>;
+
+            // Overridden so use custom settings
+            if (overrideSiteSwitch.checked) {
+                let custom = new CustomSettings(thisURL, parseInt(size.value), parseInt(height.value), fontSelect.value);
+                customSettings.push(custom);
+                overrideSettingsValue.innerText = "Using site specific settings";
+            } else {
+                // Using default settings
+                // Remove all occurrences of this url from customSettings, just in case
+                customSettings = customSettings.filter((it: CustomSettings) => it.url !== thisURL);
+                overrideSettingsValue.innerText = "Using default settings";
+            }
+
+            // Set the array of all whitelisted websites in storage
+            chrome.storage.sync.set({customSettings: customSettings});
+        });
+    });
 }
 
 /**
@@ -184,7 +246,7 @@ function toggleWhitelist() {
     // This only requires this current tab
     chrome.tabs.query({active: true, currentWindow: true}, (tabs: Array<Tab>) => {
         // Get the url we are on right now
-        let url = new URL(tabs[0].url).hostname;
+        let thisURL = new URL(tabs[0].url).hostname;
 
         chrome.storage.sync.get({"whitelisted": []}, (fromStorage) => {
             // Get the array of all whitelisted websites
@@ -193,18 +255,16 @@ function toggleWhitelist() {
             // Allowed to run on this site
             if (whiteListSwitch.checked) {
                 // Remove all occurrences of this url from that array, just in case
-                whitelisted = whitelisted.filter((it: string) => it != url);
+                whitelisted = whitelisted.filter((it: string) => it != thisURL);
                 whitelistedValue.innerText = "Running on this site, reload to see changes";
             } else {
                 // Whitelisted, add this url to the whitelisted array
-                whitelisted.push(url);
+                whitelisted.push(thisURL);
                 whitelistedValue.innerText = "This site is whitelisted, reload to see changes";
             }
 
             // Set the array of all whitelisted websites in storage
-            chrome.storage.sync.set({
-                whitelisted: whitelisted
-            });
+            chrome.storage.sync.set({whitelisted: whitelisted});
         });
     });
 }
@@ -214,20 +274,20 @@ function toggleWhitelist() {
  */
 function addListeners() {
     // Get options when the popup.html document is loaded
-    document.addEventListener("DOMContentLoaded", getOptions);
+    document.addEventListener("DOMContentLoaded", updateUI);
 
     // Update size and height HTML when input is changed, changes no variables
-    size.oninput = () => updateSizeHTML();
-    height.oninput = () => updateHeightHTML();
+    size.oninput = () => sizeValue.innerHTML = size.value + '%';
+    height.oninput = () => heightValue.innerHTML = height.value + '%';
 
     // Save options when mouse is released
     size.onmouseup = () => updateAllText();
     height.onmouseup = () => updateAllText();
 
     // Update switches when they're clicked
-    overrideSiteSwitch.onclick = () => toggleOverrideSiteSettings();
     onOffSwitch.onclick = () => toggleOnOff();
     whiteListSwitch.onclick = () => toggleWhitelist();
+    overrideSiteSwitch.onclick = () => toggleOverrideSiteSettings();
 
     // Update font when a new item is selected
     fontSelect.oninput = () => changeFont();

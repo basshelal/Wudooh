@@ -26,7 +26,11 @@ var keys = [
  * The settings themselves may be the same as the default but they will change independently
  */
 var CustomSettings = /** @class */ (function () {
-    function CustomSettings() {
+    function CustomSettings(url, textSize, lineHeight, font) {
+        this.url = url;
+        this.textSize = textSize;
+        this.lineHeight = lineHeight;
+        this.font = font;
     }
     return CustomSettings;
 }());
@@ -39,9 +43,8 @@ var observer;
  */
 Array.prototype.contains = function (element) {
     for (var i = 0; i < this.length; i++) {
-        if (element === this[i]) {
+        if (element === this[i])
             return true;
-        }
     }
     return false;
 };
@@ -133,13 +136,14 @@ function updateNode(node, textSize, lineHeight, font) {
         var newSize = textSize / 100;
         var newHeight = lineHeight / 100;
         var newHTML = void 0;
+        // TODO can we just update the styling instead of changing all the HTML??
         if (font === "Original") {
-            newHTML = "<span class='ar'' style='" +
+            newHTML = "<span wudooh='true'' style='" +
                 "font-size:" + newSize + "em;" +
                 "line-height:" + newHeight + "em;" +
                 "'>$&</span>";
         } else {
-            newHTML = "<span class='ar'' style='" +
+            newHTML = "<span wudooh='true' style='" +
                 "font-size:" + newSize + "em;" +
                 "line-height:" + newHeight + "em;" +
                 "font-family:" + "\"" + font + "\"" + "," + "sans-serif;" +
@@ -171,12 +175,14 @@ function startObserver(textSize, lineHeight, font) {
     if (font === void 0) { font = "Droid Arabic Naskh"; }
     var config = {
         attributes: false,
-        childList: true,
-        subtree: true,
+        attributeOldValue: false,
         characterData: true,
         characterDataOldValue: false,
+        childList: true,
+        subtree: true,
     };
     var callback = function (mutationsList) {
+        console.log("Callback Called!");
         mutationsList.forEach(function (record) {
             // If something has been added
             if (record.addedNodes.length > 0) {
@@ -185,7 +191,7 @@ function startObserver(textSize, lineHeight, font) {
                     // For each node with Arabic script in addedNode
                     getArabicTextNodesIn(addedNode).forEach(function (arabicNode) {
                         // Update arabicNode only if it hasn't been updated
-                        if (arabicNode.parentElement && arabicNode.parentElement.getAttribute("class") != "ar") {
+                        if (arabicNode.parentElement && arabicNode.parentElement.getAttribute("wudooh") != "true") {
                             updateNode(arabicNode, textSize, lineHeight, font);
                         }
                     });
@@ -194,6 +200,7 @@ function startObserver(textSize, lineHeight, font) {
         });
     };
     if (!observer) {
+        console.log("New Observer!");
         observer = new MutationObserver(callback);
         observer.observe(document.body, config);
     }
@@ -227,6 +234,7 @@ chrome.storage.sync.get(keys, function (fromStorage) {
         updateAll(textSize, lineHeight, font);
         startObserver(textSize, lineHeight, font);
     }
+    log();
 });
 /**
  * Listener to update text if options are modified, the options being text size, line height and font
@@ -242,10 +250,21 @@ chrome.runtime.onMessage.addListener(function (message) {
     observer.disconnect();
     observer = null;
     startObserver(newSize, newHeight, message.font);
+    log();
 });
-// TODO remove this later!
-chrome.storage.sync.get(null, function (items) {
-    keys.forEach(function (key) {
-        console.log(key + " : " + items[key]);
+
+// TODO REMOVE LATER!
+function log() {
+    chrome.storage.sync.get(null, function (items) {
+        keys.forEach(function (key) {
+            if (key === "customSettings") {
+                console.log(key + " : " + items[key].length);
+                items[key].forEach(function (customSetting) {
+                    return console.log(customSetting.url);
+                });
+            } else {
+                console.log(key + " : " + items[key]);
+            }
+        });
     });
-});
+}

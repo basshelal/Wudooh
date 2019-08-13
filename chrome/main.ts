@@ -38,6 +38,14 @@ class CustomSettings {
     lineHeight: number;
     /** The font to use on this site */
     font: string;
+
+    constructor(url: string, textSize: number,
+                lineHeight: number, font: string) {
+        this.url = url;
+        this.textSize = textSize;
+        this.lineHeight = lineHeight;
+        this.font = font;
+    }
 }
 
 /** The observer used in {@linkcode startObserver} to dynamically update any newly added Nodes */
@@ -56,9 +64,7 @@ interface Array<T> {
  */
 Array.prototype.contains = function <T>(element: T): boolean {
     for (let i = 0; i < this.length; i++) {
-        if (element === this[i]) {
-            return true;
-        }
+        if (element === this[i]) return true;
     }
     return false;
 };
@@ -165,13 +171,14 @@ function updateNode(node: Node, textSize: number, lineHeight: number, font: stri
         let newSize: number = textSize / 100;
         let newHeight: number = lineHeight / 100;
         let newHTML: string;
+        // TODO can we just update the styling instead of changing all the HTML??
         if (font === "Original") {
-            newHTML = "<span class='ar'' style='" +
+            newHTML = "<span wudooh='true'' style='" +
                 "font-size:" + newSize + "em;" +
                 "line-height:" + newHeight + "em;" +
                 "'>$&</span>";
         } else {
-            newHTML = "<span class='ar'' style='" +
+            newHTML = "<span wudooh='true' style='" +
                 "font-size:" + newSize + "em;" +
                 "line-height:" + newHeight + "em;" +
                 "font-family:" + "\"" + font + "\"" + "," + "sans-serif;" +
@@ -203,14 +210,16 @@ function updateAll(textSize: number, lineHeight: number, font: string = "Droid A
 function startObserver(textSize: number, lineHeight: number, font: string = "Droid Arabic Naskh") {
 
     let config: MutationObserverInit = {
-        attributes: false,
-        childList: true,
-        subtree: true,
-        characterData: true,
-        characterDataOldValue: false,
+        attributes: false, // we don't care about attribute changes
+        attributeOldValue: false, // we don't care about attribute changes
+        characterData: true, // we get notified of any changes to character data
+        characterDataOldValue: false, // we don't keep the old value
+        childList: true, // we get notified about changes to a node's children
+        subtree: true, // we get notified about any changes to any of a node's descendants
     };
 
     let callback: MutationCallback = (mutationsList: MutationRecord[]) => {
+        console.log("Callback Called!");
         mutationsList.forEach((record: MutationRecord) => {
             // If something has been added
             if (record.addedNodes.length > 0) {
@@ -222,7 +231,7 @@ function startObserver(textSize: number, lineHeight: number, font: string = "Dro
                     getArabicTextNodesIn(addedNode).forEach((arabicNode: Node) => {
 
                         // Update arabicNode only if it hasn't been updated
-                        if (arabicNode.parentElement && arabicNode.parentElement.getAttribute("class") != "ar") {
+                        if (arabicNode.parentElement && arabicNode.parentElement.getAttribute("wudooh") != "true") {
                             updateNode(arabicNode, textSize, lineHeight, font);
                         }
                     });
@@ -232,6 +241,7 @@ function startObserver(textSize: number, lineHeight: number, font: string = "Dro
     };
 
     if (!observer) {
+        console.log("New Observer!");
         observer = new MutationObserver(callback);
         observer.observe(document.body, config);
     }
@@ -268,6 +278,8 @@ chrome.storage.sync.get(keys, (fromStorage) => {
         updateAll(textSize, lineHeight, font);
         startObserver(textSize, lineHeight, font);
     }
+
+    log();
 });
 
 /**
@@ -285,11 +297,21 @@ chrome.runtime.onMessage.addListener((message) => {
     observer.disconnect();
     observer = null;
     startObserver(newSize, newHeight, message.font);
+
+    log()
 });
 
-// TODO remove this later!
-chrome.storage.sync.get(null, (items) => {
-    keys.forEach((key) => {
-        console.log(key + " : " + items[key]);
-    })
-});
+// TODO REMOVE LATER!
+function log() {
+    chrome.storage.sync.get(null, (items) => {
+        keys.forEach((key) => {
+            if (key === "customSettings") {
+                console.log(key + " : " + items[key].length);
+                (items[key] as Array<CustomSettings>).forEach((customSetting: CustomSettings) =>
+                    console.log(customSetting.url));
+            } else {
+                console.log(key + " : " + items[key]);
+            }
+        })
+    });
+}

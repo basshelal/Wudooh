@@ -3,11 +3,13 @@
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/users/nigfaloeeeakmmgndbdcijjegolpjfhn.svg)](https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn)
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/stars/nigfaloeeeakmmgndbdcijjegolpjfhn.svg)](https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn)
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/rating-count/nigfaloeeeakmmgndbdcijjegolpjfhn.svg)](https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn)
-
 [![Mozilla Add-on](https://img.shields.io/amo/v/wudooh.svg)](https://addons.mozilla.org/en-US/firefox/addon/wudooh/)
 [![Mozilla Add-on](https://img.shields.io/amo/users/wudooh.svg)](https://addons.mozilla.org/en-US/firefox/addon/wudooh/)
 
 ![Wudooh Icon](https://github.com/basshelal/Wudooh/blob/master/pictures/GitHubPromo.png)
+
+[![Chrome](https://github.com/basshelal/Wudooh/blob/master/pictures/Chrome.png)](https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn)
+[![Firefox](https://github.com/basshelal/Wudooh/blob/master/pictures/Firefox.png)](https://addons.mozilla.org/en-US/firefox/addon/wudooh/)
 
 * [Current Features](#current-features)
     * [On Off Switch](#on-off-switch)
@@ -29,9 +31,6 @@
 
 Wudooh [(clarity in Arabic and Persian)](https://en.wiktionary.org/wiki/%D9%88%D8%B6%D9%88%D8%AD)
  is a simple chrome and firefox extension that makes reading Arabic text clearer and more pleasant.
-
-[![Chrome](https://github.com/basshelal/Wudooh/blob/master/pictures/Chrome.png)](https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn)
-[![Firefox](https://github.com/basshelal/Wudooh/blob/master/pictures/Firefox.png)](https://addons.mozilla.org/en-US/firefox/addon/wudooh/)
 
 This project is based on and is the successor to
  [Jackson Petty's](https://github.com/jopetty) 
