@@ -2,10 +2,10 @@
 /**
  * This is the main script that reads the document and updates any Arabic script text
  */
-// TODO good thing to add is to allow for symbols and numbers between Arabic or at the end or beginning of it
-//  like hashtags # and numbers and exclamation marks etc
 var arabicRegEx = new RegExp('([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF]+(' +
     ' [\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\W\d]+)*)', 'g');
+// TODO change customSettings to be a Set so that we guarantee no duplicates!
+//  maybe same for whiteListed but that would mean a db migration
 /** The keys of the {@linkcode chrome.storage.sync} */
 var keys = [
     /** The font size percent, between 100 and 200 */
@@ -252,7 +252,6 @@ chrome.runtime.onMessage.addListener(function (message) {
     startObserver(newSize, newHeight, message.font);
     log();
 });
-
 // TODO REMOVE LATER!
 function log() {
     chrome.storage.sync.get(null, function (items) {

@@ -1,3 +1,5 @@
+/* TODO Material Design in pure CSS needed! */
+
 html, body, footer {
     width: 250px;
     height: auto;
@@ -29,7 +31,7 @@ div[role="main"] {
 }
 
 footer {
-    color: #880e4f;
+    color: #222000;
     text-align: center;
 }
 
@@ -149,7 +151,7 @@ input:checked + .slider:before {
 
 /* Rounded sliders */
 .slider.round {
-    border-radius: 34px;
+    border-radius: 36px;
 }
 
 .slider.round:before {

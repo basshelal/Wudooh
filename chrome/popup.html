@@ -3,7 +3,7 @@
 <head>
     <title>وضوح</title>
     <meta content="text/html;charset=UTF-8" http-equiv="Content-Type">
-    <link href="styles.css" rel="stylesheet">
+    <link href="fonts.css" rel="stylesheet">
     <link href="popup.css" rel="stylesheet">
 </head>
 
@@ -20,8 +20,10 @@
 <div role="main">
 
     <!-- Font selector -->
+    <!-- TODO Organize these properly before update release-->
     <select id="font-select">
         <option style="font-family: 'Droid Arabic Naskh', sans-serif" value="Droid Arabic Naskh">درويد نسخ</option>
+        <!-- TODO Start alphabetical ordering here-->
         <option style="font-family: 'Noto Naskh Arabic', sans-serif" value="Noto Naskh Arabic">نوتو نسخ</option>
         <option style="font-family: 'Arabic Typesetting', sans-serif" value="Arabic Typesetting">تنضيد</option>
         <option style="font-family: 'Simplified Arabic', sans-serif" value="Simplified Arabic">مبسَّط</option>
@@ -52,6 +54,9 @@
         <option style="font-family: 'Rakkas', sans-serif" value="Rakkas">رقَّاص</option>
         <option style="font-family: 'Katibeh', sans-serif" value="Katibeh">كتيبة</option>
         <option style="font-family: 'Jomhuria', sans-serif" value="Jomhuria">جمهورية</option>
+        <option style="font-family: 'Shakstah', sans-serif" value="Shakstah">شكسته</option>
+        <option style="font-family: 'Mehr Nastaliq', sans-serif" value="Mehr Nastaliq">مهر نستعلیق</option>
+        <!-- TODO End alphabetical ordering here because boring system defaults are below-->
         <option style="font-family: 'sans-serif', sans-serif" value="sans-serif">سانس سيرف</option>
         <option style="font-family: 'Times New Roman', sans-serif" value="Times New Roman">تايمز نيو رومان</option>
         <option style="font-family: 'Arial', sans-serif" value="Arial">اريال</option>
@@ -61,26 +66,26 @@
 
     <br>
 
-    <!-- Font Size -->
+    <!-- Font Size TODO make the label become an input that user can enter value into -->
     <table>
         <tr>
             <td class="label">Font Size:</td>
             <td class="value" id="sizeValue"></td>
         </tr>
     </table>
-    <input id="size" max="200" min="100" name="size" type="range"/>
+    <input id="size" max="300" min="100" name="size" type="range"/>
 
 
     <br>
 
-    <!-- Line Height -->
+    <!-- Line Height TODO make the label become an input that user can enter value into -->
     <table>
         <tr>
             <td class="label">Line Height:</td>
             <td class="value" id="heightValue"></td>
         </tr>
     </table>
-    <input id="height" max="200" min="100" name="height" type="range"/>
+    <input id="height" max="300" min="100" name="height" type="range"/>
 
 
     <br>
@@ -108,14 +113,23 @@
         <input id="whitelistSwitch" type="checkbox">
         <span class="slider"></span>
     </label>
+
+    <br>
+    <br>
+
+    <!--TODO Import and Export Settings-->
+    <button>Export Settings</button>
+    <button>Import Settings</button>
 </div>
-<!-- <hr /> -->
 
 <footer>
+    <!--TODO change this below for firefox!-->
+    <p><a href="https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn/reviews"
+          target="_blank">Review on the Chrome Web Store</a>
+        <br>
+        <a href="mailto:whitecrescent.uk@gmail.com" target="_blank">Feedback/Report a bug</a></p>
     <p>By <a href="https://github.com/basshelal/Wudooh" target="_blank">Bassam Helal بسّام هلال</a></p>
 </footer>
 <script src="popup.js"></script>
 </body>
 </html>
-
-<!--TODO add report bug / feedback link-->

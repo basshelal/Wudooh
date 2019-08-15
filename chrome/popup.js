@@ -44,7 +44,6 @@ var CustomSettings = /** @class */ (function () {
         this.lineHeight = lineHeight;
         this.font = font;
     }
-
     return CustomSettings;
 }());
 /**
@@ -174,7 +173,6 @@ function changeFont() {
         updateWudoohFont(fontSelect.value);
     });
 }
-
 // TODO not yet finished
 function toggleOverrideSiteSettings() {
     // This only requires this current tab

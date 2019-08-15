@@ -30,5 +30,9 @@ chrome.runtime.onInstalled.addListener((details: InstalledDetails) => {
         if (!fromStorage.font) chrome.storage.sync.set({font: "Droid Arabic Naskh"});
         if (!fromStorage.whitelisted) chrome.storage.sync.set({whitelisted: []});
         if (!fromStorage.customSettings) chrome.storage.sync.set({customSettings: []});
+
+        if (details.reason == "update") {
+            // User has updated from an old version, do something! :) TODO
+        }
     });
 });

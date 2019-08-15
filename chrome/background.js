@@ -32,5 +32,8 @@ chrome.runtime.onInstalled.addListener(function (details) {
             chrome.storage.sync.set({whitelisted: []});
         if (!fromStorage.customSettings)
             chrome.storage.sync.set({customSettings: []});
+        if (details.reason == "update") {
+            // User has updated from an old version, do something! :) TODO
+        }
     });
 });
