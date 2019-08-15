@@ -4,6 +4,7 @@
  */
 var arabicRegEx = new RegExp('([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF]+(' +
     ' [\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\W\d]+)*)', 'g');
+// TODO figure out a way to have common code in one place instead of all this duplicated code
 // TODO change customSettings to be a Set so that we guarantee no duplicates!
 //  maybe same for whiteListed but that would mean a db migration
 /** The keys of the {@linkcode chrome.storage.sync} */
@@ -136,22 +137,38 @@ function updateNode(node, textSize, lineHeight, font) {
         var newSize = textSize / 100;
         var newHeight = lineHeight / 100;
         var newHTML = void 0;
-        // TODO can we just update the styling instead of changing all the HTML??
+        var element = node.parentElement;
         if (font === "Original") {
             newHTML = "<span wudooh='true'' style='" +
                 "font-size:" + newSize + "em;" +
                 "line-height:" + newHeight + "em;" +
                 "'>$&</span>";
+            var text = node.nodeValue.replace(arabicRegEx, newHTML);
+            setNodeHtml(node, text);
         } else {
-            newHTML = "<span wudooh='true' style='" +
-                "font-size:" + newSize + "em;" +
-                "line-height:" + newHeight + "em;" +
-                "font-family:" + "\"" + font + "\"" + "," + "sans-serif;" +
-                "'>$&</span>";
+            updateByStyle(element, newSize, newHeight, font);
+            updateByAdding(node, newSize, newHeight, font);
         }
-        var text = node.nodeValue.replace(arabicRegEx, newHTML);
-        setNodeHtml(node, text);
     }
+}
+
+// TODO remove this later
+function updateByStyle(element, textSize, lineHeight, font) {
+    element.style.fontSize = textSize + "em";
+    element.style.lineHeight = lineHeight + "em";
+    element.style.fontFamily = "\"" + font + "\"" + "," + "sans-serif";
+    element.setAttribute("wudooh", "true");
+}
+
+// TODO remove this later
+function updateByAdding(node, textSize, lineHeight, font) {
+    var newHTML = "<span wudooh='true' style='" +
+        "font-size:" + textSize + "em;" +
+        "line-height:" + lineHeight + "em;" +
+        "font-family:" + "\"" + font + "\"" + "," + "sans-serif;" +
+        "'>$&</span>";
+    var text = node.nodeValue.replace(arabicRegEx, newHTML);
+    setNodeHtml(node, text);
 }
 /**
  * Updates all Arabic script nodes in this document's body by calling updateNode() on each node in this document
