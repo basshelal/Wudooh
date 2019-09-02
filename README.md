@@ -3,13 +3,14 @@
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/users/nigfaloeeeakmmgndbdcijjegolpjfhn.svg)](https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn)
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/stars/nigfaloeeeakmmgndbdcijjegolpjfhn.svg)](https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn)
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/rating-count/nigfaloeeeakmmgndbdcijjegolpjfhn.svg)](https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn)
+
 [![Mozilla Add-on](https://img.shields.io/amo/v/wudooh.svg)](https://addons.mozilla.org/en-US/firefox/addon/wudooh/)
 [![Mozilla Add-on](https://img.shields.io/amo/users/wudooh.svg)](https://addons.mozilla.org/en-US/firefox/addon/wudooh/)
 
-![Wudooh Icon](https://github.com/basshelal/Wudooh/blob/master/pictures/GitHubPromo.png)
+[![Chrome](https://github.com/basshelal/Wudooh/blob/master/pictures/Chrome50.png)](https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn)
+[![Firefox](https://github.com/basshelal/Wudooh/blob/master/pictures/Firefox50.png)](https://addons.mozilla.org/en-US/firefox/addon/wudooh/)
 
-[![Chrome](https://github.com/basshelal/Wudooh/blob/master/pictures/Chrome.png)](https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn)
-[![Firefox](https://github.com/basshelal/Wudooh/blob/master/pictures/Firefox.png)](https://addons.mozilla.org/en-US/firefox/addon/wudooh/)
+![Wudooh Banner](https://github.com/basshelal/Wudooh/blob/master/pictures/GitHubPromo.png)
 
 * [Current Features](#current-features)
     * [On Off Switch](#on-off-switch)
