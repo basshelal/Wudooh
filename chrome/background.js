@@ -32,8 +32,16 @@ chrome.runtime.onInstalled.addListener(function (details) {
             chrome.storage.sync.set({whitelisted: []});
         if (!fromStorage.customSettings)
             chrome.storage.sync.set({customSettings: []});
+        // User has updated extension
         if (details.reason == "update") {
-            // User has updated from an old version, do something! :) TODO
+            var oldVersion = details.previousVersion; // string of previous version if we need it
+            // TODO here we can create a new Tab with the details of the update probably the extension website
+            //  basshelal.github.io/Wudooh and do any DB migrations that we want
+        }
+        // User has just installed extension
+        if (details.reason == "install") {
+            // TODO here we can create a new Tab with the details of the extension also probably the extension website
+            //  basshelal.github.io/Wudooh
         }
     });
 });

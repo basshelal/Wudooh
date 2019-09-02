@@ -7,6 +7,8 @@
 const arabicRegEx = new RegExp('([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF]+(' +
     ' [\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\W\d]+)*)', 'g');
 
+const defaultFont: string = "Droid Arabic Naskh";
+
 // TODO figure out a way to have common code in one place instead of all this duplicated code
 
 // TODO change customSettings to be a Set so that we guarantee no duplicates!
@@ -169,7 +171,7 @@ function isEditable(node: Node): boolean {
  * @param lineHeight the height to update the line to
  * @param font the name of the font to update the text to
  */
-function updateNode(node: Node, textSize: number, lineHeight: number, font: string = "Droid Arabic Naskh") {
+function updateNode(node: Node, textSize: number, lineHeight: number, font: string = defaultFont) {
     if (node.nodeValue) {
         let newSize: number = textSize / 100;
         let newHeight: number = lineHeight / 100;
@@ -184,21 +186,19 @@ function updateNode(node: Node, textSize: number, lineHeight: number, font: stri
             let text: string = node.nodeValue.replace(arabicRegEx, newHTML);
             setNodeHtml(node, text);
         } else {
-            updateByStyle(element, newSize, newHeight, font);
             updateByAdding(node, newSize, newHeight, font);
         }
     }
 }
 
 // TODO remove this later
-function updateByStyle(element: HTMLElement, textSize: number, lineHeight: number, font: string) {
+function updateByStyling(element: HTMLElement, textSize: number, lineHeight: number, font: string) {
     element.style.fontSize = textSize + "em";
     element.style.lineHeight = lineHeight + "em";
     element.style.fontFamily = "\"" + font + "\"" + "," + "sans-serif";
     element.setAttribute("wudooh", "true");
 }
 
-// TODO remove this later
 function updateByAdding(node: Node, textSize: number, lineHeight: number, font: string) {
     let newHTML = "<span wudooh='true' style='" +
         "font-size:" + textSize + "em;" +
@@ -217,7 +217,7 @@ function updateByAdding(node: Node, textSize: number, lineHeight: number, font: 
  * @param lineHeight the height to update the line to
  * @param font the name of the font to update the text to
  */
-function updateAll(textSize: number, lineHeight: number, font: string = "Droid Arabic Naskh") {
+function updateAll(textSize: number, lineHeight: number, font: string = defaultFont) {
     getArabicTextNodesIn(document.body).forEach((it: Node) => updateNode(it, textSize, lineHeight, font));
 }
 
@@ -228,7 +228,7 @@ function updateAll(textSize: number, lineHeight: number, font: string = "Droid A
  * @param lineHeight the height to update the line to
  * @param font the name of the font to update the text to
  */
-function startObserver(textSize: number, lineHeight: number, font: string = "Droid Arabic Naskh") {
+function startObserver(textSize: number, lineHeight: number, font: string = defaultFont) {
 
     let config: MutationObserverInit = {
         attributes: false, // we don't care about attribute changes
@@ -240,7 +240,6 @@ function startObserver(textSize: number, lineHeight: number, font: string = "Dro
     };
 
     let callback: MutationCallback = (mutationsList: MutationRecord[]) => {
-        console.log("Callback Called!");
         mutationsList.forEach((record: MutationRecord) => {
             // If something has been added
             if (record.addedNodes.length > 0) {
@@ -262,7 +261,6 @@ function startObserver(textSize: number, lineHeight: number, font: string = "Dro
     };
 
     if (!observer) {
-        console.log("New Observer!");
         observer = new MutationObserver(callback);
         observer.observe(document.body, config);
     }
