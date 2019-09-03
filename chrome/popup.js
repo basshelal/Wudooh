@@ -3,16 +3,20 @@
  *
  * Currently there are 6 options, textSize, lineHeight, onOff, font, whitelisted and customSettings
  */
-var size = document.getElementById("size");
-var height = document.getElementById("height");
-var onOffSwitch = document.getElementById("onOffSwitch");
-var fontSelect = document.getElementById("font-select");
-var overrideSiteSwitch = document.getElementById("overrideSettingsSwitch");
-var whiteListSwitch = document.getElementById("whitelistSwitch");
-var sizeValue = document.getElementById("sizeValue");
-var heightValue = document.getElementById("heightValue");
-var overrideSettingsValue = document.getElementById("overrideSettingsLabel");
-var whitelistedValue = document.getElementById("whitelistedLabel");
+function $(elementId) {
+    return document.getElementById(elementId);
+}
+
+var size = $("size");
+var height = $("height");
+var onOffSwitch = $("onOffSwitch");
+var fontSelect = $("font-select");
+var overrideSiteSwitch = $("overrideSettingsSwitch");
+var whiteListSwitch = $("whitelistSwitch");
+var sizeValue = $("sizeValue");
+var heightValue = $("heightValue");
+var overrideSettingsValue = $("overrideSettingsLabel");
+var whitelistedValue = $("whitelistedLabel");
 /**
  * Extension function for a contains function in an array
  * @param element the element to check whether is in this array or not
@@ -50,7 +54,7 @@ var CustomSettings = /** @class */ (function () {
  * Updates the font of the Arabic Wudooh heading and font select to match the font selected by the user
  */
 function updateWudoohFont(font) {
-    document.getElementById("wudooh").style.fontFamily = font;
+    $("wudooh").style.fontFamily = font;
     fontSelect.style.fontFamily = font;
 }
 /**
@@ -269,6 +273,6 @@ addListeners();
 // TODO, for export we need to be able to first get ALL the settings before a download is allowed,
 //  but because all calls are asynchronous we have to find a way around this somehow
 // Export Settings
-var exportButton = document.getElementById("exportButton");
+var exportButton = $("exportButton");
 exportButton.href = "data:application/octet-stream," + encodeURIComponent("Wudooh Settings");
 exportButton.download = "settings.wudooh.json";

@@ -7,17 +7,21 @@ import Tab = chrome.tabs.Tab;
  * Currently there are 6 options, textSize, lineHeight, onOff, font, whitelisted and customSettings
  */
 
-const size: HTMLInputElement = document.getElementById("size") as HTMLInputElement;
-const height: HTMLInputElement = document.getElementById("height") as HTMLInputElement;
-const onOffSwitch: HTMLInputElement = document.getElementById("onOffSwitch") as HTMLInputElement;
-const fontSelect: HTMLSelectElement = document.getElementById("font-select") as HTMLSelectElement;
-const overrideSiteSwitch: HTMLInputElement = document.getElementById("overrideSettingsSwitch") as HTMLInputElement;
-const whiteListSwitch: HTMLInputElement = document.getElementById("whitelistSwitch") as HTMLInputElement;
+function $(elementId: string): HTMLElement | null {
+    return document.getElementById(elementId)
+}
 
-const sizeValue: HTMLElement = document.getElementById("sizeValue");
-const heightValue: HTMLElement = document.getElementById("heightValue");
-const overrideSettingsValue: HTMLElement = document.getElementById("overrideSettingsLabel");
-const whitelistedValue: HTMLElement = document.getElementById("whitelistedLabel");
+const size: HTMLInputElement = $("size") as HTMLInputElement;
+const height: HTMLInputElement = $("height") as HTMLInputElement;
+const onOffSwitch: HTMLInputElement = $("onOffSwitch") as HTMLInputElement;
+const fontSelect: HTMLSelectElement = $("font-select") as HTMLSelectElement;
+const overrideSiteSwitch: HTMLInputElement = $("overrideSettingsSwitch") as HTMLInputElement;
+const whiteListSwitch: HTMLInputElement = $("whitelistSwitch") as HTMLInputElement;
+
+const sizeValue: HTMLElement = $("sizeValue");
+const heightValue: HTMLElement = $("heightValue");
+const overrideSettingsValue: HTMLElement = $("overrideSettingsLabel");
+const whitelistedValue: HTMLElement = $("whitelistedLabel");
 
 interface Array<T> {
     contains(element: T): boolean;
@@ -73,7 +77,7 @@ class CustomSettings {
  * Updates the font of the Arabic Wudooh heading and font select to match the font selected by the user
  */
 function updateWudoohFont(font: string) {
-    document.getElementById("wudooh").style.fontFamily = font;
+    $("wudooh").style.fontFamily = font;
     fontSelect.style.fontFamily = font;
 }
 
@@ -300,6 +304,6 @@ addListeners();
 //  but because all calls are asynchronous we have to find a way around this somehow
 
 // Export Settings
-let exportButton: HTMLAnchorElement = document.getElementById("exportButton") as HTMLAnchorElement;
+let exportButton: HTMLAnchorElement = $("exportButton") as HTMLAnchorElement;
 exportButton.href = "data:application/octet-stream," + encodeURIComponent("Wudooh Settings");
 exportButton.download = "settings.wudooh.json";
