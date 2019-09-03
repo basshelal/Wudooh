@@ -1,3 +1,6 @@
+///<reference path="../../../.WebStorm2019.1/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
+var sync = chrome.storage.sync;
+var tabs = chrome.tabs;
 /**
  * This script is used by the extension's popup (popup.html) for options
  *
@@ -6,7 +9,6 @@
 function $(elementId) {
     return document.getElementById(elementId);
 }
-
 // Inputs
 var size = $("size");
 var height = $("height");
@@ -43,6 +45,7 @@ var CustomSettings = /** @class */ (function () {
         this.lineHeight = lineHeight;
         this.font = font;
     }
+
     return CustomSettings;
 }());
 /**
@@ -62,15 +65,15 @@ function updateWudoohFont(font) {
 function updateAllText() {
     // Only update text if this site is checked and is not whitelisted
     if (onOffSwitch.checked && whiteListSwitch.checked) {
-        chrome.storage.sync.get(["textSize", "lineHeight", "font", "customSettings"], function (fromStorage) {
+        sync.get(["textSize", "lineHeight", "font", "customSettings"], function (fromStorage) {
             // We need the old values to know how much we should change the options in main.ts
             var oldS = fromStorage.textSize;
             var oldH = fromStorage.lineHeight;
             var font = fromStorage.font;
             var customSettings = fromStorage.customSettings;
             // Send a message to all tabs
-            chrome.tabs.query({}, function (tabs) {
-                tabs.forEach(function (tab) {
+            tabs.query({}, function (allTabs) {
+                allTabs.forEach(function (tab) {
                     var thisURL = new URL(tab.url).hostname;
                     var custom = customSettings.findFirst(function (custom) {
                         return custom.url === thisURL;
@@ -87,13 +90,13 @@ function updateAllText() {
                         newHeight: parseInt(height.value),
                         font: font
                     };
-                    chrome.tabs.sendMessage(tab.id, message);
+                    tabs.sendMessage(tab.id, message);
                 });
             });
         });
     }
     // Save options at the end, even if the above if statement was false
-    chrome.storage.sync.set({
+    sync.set({
         textSize: parseInt(size.value),
         lineHeight: parseInt(height.value),
         onOff: onOffSwitch.checked,
@@ -106,7 +109,7 @@ function updateAllText() {
  * updates UI
  */
 function updateUI() {
-    chrome.storage.sync.get({
+    sync.get({
         textSize: '125',
         lineHeight: '125',
         onOff: true,
@@ -114,7 +117,7 @@ function updateUI() {
         whitelisted: [],
         customSettings: []
     }, function (fromStorage) {
-        chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+        tabs.query({active: true, currentWindow: true}, function (tabs) {
             var thisURL = new URL(tabs[0].url).hostname;
             var customSettings = fromStorage.customSettings;
             var whiteListed = fromStorage.whitelisted;
@@ -161,7 +164,7 @@ function updateUI() {
  * Toggles the on off switch, this will update all text if the switch is turned on
  */
 function toggleOnOff() {
-    chrome.storage.sync.set({onOff: onOffSwitch.checked}, function () {
+    sync.set({onOff: onOffSwitch.checked}, function () {
         if (onOffSwitch.checked)
             updateAllText();
     });
@@ -170,7 +173,7 @@ function toggleOnOff() {
  * Changes the font, this will update all text and update the Wudooh header
  */
 function changeFont() {
-    chrome.storage.sync.set({font: fontSelect.value,}, function () {
+    sync.set({font: fontSelect.value,}, function () {
         updateAllText();
         updateWudoohFont(fontSelect.value);
     });
@@ -178,10 +181,10 @@ function changeFont() {
 // TODO not yet finished
 function toggleOverrideSiteSettings() {
     // This only requires this current tab
-    chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+    tabs.query({active: true, currentWindow: true}, function (tabs) {
         // Get the url we are on right now
         var thisURL = new URL(tabs[0].url).hostname;
-        chrome.storage.sync.get({"customSettings": []}, function (fromStorage) {
+        sync.get({"customSettings": []}, function (fromStorage) {
             // Get the array of all custom websites
             var customSettings = fromStorage.customSettings;
             // Overridden so use custom settings
@@ -198,7 +201,7 @@ function toggleOverrideSiteSettings() {
                 overrideSettingsValue.innerText = "Using default settings";
             }
             // Set the array of all whitelisted websites in storage
-            chrome.storage.sync.set({customSettings: customSettings});
+            sync.set({customSettings: customSettings});
         });
     });
 }
@@ -212,10 +215,10 @@ function toggleOverrideSiteSettings() {
  */
 function toggleWhitelist() {
     // This only requires this current tab
-    chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+    tabs.query({active: true, currentWindow: true}, function (tabs) {
         // Get the url we are on right now
         var thisURL = new URL(tabs[0].url).hostname;
-        chrome.storage.sync.get({"whitelisted": []}, function (fromStorage) {
+        sync.get({"whitelisted": []}, function (fromStorage) {
             // Get the array of all whitelisted websites
             var whitelisted = fromStorage.whitelisted;
             // Allowed to run on this site
@@ -231,7 +234,7 @@ function toggleWhitelist() {
                 whitelistedValue.innerText = "This site is whitelisted, reload to see changes";
             }
             // Set the array of all whitelisted websites in storage
-            chrome.storage.sync.set({whitelisted: whitelisted});
+            sync.set({whitelisted: whitelisted});
         });
     });
 }

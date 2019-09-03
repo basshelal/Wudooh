@@ -1,5 +1,7 @@
 ///<reference path="../../../.WebStorm2019.1/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
-import Tab = chrome.tabs.Tab;
+import sync = chrome.storage.sync;
+import tabs = chrome.tabs;
+import Tab = tabs.Tab;
 
 /**
  * This script is used by the extension's popup (popup.html) for options
@@ -85,7 +87,7 @@ function updateAllText() {
     // Only update text if this site is checked and is not whitelisted
     if (onOffSwitch.checked && whiteListSwitch.checked) {
 
-        chrome.storage.sync.get(["textSize", "lineHeight", "font", "customSettings"], (fromStorage) => {
+        sync.get(["textSize", "lineHeight", "font", "customSettings"], (fromStorage) => {
             // We need the old values to know how much we should change the options in main.ts
             let oldS: number = fromStorage.textSize;
             let oldH: number = fromStorage.lineHeight;
@@ -93,8 +95,8 @@ function updateAllText() {
             let customSettings: Array<CustomSettings> = fromStorage.customSettings as Array<CustomSettings>;
 
             // Send a message to all tabs
-            chrome.tabs.query({}, (tabs: Array<Tab>) => {
-                tabs.forEach((tab: Tab) => {
+            tabs.query({}, (allTabs: Array<Tab>) => {
+                allTabs.forEach((tab: Tab) => {
                     let thisURL: string = new URL(tab.url).hostname;
                     let custom = customSettings.findFirst((custom: CustomSettings) => custom.url === thisURL);
                     if (custom) {
@@ -109,14 +111,14 @@ function updateAllText() {
                         newHeight: parseInt(height.value),
                         font: font
                     };
-                    chrome.tabs.sendMessage(tab.id, message);
+                    tabs.sendMessage(tab.id, message);
                 });
             });
         });
     }
 
     // Save options at the end, even if the above if statement was false
-    chrome.storage.sync.set({
+    sync.set({
         textSize: parseInt(size.value),
         lineHeight: parseInt(height.value),
         onOff: onOffSwitch.checked,
@@ -131,7 +133,7 @@ function updateAllText() {
  */
 function updateUI() {
 
-    chrome.storage.sync.get({
+    sync.get({
         textSize: '125',
         lineHeight: '125',
         onOff: true,
@@ -139,7 +141,7 @@ function updateUI() {
         whitelisted: [],
         customSettings: []
     }, (fromStorage) => {
-        chrome.tabs.query({active: true, currentWindow: true}, (tabs: Array<Tab>) => {
+        tabs.query({active: true, currentWindow: true}, (tabs: Array<Tab>) => {
             let thisURL: string = new URL(tabs[0].url).hostname;
 
             let customSettings: Array<CustomSettings> = fromStorage.customSettings as Array<CustomSettings>;
@@ -187,7 +189,7 @@ function updateUI() {
  * Toggles the on off switch, this will update all text if the switch is turned on
  */
 function toggleOnOff() {
-    chrome.storage.sync.set({onOff: onOffSwitch.checked}, () => {
+    sync.set({onOff: onOffSwitch.checked}, () => {
         if (onOffSwitch.checked) updateAllText();
     });
 }
@@ -196,7 +198,7 @@ function toggleOnOff() {
  * Changes the font, this will update all text and update the Wudooh header
  */
 function changeFont() {
-    chrome.storage.sync.set({font: fontSelect.value,}, () => {
+    sync.set({font: fontSelect.value,}, () => {
         updateAllText();
         updateWudoohFont(fontSelect.value);
     });
@@ -205,11 +207,11 @@ function changeFont() {
 // TODO not yet finished
 function toggleOverrideSiteSettings() {
     // This only requires this current tab
-    chrome.tabs.query({active: true, currentWindow: true}, (tabs: Array<Tab>) => {
+    tabs.query({active: true, currentWindow: true}, (tabs: Array<Tab>) => {
         // Get the url we are on right now
         let thisURL = new URL(tabs[0].url).hostname;
 
-        chrome.storage.sync.get({"customSettings": []}, (fromStorage) => {
+        sync.get({"customSettings": []}, (fromStorage) => {
             // Get the array of all custom websites
             let customSettings: Array<CustomSettings> = fromStorage.customSettings as Array<CustomSettings>;
 
@@ -226,7 +228,7 @@ function toggleOverrideSiteSettings() {
             }
 
             // Set the array of all whitelisted websites in storage
-            chrome.storage.sync.set({customSettings: customSettings});
+            sync.set({customSettings: customSettings});
         });
     });
 }
@@ -242,11 +244,11 @@ function toggleOverrideSiteSettings() {
 function toggleWhitelist() {
 
     // This only requires this current tab
-    chrome.tabs.query({active: true, currentWindow: true}, (tabs: Array<Tab>) => {
+    tabs.query({active: true, currentWindow: true}, (tabs: Array<Tab>) => {
         // Get the url we are on right now
         let thisURL = new URL(tabs[0].url).hostname;
 
-        chrome.storage.sync.get({"whitelisted": []}, (fromStorage) => {
+        sync.get({"whitelisted": []}, (fromStorage) => {
             // Get the array of all whitelisted websites
             let whitelisted: Array<string> = fromStorage.whitelisted;
 
@@ -262,7 +264,7 @@ function toggleWhitelist() {
             }
 
             // Set the array of all whitelisted websites in storage
-            chrome.storage.sync.set({whitelisted: whitelisted});
+            sync.set({whitelisted: whitelisted});
         });
     });
 }

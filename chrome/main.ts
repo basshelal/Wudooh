@@ -1,5 +1,8 @@
 ///<reference path="../../../.WebStorm2019.1/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
 
+import sync = chrome.storage.sync;
+import runtime = chrome.runtime;
+
 /**
  * This is the main script that reads the document and updates any Arabic script text
  */
@@ -263,7 +266,7 @@ function startObserver(textSize: number, lineHeight: number, font: string = defa
  * Then starts an observer with those same options to update any new text that will come
  * This only happens if the on off switch is on and the site is not whitelisted
  */
-chrome.storage.sync.get(keys, (fromStorage) => {
+sync.get(keys, (fromStorage) => {
     let textSize: number = fromStorage.textSize;
     let lineHeight: number = fromStorage.lineHeight;
     let isOn: boolean = fromStorage.onOff;
@@ -299,7 +302,7 @@ chrome.storage.sync.get(keys, (fromStorage) => {
  * The check whether the switch is on or if this site is whitelisted is not done here but at the
  * sender's sendMessage call
  */
-chrome.runtime.onMessage.addListener((message) => {
+runtime.onMessage.addListener((message) => {
     let newSize: number = 100 * (message.newSize / message.oldSize);
     let newHeight: number = 100 * (message.newHeight / message.oldHeight);
     updateAll(newSize, newHeight, message.font);
@@ -315,7 +318,7 @@ chrome.runtime.onMessage.addListener((message) => {
 
 // TODO REMOVE LATER!
 function log() {
-    chrome.storage.sync.get(null, (items) => {
+    sync.get(null, (items) => {
         keys.forEach((key) => {
             if (key === "customSettings") {
                 console.log(key + " : " + items[key].length);

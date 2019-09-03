@@ -1,5 +1,7 @@
 ///<reference path="../../../.WebStorm2019.1/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
 
+import sync = chrome.storage.sync;
+import onInstalled = chrome.runtime.onInstalled;
 import InstalledDetails = chrome.runtime.InstalledDetails;
 
 /** The keys of the {@linkcode chrome.storage.sync} */
@@ -22,14 +24,14 @@ const keys = [
  * Runs on install or update to check if the storage has initialized all its values correctly.
  * If some key has not been initialized then it will create it and set it to its default value
  */
-chrome.runtime.onInstalled.addListener((details: InstalledDetails) => {
-    chrome.storage.sync.get(keys, (fromStorage) => {
-        if (!fromStorage.textSize) chrome.storage.sync.set({textSize: '115',});
-        if (!fromStorage.lineHeight) chrome.storage.sync.set({lineHeight: '125',});
-        if (!fromStorage.onOff) chrome.storage.sync.set({onOff: true,});
-        if (!fromStorage.font) chrome.storage.sync.set({font: "Droid Arabic Naskh"});
-        if (!fromStorage.whitelisted) chrome.storage.sync.set({whitelisted: []});
-        if (!fromStorage.customSettings) chrome.storage.sync.set({customSettings: []});
+onInstalled.addListener((details: InstalledDetails) => {
+    sync.get(keys, (fromStorage) => {
+        if (!fromStorage.textSize) sync.set({textSize: '115',});
+        if (!fromStorage.lineHeight) sync.set({lineHeight: '125',});
+        if (!fromStorage.onOff) sync.set({onOff: true,});
+        if (!fromStorage.font) sync.set({font: "Droid Arabic Naskh"});
+        if (!fromStorage.whitelisted) sync.set({whitelisted: []});
+        if (!fromStorage.customSettings) sync.set({customSettings: []});
 
         // User has updated extension
         if (details.reason == "update") {

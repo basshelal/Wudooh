@@ -1,4 +1,6 @@
 ///<reference path="../../../.WebStorm2019.1/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
+var sync = chrome.storage.sync;
+var onInstalled = chrome.runtime.onInstalled;
 /** The keys of the {@linkcode chrome.storage.sync} */
 var keys = [
     /** The font size percent, between 100 and 200 */
@@ -18,20 +20,20 @@ var keys = [
  * Runs on install or update to check if the storage has initialized all its values correctly.
  * If some key has not been initialized then it will create it and set it to its default value
  */
-chrome.runtime.onInstalled.addListener(function (details) {
-    chrome.storage.sync.get(keys, function (fromStorage) {
+onInstalled.addListener(function (details) {
+    sync.get(keys, function (fromStorage) {
         if (!fromStorage.textSize)
-            chrome.storage.sync.set({textSize: '115',});
+            sync.set({textSize: '115',});
         if (!fromStorage.lineHeight)
-            chrome.storage.sync.set({lineHeight: '125',});
+            sync.set({lineHeight: '125',});
         if (!fromStorage.onOff)
-            chrome.storage.sync.set({onOff: true,});
+            sync.set({onOff: true,});
         if (!fromStorage.font)
-            chrome.storage.sync.set({font: "Droid Arabic Naskh"});
+            sync.set({font: "Droid Arabic Naskh"});
         if (!fromStorage.whitelisted)
-            chrome.storage.sync.set({whitelisted: []});
+            sync.set({whitelisted: []});
         if (!fromStorage.customSettings)
-            chrome.storage.sync.set({customSettings: []});
+            sync.set({customSettings: []});
         // User has updated extension
         if (details.reason == "update") {
             var oldVersion = details.previousVersion; // string of previous version if we need it
