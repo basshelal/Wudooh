@@ -47,10 +47,11 @@ var CustomSettings = /** @class */ (function () {
     return CustomSettings;
 }());
 /**
- * Updates the font of the Arabic Wudooh heading to match the font selected by the user
+ * Updates the font of the Arabic Wudooh heading and font select to match the font selected by the user
  */
 function updateWudoohFont(font) {
     document.getElementById("wudooh").style.fontFamily = font;
+    fontSelect.style.fontFamily = font;
 }
 /**
  * Updates all Arabic text in all tabs to adhere to the new options. This is done by sending a message to all

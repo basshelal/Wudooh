@@ -70,10 +70,11 @@ class CustomSettings {
 }
 
 /**
- * Updates the font of the Arabic Wudooh heading to match the font selected by the user
+ * Updates the font of the Arabic Wudooh heading and font select to match the font selected by the user
  */
 function updateWudoohFont(font: string) {
     document.getElementById("wudooh").style.fontFamily = font;
+    fontSelect.style.fontFamily = font;
 }
 
 /**
