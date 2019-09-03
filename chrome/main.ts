@@ -57,28 +57,19 @@ class CustomSettings {
 let observer: MutationObserver;
 
 interface Array<T> {
-    contains(element: T): boolean;
 
     findFirst(predicate: (element: T, index: number) => boolean): T | null;
 }
 
 /**
- * Extension function for a contains function in an array
- * @param element the element to check whether is in this array or not
- * @return true if the element exists in this array, false otherwise
+ * Finds the first element that matches the given {@param predicate} else returns null
+ * You can use this as a way to check if the array contains an element that matches the given {@param predicate}, it
+ * will return null if none exists
+ * @param predicate the predicate to match
  */
-Array.prototype.contains = function <T>(element: T): boolean {
-    for (let i = 0; i < this.length; i++) {
-        if (element === this[i]) return true;
-    }
-    return false;
-};
-
 Array.prototype.findFirst = function <T>(predicate: (element: T, index: number) => boolean): T | null {
     for (let i = 0; i < this.length; i++) {
-        if (predicate(this[i], i)) {
-            return this[i];
-        }
+        if (predicate(this[i], i)) return this[i];
     }
     return null;
 };
@@ -158,7 +149,7 @@ function isEditable(node: Node): boolean {
 
     let editables: Array<string> = ["textarea", "input", "text", "email", "number", "search", "tel", "url", "password"];
 
-    return (element.isContentEditable || (element.nodeType === Node.ELEMENT_NODE && editables.contains(nodeName)));
+    return (element.isContentEditable || (element.nodeType === Node.ELEMENT_NODE && !!editables.findFirst((it) => it === nodeName)));
 }
 
 /**
@@ -281,7 +272,7 @@ chrome.storage.sync.get(keys, (fromStorage) => {
     let customSettings: Array<CustomSettings> = fromStorage.customSettings;
 
     let thisHostname: string = new URL(document.URL).hostname;
-    let isWhitelisted: boolean = whitelisted.contains(thisHostname);
+    let isWhitelisted: boolean = !!whitelisted.findFirst((it) => it === thisHostname);
 
     let customSite: CustomSettings = customSettings.findFirst((custom: CustomSettings) => custom.url === thisHostname);
 

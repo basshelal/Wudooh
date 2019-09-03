@@ -7,33 +7,28 @@ function $(elementId) {
     return document.getElementById(elementId);
 }
 
+// Inputs
 var size = $("size");
 var height = $("height");
 var onOffSwitch = $("onOffSwitch");
 var fontSelect = $("font-select");
 var overrideSiteSwitch = $("overrideSettingsSwitch");
 var whiteListSwitch = $("whitelistSwitch");
+// Labels
 var sizeValue = $("sizeValue");
 var heightValue = $("heightValue");
 var overrideSettingsValue = $("overrideSettingsLabel");
 var whitelistedValue = $("whitelistedLabel");
 /**
- * Extension function for a contains function in an array
- * @param element the element to check whether is in this array or not
- * @return true if the element exists in this array, false otherwise
+ * Finds the first element that matches the given {@param predicate} else returns null
+ * You can use this as a way to check if the array contains an element that matches the given {@param predicate}, it
+ * will return null if none exists
+ * @param predicate the predicate to match
  */
-Array.prototype.contains = function (element) {
-    for (var i = 0; i < this.length; i++) {
-        if (element === this[i])
-            return true;
-    }
-    return false;
-};
 Array.prototype.findFirst = function (predicate) {
     for (var i = 0; i < this.length; i++) {
-        if (predicate(this[i], i)) {
+        if (predicate(this[i], i))
             return this[i];
-        }
     }
     return null;
 };
@@ -145,7 +140,9 @@ function updateUI() {
             fontSelect.value = font;
             onOffSwitch.checked = fromStorage.onOff;
             updateWudoohFont(font);
-            var isWhitelisted = whiteListed.contains(thisURL);
+            var isWhitelisted = !!whiteListed.findFirst(function (it) {
+                return it === thisURL;
+            });
             var isCustom = !!custom;
             whiteListSwitch.checked = !isWhitelisted;
             if (isWhitelisted)

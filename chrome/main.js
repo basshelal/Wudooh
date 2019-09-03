@@ -39,22 +39,15 @@ var CustomSettings = /** @class */ (function () {
 /** The observer used in {@linkcode startObserver} to dynamically update any newly added Nodes */
 var observer;
 /**
- * Extension function for a contains function in an array
- * @param element the element to check whether is in this array or not
- * @return true if the element exists in this array, false otherwise
+ * Finds the first element that matches the given {@param predicate} else returns null
+ * You can use this as a way to check if the array contains an element that matches the given {@param predicate}, it
+ * will return null if none exists
+ * @param predicate the predicate to match
  */
-Array.prototype.contains = function (element) {
-    for (var i = 0; i < this.length; i++) {
-        if (element === this[i])
-            return true;
-    }
-    return false;
-};
 Array.prototype.findFirst = function (predicate) {
     for (var i = 0; i < this.length; i++) {
-        if (predicate(this[i], i)) {
+        if (predicate(this[i], i))
             return this[i];
-        }
     }
     return null;
 };
@@ -120,7 +113,9 @@ function isEditable(node) {
     var element = node;
     var nodeName = element.nodeName.toLowerCase();
     var editables = ["textarea", "input", "text", "email", "number", "search", "tel", "url", "password"];
-    return (element.isContentEditable || (element.nodeType === Node.ELEMENT_NODE && editables.contains(nodeName)));
+    return (element.isContentEditable || (element.nodeType === Node.ELEMENT_NODE && !!editables.findFirst(function (it) {
+        return it === nodeName;
+    })));
 }
 /**
  * Updates the passed in node's html to have the properties of a modified Arabic text node, this will
@@ -237,7 +232,9 @@ chrome.storage.sync.get(keys, function (fromStorage) {
     var whitelisted = fromStorage.whitelisted;
     var customSettings = fromStorage.customSettings;
     var thisHostname = new URL(document.URL).hostname;
-    var isWhitelisted = whitelisted.contains(thisHostname);
+    var isWhitelisted = !!whitelisted.findFirst(function (it) {
+        return it === thisHostname;
+    });
     var customSite = customSettings.findFirst(function (custom) {
         return custom.url === thisHostname;
     });
