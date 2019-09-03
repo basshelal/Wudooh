@@ -1,8 +1,11 @@
 ///<reference path="../../../.WebStorm2019.1/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
 
+import tabs = chrome.tabs;
+import runtime = chrome.runtime;
 import sync = chrome.storage.sync;
-import onInstalled = chrome.runtime.onInstalled;
-import InstalledDetails = chrome.runtime.InstalledDetails;
+import onInstalled = runtime.onInstalled;
+import CreateProperties = tabs.CreateProperties;
+import InstalledDetails = runtime.InstalledDetails;
 
 /** The keys of the {@linkcode chrome.storage.sync} */
 const keys = [
@@ -20,6 +23,12 @@ const keys = [
     "customSettings"
 ];
 
+function launchSite(path: string = "") {
+    tabs.create(new class implements CreateProperties {
+        url: string = "http://basshelal.github.io/Wudooh" + path;
+    });
+}
+
 /**
  * Runs on install or update to check if the storage has initialized all its values correctly.
  * If some key has not been initialized then it will create it and set it to its default value
@@ -36,6 +45,7 @@ onInstalled.addListener((details: InstalledDetails) => {
         // User has updated extension
         if (details.reason == "update") {
             let oldVersion: string = details.previousVersion; // string of previous version if we need it
+            let newVersion: string = runtime.getManifest().version; // string of newly updated version
             // TODO here we can create a new Tab with the details of the update probably the extension website
             //  basshelal.github.io/Wudooh and do any DB migrations that we want
         }

@@ -1,6 +1,8 @@
 ///<reference path="../../../.WebStorm2019.1/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
+var tabs = chrome.tabs;
+var runtime = chrome.runtime;
 var sync = chrome.storage.sync;
-var onInstalled = chrome.runtime.onInstalled;
+var onInstalled = runtime.onInstalled;
 /** The keys of the {@linkcode chrome.storage.sync} */
 var keys = [
     /** The font size percent, between 100 and 200 */
@@ -16,6 +18,19 @@ var keys = [
     /** The array of {@linkcode CustomSettings} that represents the sites with custom settings */
     "customSettings"
 ];
+
+function launchSite(path) {
+    if (path === void 0) {
+        path = "";
+    }
+    tabs.create(new /** @class */ (function () {
+        function class_1() {
+            this.url = "http://basshelal.github.io/Wudooh" + path;
+        }
+
+        return class_1;
+    }()));
+}
 /**
  * Runs on install or update to check if the storage has initialized all its values correctly.
  * If some key has not been initialized then it will create it and set it to its default value
@@ -37,6 +52,7 @@ onInstalled.addListener(function (details) {
         // User has updated extension
         if (details.reason == "update") {
             var oldVersion = details.previousVersion; // string of previous version if we need it
+            var newVersion = runtime.getManifest().version; // string of newly updated version
             // TODO here we can create a new Tab with the details of the update probably the extension website
             //  basshelal.github.io/Wudooh and do any DB migrations that we want
         }
