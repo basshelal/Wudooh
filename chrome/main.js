@@ -265,8 +265,10 @@ chrome.runtime.onMessage.addListener(function (message) {
     var newSize = 100 * (message.newSize / message.oldSize);
     var newHeight = 100 * (message.newHeight / message.oldHeight);
     updateAll(newSize, newHeight, message.font);
-    observer.disconnect();
-    observer = null;
+    if (!observer) {
+        observer.disconnect();
+        observer = null;
+    }
     startObserver(newSize, newHeight, message.font);
     log();
 });

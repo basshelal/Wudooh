@@ -265,3 +265,9 @@ function addListeners() {
     };
 }
 addListeners();
+// TODO, for export we need to be able to first get ALL the settings before a download is allowed,
+//  but because all calls are asynchronous we have to find a way around this somehow
+// Export Settings
+var exportButton = document.getElementById("exportButton");
+exportButton.href = "data:application/octet-stream," + encodeURIComponent("Wudooh Settings");
+exportButton.download = "settings.wudooh.json";

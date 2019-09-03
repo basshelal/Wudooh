@@ -313,8 +313,10 @@ chrome.runtime.onMessage.addListener((message) => {
     let newHeight: number = 100 * (message.newHeight / message.oldHeight);
     updateAll(newSize, newHeight, message.font);
 
-    observer.disconnect();
-    observer = null;
+    if (!observer) {
+        observer.disconnect();
+        observer = null;
+    }
     startObserver(newSize, newHeight, message.font);
 
     log()
