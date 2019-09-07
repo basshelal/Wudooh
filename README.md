@@ -6,11 +6,14 @@
 
 [![Mozilla Add-on](https://img.shields.io/amo/v/wudooh.svg)](https://addons.mozilla.org/en-US/firefox/addon/wudooh/)
 [![Mozilla Add-on](https://img.shields.io/amo/users/wudooh.svg)](https://addons.mozilla.org/en-US/firefox/addon/wudooh/)
+[![Mozilla Add-on](https://img.shields.io/amo/stars/wudooh)](https://addons.mozilla.org/en-US/firefox/addon/wudooh/)
 
 [![Chrome](https://github.com/basshelal/Wudooh/blob/master/pictures/Chrome50.png)](https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn)
 [![Firefox](https://github.com/basshelal/Wudooh/blob/master/pictures/Firefox50.png)](https://addons.mozilla.org/en-US/firefox/addon/wudooh/)
 
-![Wudooh Banner](https://github.com/basshelal/Wudooh/blob/master/pictures/GitHubPromo.png)
+[![Wudooh Banner](https://github.com/basshelal/Wudooh/blob/master/pictures/GitHubPromo.png)](https://basshelal.github.io/Wudooh/)
+
+[![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/P5P5XSTN)
 
 * [Current Features](#current-features)
     * [On Off Switch](#on-off-switch)
@@ -31,7 +34,7 @@
 ![User Testimonial](https://github.com/basshelal/Wudooh/blob/master/pictures/Testimonial.png)
 
 Wudooh [(clarity in Arabic and Persian)](https://en.wiktionary.org/wiki/%D9%88%D8%B6%D9%88%D8%AD)
- is a simple chrome and firefox extension that makes reading Arabic text clearer and more pleasant.
+ is a simple browser extension that makes reading Arabic script text clearer and more pleasant.
 
 This project is based on and is the successor to
  [Jackson Petty's](https://github.com/jopetty) 
@@ -131,11 +134,8 @@ Wudooh safely ignores editable fields:
 
 ## Future Features
 
-* Custom fonts added by user
+* Allow for custom settings for each site
 * Export and import settings (including whitelist) to be used across browsers
-* ~~Live text updates as options are updated~~ Done!
-* ~~More font options~~ Done! Including Urdu fonts!
-* ~~Whitelist or exempt websites~~ Done!
 
 ## Known Issues
 
@@ -176,26 +176,31 @@ All of these problems can be fixed by a page refresh.
 
 ## Contributing
 
-This project is fully open source and I am accepting pull requests. The code is well documented 
-and commented and should be easy to understand.
+This project is fully open source and I am accepting pull requests, especially those that fix issues.
+The code is well documented and commented and should be easy to understand for a beginner.
 
-All new code must be in TypeScript, with strong typing and be well documented and commented 
-and structured.
+All code must be in TypeScript, strongly typed and well documented, commented and structured.
+My general rule of thumb is to be verbose to give as much detail as possible 
+(good names, allows show types, comment and document the code). Ambiguity causes bugs.
 
-You are also welcome to fork this and use the same code to clarify any other scripts such as CJK.
+You are also welcome to fork this and use the same code to modify any other scripts such as 
+[CJK](https://en.wikipedia.org/wiki/CJK_characters).
 Few modifications would need to be made, only the `arabicRegEx` `const` in 
 [`main.ts`](https://github.com/basshelal/Wudooh/blob/master/main.ts)
  would need to change within the TypeScript code (don't forget to compile to JavaScript). 
-[`popup.html`](https://github.com/basshelal/Wudooh/blob/master/popup.html) and 
-[`styles.css`](https://github.com/basshelal/Wudooh/blob/master/styles.css) would need to be modified 
+[`popup.html`](https://github.com/basshelal/Wudooh/blob/master/chrome/popup.html), 
+[`styles.css`](https://github.com/basshelal/Wudooh/blob/master/chrome/styles.css) and 
+[`fonts.css`](https://github.com/basshelal/Wudooh/blob/master/chrome/fonts.css) would need to be modified 
 to accommodate different fonts and a different UI feel, but generally speaking, few modifications would need
-to be made. You are free to do this and publish it but credit to Wudooh would be greatly appreciated.
+to be made, especially to the TypeScript code.
+You are free to do this and publish it [(Wudooh is MIT licensed)](https://github.com/basshelal/Wudooh/blob/master/LICENSE) 
+but credit to Wudooh would be greatly appreciated.
 
-I personally recommend [JetBrains WebStorm](https://www.jetbrains.com/webstorm/).
+I personally recommend [JetBrains WebStorm](https://www.jetbrains.com/webstorm/) or [VSCode](https://code.visualstudio.com).
 
 ## All Fonts
 
-The list of all fonts in Wudooh can be found [here](Fonts.md).
+The list of all fonts in Wudooh can be found [here](https://basshelal.github.io/Wudooh/fonts).
 
 All fonts used by Wudooh are open source but belong to their respective owners. I own none of these fonts.
 
