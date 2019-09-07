@@ -77,15 +77,15 @@ ul.horizontal li {
 .ribbon a:active,
 .ribbon a:hover {
     display: block;
-    padding: 2px 0;
+    padding: 1px 0;
     height: 24px;
     line-height: 24px;
 
-    color: inherit;
+    color: #880e4f;
     text-align: center;
     text-decoration: none;
-    font-family: 'DejaVu Sans Condensed', sans-serif;
-    font-size: 1.4em;
+    font-family: sans-serif;
+    font-size: 1.25em;
     font-weight: 500;
 
     border: 1px solid rgba(255, 255, 255, 0.3);
@@ -96,8 +96,7 @@ ul.horizontal li {
 }
 
 .ribbon.white {
-    background: #eee;
-    color: black;
+    background: #ffffff;
 }
 
 .ribbon.white a {
