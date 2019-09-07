@@ -1,4 +1,3 @@
-@import url(http://fonts.googleapis.com/css?family=Cabin+Condensed:500&text=Fork%20me%20on%20GitHub);
 
 html {
     background-color: #880e4f;
@@ -85,8 +84,8 @@ ul.horizontal li {
     color: inherit;
     text-align: center;
     text-decoration: none;
-    font-family: 'Cabin Condensed', sans-serif;
-    font-size: 1.5em;
+    font-family: 'DejaVu Sans Condensed', sans-serif;
+    font-size: 1.4em;
     font-weight: 500;
 
     border: 1px solid rgba(255, 255, 255, 0.3);
