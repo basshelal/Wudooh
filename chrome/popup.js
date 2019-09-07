@@ -45,7 +45,6 @@ var CustomSettings = /** @class */ (function () {
         this.lineHeight = lineHeight;
         this.font = font;
     }
-
     return CustomSettings;
 }());
 /**

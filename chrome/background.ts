@@ -35,8 +35,8 @@ function launchSite(path: string = "") {
  */
 onInstalled.addListener((details: InstalledDetails) => {
     sync.get(keys, (fromStorage) => {
-        if (!fromStorage.textSize) sync.set({textSize: '115',});
-        if (!fromStorage.lineHeight) sync.set({lineHeight: '125',});
+        if (!fromStorage.textSize) sync.set({textSize: '115'});
+        if (!fromStorage.lineHeight) sync.set({lineHeight: '125'});
         if (!fromStorage.onOff) sync.set({onOff: true,});
         if (!fromStorage.font) sync.set({font: "Droid Arabic Naskh"});
         if (!fromStorage.whitelisted) sync.set({whitelisted: []});

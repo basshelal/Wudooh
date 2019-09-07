@@ -149,3 +149,19 @@
     font-weight: normal;
     src: local('Mehr Nastaliq'), url('chrome-extension://__MSG_@@extension_id__/fonts/MehrNastaliq.woff2') format('woff2');
 }
+
+/** Rooznameh */
+@font-face {
+    font-family: 'Rooznameh';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Rooznameh'), url('chrome-extension://__MSG_@@extension_id__/fonts/Rooznameh.woff2') format('woff2');
+}
+
+/** DecoType Naskh */
+@font-face {
+    font-family: 'DecoType Naskh';
+    font-style: normal;
+    font-weight: normal;
+    src: local('DecoType Naskh'), url('chrome-extension://__MSG_@@extension_id__/fonts/DecoTypeNaskh.woff2') format('woff2');
+}

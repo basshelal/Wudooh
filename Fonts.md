@@ -33,6 +33,9 @@ All fonts used by Wudooh are open source but belong to their respective owners. 
 * Katibeh
 * Jomhuria
 * Shakstah
+* Mehr Nastaliq
+* Rooznameh
+* DecoType Naskh
 * Sans-Serif
 * Times New Roman
 * Arial

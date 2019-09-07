@@ -4,17 +4,17 @@
  */
 // TODO good thing to add is to allow for symbols and numbers between Arabic or at the end or beginning of it
 // like hashtags # and numbers and exclamation marks etc
-var arabicRegEx = new RegExp('([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF]+(' +
+const arabicRegEx = new RegExp('([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF]+(' +
     ' [\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\W\d]+)*)', 'g');
-var observer;
+let observer;
 /**
  * Extension function for a contains function in an array
  * @param element the element to check whether is in this array or not
  * @return true if the element exists in this array, false otherwise
  */
 Array.prototype.contains = function (element) {
-    var result = false;
-    for (var i = 0; i < this.length; i++) {
+    let result = false;
+    for (let i = 0; i < this.length; i++) {
         if (element === this[i]) {
             result = true;
             break;
@@ -37,9 +37,9 @@ function hasArabicScript(node) {
  * root node
  */
 function getArabicTextNodesIn(rootNode) {
-    var walker = document.createTreeWalker(rootNode, NodeFilter.SHOW_ALL);
-    var node;
-    var arabicTextNodes = [];
+    let walker = document.createTreeWalker(rootNode, NodeFilter.SHOW_ALL);
+    let node;
+    let arabicTextNodes = [];
     // noinspection JSAssignmentUsedAsCondition
     while (node = walker.nextNode()) {
         if (hasArabicScript(node)) {
@@ -54,15 +54,15 @@ function getArabicTextNodesIn(rootNode) {
  * @param html the html string that will be the passed in node's html
  */
 function setNodeHtml(node, html) {
-    var parent = node.parentNode;
+    let parent = node.parentNode;
     if (!parent || !node)
         return;
     // don't change anything if this node or its parent are editable
     if (isEditable(parent) || isEditable(node))
         return;
-    var nextSibling = node.nextSibling;
+    let nextSibling = node.nextSibling;
     // the div is temporary and doesn't show up in the html
-    var newElement = document.createElement("div");
+    let newElement = document.createElement("div");
     newElement.innerHTML = html;
     while (newElement.firstChild) {
         // we only insert the passed in html, the div is not inserted
@@ -80,9 +80,9 @@ function setNodeHtml(node, html) {
  * @return true if the node is editable and false otherwise
  */
 function isEditable(node) {
-    var element = node;
-    var nodeName = element.nodeName.toLowerCase();
-    var editables = ["textarea", "input", "text", "email", "number", "search", "tel", "url", "password"];
+    let element = node;
+    let nodeName = element.nodeName.toLowerCase();
+    let editables = ["textarea", "input", "text", "email", "number", "search", "tel", "url", "password"];
     return (element.isContentEditable || (element.nodeType === Node.ELEMENT_NODE && editables.contains(nodeName)));
 }
 /**
@@ -95,12 +95,11 @@ function isEditable(node) {
  * @param lineHeight the height to update the line to
  * @param font the name of the font to update the text to
  */
-function updateNode(node, textSize, lineHeight, font) {
-    if (font === void 0) { font = "Droid Arabic Naskh"; }
+function updateNode(node, textSize, lineHeight, font = "Droid Arabic Naskh") {
     if (node.nodeValue) {
-        var newSize = textSize / 100;
-        var newHeight = lineHeight / 100;
-        var newHTML = void 0;
+        let newSize = textSize / 100;
+        let newHeight = lineHeight / 100;
+        let newHTML;
         if (font === "Original") {
             newHTML = "<span class='ar'' style='" +
                 "font-size:" + newSize + "em;" +
@@ -114,7 +113,7 @@ function updateNode(node, textSize, lineHeight, font) {
                 "font-family:" + "\"" + font + "\"" + "," + "sans-serif;" +
                 "'>$&</span>";
         }
-        var text = node.nodeValue.replace(arabicRegEx, newHTML);
+        let text = node.nodeValue.replace(arabicRegEx, newHTML);
         setNodeHtml(node, text);
     }
 }
@@ -125,9 +124,8 @@ function updateNode(node, textSize, lineHeight, font) {
  * @param lineHeight the height to update the line to
  * @param font the name of the font to update the text to
  */
-function updateAll(textSize, lineHeight, font) {
-    if (font === void 0) { font = "Droid Arabic Naskh"; }
-    getArabicTextNodesIn(document.body).forEach(function (it) { return updateNode(it, textSize, lineHeight, font); });
+function updateAll(textSize, lineHeight, font = "Droid Arabic Naskh") {
+    getArabicTextNodesIn(document.body).forEach((it) => updateNode(it, textSize, lineHeight, font));
 }
 /**
  * Starts the observer that will observe for any additions to the document and update them if they have any
@@ -136,23 +134,22 @@ function updateAll(textSize, lineHeight, font) {
  * @param lineHeight the height to update the line to
  * @param font the name of the font to update the text to
  */
-function startObserver(textSize, lineHeight, font) {
-    if (font === void 0) { font = "Droid Arabic Naskh"; }
-    var config = {
+function startObserver(textSize, lineHeight, font = "Droid Arabic Naskh") {
+    let config = {
         attributes: false,
         childList: true,
         subtree: true,
         characterData: true,
         characterDataOldValue: false,
     };
-    var callback = function (mutationsList) {
-        mutationsList.forEach(function (record) {
+    let callback = function (mutationsList) {
+        mutationsList.forEach((record) => {
             // If something has been added
             if (record.addedNodes.length > 0) {
                 //  For each added node
-                record.addedNodes.forEach(function (addedNode) {
+                record.addedNodes.forEach((addedNode) => {
                     // For each node with Arabic script in addedNode
-                    getArabicTextNodesIn(addedNode).forEach(function (arabicNode) {
+                    getArabicTextNodesIn(addedNode).forEach((arabicNode) => {
                         // Update arabicNode only if it hasn't been updated
                         if (arabicNode.parentElement && arabicNode.parentElement.getAttribute("class") != "ar") {
                             updateNode(arabicNode, textSize, lineHeight, font);
@@ -171,13 +168,13 @@ function startObserver(textSize, lineHeight, font) {
  * Then starts an observer with those same options to update any new text that will come
  * This only happens if the on off switch is on and the site is not whitelisted
  */
-browser.storage.sync.get(["textSize", "lineHeight", "onOff", "font", "whitelisted"]).then(function (fromStorage) {
-    var textSize = fromStorage.textSize;
-    var lineHeight = fromStorage.lineHeight;
-    var checked = fromStorage.onOff;
-    var font = fromStorage.font;
-    var whitelisted = fromStorage.whitelisted;
-    var isWhitelisted = whitelisted.contains(new URL(document.URL).hostname);
+browser.storage.sync.get(["textSize", "lineHeight", "onOff", "font", "whitelisted"]).then((fromStorage) => {
+    let textSize = fromStorage.textSize;
+    let lineHeight = fromStorage.lineHeight;
+    let checked = fromStorage.onOff;
+    let font = fromStorage.font;
+    let whitelisted = fromStorage.whitelisted;
+    let isWhitelisted = whitelisted.contains(new URL(document.URL).hostname);
     // Only do anything if the switch is on and this site is not whitelisted
     if (checked && !isWhitelisted) {
         updateAll(textSize, lineHeight, font);
@@ -192,9 +189,10 @@ browser.storage.sync.get(["textSize", "lineHeight", "onOff", "font", "whiteliste
  * sender's sendMessage call
  */
 browser.runtime.onMessage.addListener(function (message) {
-    var newSize = 100 * (message.newSize / message.oldSize);
-    var newHeight = 100 * (message.newHeight / message.oldHeight);
+    let newSize = 100 * (message.newSize / message.oldSize);
+    let newHeight = 100 * (message.newHeight / message.oldHeight);
     updateAll(newSize, newHeight, message.font);
     observer.disconnect();
     startObserver(newSize, newHeight, message.font);
 });
+//# sourceMappingURL=main.js.map

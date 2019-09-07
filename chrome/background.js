@@ -18,7 +18,6 @@ var keys = [
     /** The array of {@linkcode CustomSettings} that represents the sites with custom settings */
     "customSettings"
 ];
-
 function launchSite(path) {
     if (path === void 0) {
         path = "";
@@ -27,7 +26,6 @@ function launchSite(path) {
         function class_1() {
             this.url = "http://basshelal.github.io/Wudooh" + path;
         }
-
         return class_1;
     }()));
 }
@@ -38,9 +36,9 @@ function launchSite(path) {
 onInstalled.addListener(function (details) {
     sync.get(keys, function (fromStorage) {
         if (!fromStorage.textSize)
-            sync.set({textSize: '115',});
+            sync.set({textSize: '115'});
         if (!fromStorage.lineHeight)
-            sync.set({lineHeight: '125',});
+            sync.set({lineHeight: '125'});
         if (!fromStorage.onOff)
             sync.set({onOff: true,});
         if (!fromStorage.font)
