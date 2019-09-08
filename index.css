@@ -1,7 +1,6 @@
 
 html {
     background-color: #880e4f;
-    -webkit-text-fill-color: #efefef;
 }
 
 body {
@@ -9,8 +8,9 @@ body {
     overflow-x: hidden;
 }
 
-h1, h2, h3, h4, h5, a, p {
+h1, h2, h3, h4, h5, p {
     margin: 4px 16px;
+    -webkit-text-fill-color: #efefef;
 }
 
 .centered {
@@ -35,7 +35,6 @@ ul.horizontal li {
 }
 
 #bannerImage {
-    background-color: #efefef;
     display: block;
     margin-left: auto;
     margin-right: auto;
@@ -81,7 +80,7 @@ ul.horizontal li {
     height: 24px;
     line-height: 24px;
 
-    color: #880e4f;
+    color: black;
     text-align: center;
     text-decoration: none;
     font-family: sans-serif;

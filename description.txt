@@ -1,7 +1,5 @@
-Wudooh (clarity in Arabic and Persian) is a simple chrome extension
-that makes reading Arabic text clearer and more pleasant.
-
-Wudooh is the successor to Jackson Petty's Huruf.
+Wudooh (clarity in Arabic and Persian) is a simple browser extension
+that makes reading Arabic script text clearer and more pleasant.
 
 Wudooh will update all Arabic script text across the browser and modify it according to the user's options.
 
@@ -17,7 +15,4 @@ Arabic text will also update and become clearer.
 This is not just for Arabic, but for any Arabic script, meaning this can work for Persian, Urdu and any other Arabic
 script language.
 
-All fonts used by Wudooh are licensed under the SIL Open Font License.
-More information on the OFL can be found at http://scripts.sil.org/OFL.
-
-Wudooh is developed by Bassam Helal and is free and open source http://bit.do/Wudooh
+Wudooh is developed by Bassam Helal and is free and open source http://bit.do/wudooh
