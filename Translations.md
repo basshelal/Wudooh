@@ -26,3 +26,14 @@ Wudooh (clarity in Arabic and Persian) is a simple browser extension that makes 
 "وضوح" یک پسوند ساده مرورگر است که خواندن متن عربی را واضح تر و آسان تر می کند.
 
 ## GitHub Page
+
+### Download
+
+#### en
+Download for free
+
+#### ar
+تحميل مجاني
+
+#### fa
+دانلود رایگان

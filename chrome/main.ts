@@ -187,6 +187,7 @@ function updateNode(node: Node, textSize: number, lineHeight: number, font: stri
 
 // TODO remove this later
 function updateByStyling(element: HTMLElement, textSize: number, lineHeight: number, font: string) {
+    element.dir = "rtl";
     element.style.fontSize = textSize + "em";
     element.style.lineHeight = lineHeight + "em";
     element.style.fontFamily = "\"" + font + "\"" + "," + "sans-serif";
@@ -194,7 +195,7 @@ function updateByStyling(element: HTMLElement, textSize: number, lineHeight: num
 }
 
 function updateByAdding(node: Node, textSize: number, lineHeight: number, font: string) {
-    let newHTML = "<span wudooh='true' style='" +
+    let newHTML = "<span wudooh='true' dir='rtl' style='" +
         "font-size:" + textSize + "em;" +
         "line-height:" + lineHeight + "em;" +
         "font-family:" + "\"" + font + "\"" + "," + "sans-serif;" +

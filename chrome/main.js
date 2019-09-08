@@ -152,13 +152,14 @@ function updateNode(node, textSize, lineHeight, font) {
 }
 // TODO remove this later
 function updateByStyling(element, textSize, lineHeight, font) {
+    element.dir = "rtl";
     element.style.fontSize = textSize + "em";
     element.style.lineHeight = lineHeight + "em";
     element.style.fontFamily = "\"" + font + "\"" + "," + "sans-serif";
     element.setAttribute("wudooh", "true");
 }
 function updateByAdding(node, textSize, lineHeight, font) {
-    var newHTML = "<span wudooh='true' style='" +
+    var newHTML = "<span wudooh='true' dir='rtl' style='" +
         "font-size:" + textSize + "em;" +
         "line-height:" + lineHeight + "em;" +
         "font-family:" + "\"" + font + "\"" + "," + "sans-serif;" +
