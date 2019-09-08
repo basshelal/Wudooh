@@ -101,3 +101,47 @@ ul.horizontal li {
 .ribbon.white a {
     border: 2px dotted rgba(100, 100, 100, 0.2);
 }
+
+.collapsible {
+    background-color: #bc477b;
+    color: white;
+    cursor: pointer;
+    padding: 18px;
+    width: 100%;
+    border: none;
+    text-align: center;
+    outline: none;
+    font-size: 2em;
+    border-radius: 8px;
+}
+
+.active, .collapsible:hover {
+    background-color: #560027;
+}
+
+.collapsible:after {
+    font-weight: bold;
+    float: right;
+    margin-left: 5px;
+}
+
+.active:after {
+
+}
+
+.content {
+    padding: 0 18px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 300ms ease-out;
+    background-color: white;
+    border-radius: 8px;
+    margin: 0 4px;
+}
+
+.content p {
+    font-size: 2em;
+    line-height: 2em;
+    -webkit-text-fill-color: black;
+    -webkit-text-stroke-color: black;
+}

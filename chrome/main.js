@@ -221,6 +221,13 @@ function startObserver(textSize, lineHeight, font) {
         observer.observe(document.body, config);
     }
 }
+
+// Tell this document that Wudooh has been executed on it
+function notify() {
+    var meta = document.createElement('meta');
+    meta.setAttribute("wudooh", "true");
+    document.head.appendChild(meta);
+}
 /**
  * Main execution:
  * Updates all existing text according to the options
@@ -251,6 +258,7 @@ sync.get(keys, function (fromStorage) {
         }
         updateAll(textSize, lineHeight, font);
         startObserver(textSize, lineHeight, font);
+        notify();
     }
     log();
 });
