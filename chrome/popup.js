@@ -62,7 +62,6 @@ Array.prototype.findFirst = function (predicate) {
     }
     return null;
 };
-
 /**
  * Updates the font of the Arabic Wudooh heading and font select to match the font selected by the user
  */
@@ -291,7 +290,8 @@ var exportButton = get("exportButton");
 var exportAnchor = get("exportAnchor");
 exportButton.onclick = function () {
     sync.get(keys, function (items) {
-        exportAnchor.href = "data:application/octet-stream," + encodeURIComponent("Wudooh Settings");
+        var json = JSON.stringify(items);
+        exportAnchor.href = "data:application/octet-stream," + encodeURIComponent(json);
         exportAnchor.download = "settings.wudooh.json";
         setTimeout(function () {
             return exportAnchor.click();
@@ -304,4 +304,18 @@ importButton.onclick = function () {
     setTimeout(function () {
         return importInput.click();
     }, 500);
+};
+importInput.oninput = function () {
+    sync.get(keys, function (items) {
+        var file = importInput.files[0];
+        var reader = new FileReader();
+        reader.onload = function (event) {
+            // @ts-ignore
+            var json = event.target.result;
+            var result = JSON.parse(json); // Array of Objects.
+            console.log(result); // You can index every object
+        };
+        reader.readAsText(file);
+        alert("Accepted file!");
+    });
 };

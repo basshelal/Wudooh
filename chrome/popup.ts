@@ -319,7 +319,8 @@ let exportAnchor = get<HTMLAnchorElement>("exportAnchor");
 
 exportButton.onclick = () => {
     sync.get(keys, (items) => {
-        exportAnchor.href = "data:application/octet-stream," + encodeURIComponent("Wudooh Settings");
+        let json = JSON.stringify(items);
+        exportAnchor.href = "data:application/octet-stream," + encodeURIComponent(json);
         exportAnchor.download = "settings.wudooh.json";
         setTimeout(() => exportAnchor.click(), 500)
     });
@@ -330,4 +331,19 @@ let importInput = get<HTMLInputElement>("importInput");
 
 importButton.onclick = () => {
     setTimeout(() => importInput.click(), 500)
+};
+
+importInput.oninput = () => {
+    sync.get(keys, (items) => {
+        var file: File = importInput.files[0];
+        var reader: FileReader = new FileReader();
+        reader.onload = (event: ProgressEvent) => {
+            // @ts-ignore
+            var json: string = event.target.result;
+            var result: Array<any> = JSON.parse(json); // Array of Objects.
+            console.log(result); // You can index every object
+        };
+        reader.readAsText(file);
+        alert("Accepted file!");
+    });
 };

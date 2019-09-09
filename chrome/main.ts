@@ -14,9 +14,6 @@ const defaultFont: string = "Droid Arabic Naskh";
 
 // TODO figure out a way to have common code in one place instead of all this duplicated code
 
-// TODO change customSettings to be a Set so that we guarantee no duplicates!
-//  maybe same for whiteListed but that would mean a db migration
-
 /** The keys of the {@linkcode chrome.storage.sync} */
 const keys = [
     /** The font size percent, between 100 and 200 */

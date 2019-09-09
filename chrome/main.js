@@ -8,8 +8,6 @@ var arabicRegEx = new RegExp('([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\u
     ' [\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\W\d]+)*)', 'g');
 var defaultFont = "Droid Arabic Naskh";
 // TODO figure out a way to have common code in one place instead of all this duplicated code
-// TODO change customSettings to be a Set so that we guarantee no duplicates!
-//  maybe same for whiteListed but that would mean a db migration
 /** The keys of the {@linkcode chrome.storage.sync} */
 var keys = [
     /** The font size percent, between 100 and 200 */
@@ -221,7 +219,6 @@ function startObserver(textSize, lineHeight, font) {
         observer.observe(document.body, config);
     }
 }
-
 // Tell this document that Wudooh has been executed on it
 function notify() {
     var meta = document.createElement('meta');
