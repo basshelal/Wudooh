@@ -21,19 +21,21 @@ var sizeValue = get("sizeValue");
 var heightValue = get("heightValue");
 var overrideSettingsValue = get("overrideSettingsLabel");
 var whitelistedValue = get("whitelistedLabel");
-/**
- * Finds the first element that matches the given {@param predicate} else returns null
- * You can use this as a way to check if the array contains an element that matches the given {@param predicate}, it
- * will return null if none exists
- * @param predicate the predicate to match
- */
-Array.prototype.findFirst = function (predicate) {
-    for (var i = 0; i < this.length; i++) {
-        if (predicate(this[i], i))
-            return this[i];
-    }
-    return null;
-};
+/** The keys of the {@linkcode chrome.storage.sync} */
+var keys = [
+    /** The font size percent, between 100 and 200 */
+    "textSize",
+    /** The line height percent, between 100 and 200 */
+    "lineHeight",
+    /** Determines whether the extension is on or off, true is on */
+    "onOff",
+    /** The font to update to, this is a string */
+    "font",
+    /** The array of strings of whitelisted websites, this contains their hostnames in the format example.com */
+    "whitelisted",
+    /** The array of {@linkcode CustomSettings} that represents the sites with custom settings */
+    "customSettings"
+];
 /**
  * Represents a site that uses different settings from the default settings
  * The settings themselves may be the same as the default but they will change independently
@@ -47,6 +49,20 @@ var CustomSettings = /** @class */ (function () {
     }
     return CustomSettings;
 }());
+/**
+ * Finds the first element that matches the given {@param predicate} else returns null
+ * You can use this as a way to check if the array contains an element that matches the given {@param predicate}, it
+ * will return null if none exists
+ * @param predicate the predicate to match
+ */
+Array.prototype.findFirst = function (predicate) {
+    for (var i = 0; i < this.length; i++) {
+        if (predicate(this[i], i))
+            return this[i];
+    }
+    return null;
+};
+
 /**
  * Updates the font of the Arabic Wudooh heading and font select to match the font selected by the user
  */
@@ -274,11 +290,13 @@ addListeners();
 var exportButton = get("exportButton");
 var exportAnchor = get("exportAnchor");
 exportButton.onclick = function () {
-    exportAnchor.href = "data:application/octet-stream," + encodeURIComponent("Wudooh Settings");
-    exportAnchor.download = "settings.wudooh.json";
-    setTimeout(function () {
-        return exportAnchor.click();
-    }, 500);
+    sync.get(keys, function (items) {
+        exportAnchor.href = "data:application/octet-stream," + encodeURIComponent("Wudooh Settings");
+        exportAnchor.download = "settings.wudooh.json";
+        setTimeout(function () {
+            return exportAnchor.click();
+        }, 500);
+    });
 };
 var importButton = get("importButton");
 var importInput = get("importInput");

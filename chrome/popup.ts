@@ -9,41 +9,39 @@ import Tab = tabs.Tab;
  * Currently there are 6 options, textSize, lineHeight, onOff, font, whitelisted and customSettings
  */
 
-function get(elementId: string): HTMLElement | null {
-    return document.getElementById(elementId)
+function get<T extends HTMLElement>(elementId: string): T | null {
+    return document.getElementById(elementId) as T
 }
 
 // Inputs
-const size: HTMLInputElement = get("size") as HTMLInputElement;
-const height: HTMLInputElement = get("height") as HTMLInputElement;
-const onOffSwitch: HTMLInputElement = get("onOffSwitch") as HTMLInputElement;
-const fontSelect: HTMLSelectElement = get("font-select") as HTMLSelectElement;
-const overrideSiteSwitch: HTMLInputElement = get("overrideSettingsSwitch") as HTMLInputElement;
-const whiteListSwitch: HTMLInputElement = get("whitelistSwitch") as HTMLInputElement;
+const size = get<HTMLInputElement>("size");
+const height = get<HTMLInputElement>("height");
+const onOffSwitch = get<HTMLInputElement>("onOffSwitch");
+const fontSelect = get<HTMLSelectElement>("font-select");
+const overrideSiteSwitch = get<HTMLInputElement>("overrideSettingsSwitch");
+const whiteListSwitch = get<HTMLInputElement>("whitelistSwitch");
 
 // Labels
-const sizeValue: HTMLElement = get("sizeValue");
-const heightValue: HTMLElement = get("heightValue");
-const overrideSettingsValue: HTMLElement = get("overrideSettingsLabel");
-const whitelistedValue: HTMLElement = get("whitelistedLabel");
+const sizeValue = get("sizeValue");
+const heightValue = get("heightValue");
+const overrideSettingsValue = get("overrideSettingsLabel");
+const whitelistedValue = get("whitelistedLabel");
 
-interface Array<T> {
-
-    findFirst(predicate: (element: T, index: number) => boolean): T | null;
-}
-
-/**
- * Finds the first element that matches the given {@param predicate} else returns null
- * You can use this as a way to check if the array contains an element that matches the given {@param predicate}, it
- * will return null if none exists
- * @param predicate the predicate to match
- */
-Array.prototype.findFirst = function <T>(predicate: (element: T, index: number) => boolean): T | null {
-    for (let i = 0; i < this.length; i++) {
-        if (predicate(this[i], i)) return this[i];
-    }
-    return null;
-};
+/** The keys of the {@linkcode chrome.storage.sync} */
+const keys = [
+    /** The font size percent, between 100 and 200 */
+    "textSize",
+    /** The line height percent, between 100 and 200 */
+    "lineHeight",
+    /** Determines whether the extension is on or off, true is on */
+    "onOff",
+    /** The font to update to, this is a string */
+    "font",
+    /** The array of strings of whitelisted websites, this contains their hostnames in the format example.com */
+    "whitelisted",
+    /** The array of {@linkcode CustomSettings} that represents the sites with custom settings */
+    "customSettings"
+];
 
 /**
  * Represents a site that uses different settings from the default settings
@@ -67,6 +65,24 @@ class CustomSettings {
         this.font = font;
     }
 }
+
+interface Array<T> {
+
+    findFirst(predicate: (element: T, index: number) => boolean): T | null;
+}
+
+/**
+ * Finds the first element that matches the given {@param predicate} else returns null
+ * You can use this as a way to check if the array contains an element that matches the given {@param predicate}, it
+ * will return null if none exists
+ * @param predicate the predicate to match
+ */
+Array.prototype.findFirst = function <T>(predicate: (element: T, index: number) => boolean): T | null {
+    for (let i = 0; i < this.length; i++) {
+        if (predicate(this[i], i)) return this[i];
+    }
+    return null;
+};
 
 /**
  * Updates the font of the Arabic Wudooh heading and font select to match the font selected by the user
@@ -298,17 +314,19 @@ addListeners();
 // TODO, for export we need to be able to first get ALL the settings before a download is allowed,
 //  but because all calls are asynchronous we have to find a way around this somehow
 
-let exportButton = get("exportButton");
-let exportAnchor = get("exportAnchor") as HTMLAnchorElement;
+let exportButton = get<HTMLButtonElement>("exportButton");
+let exportAnchor = get<HTMLAnchorElement>("exportAnchor");
 
 exportButton.onclick = () => {
-    exportAnchor.href = "data:application/octet-stream," + encodeURIComponent("Wudooh Settings");
-    exportAnchor.download = "settings.wudooh.json";
-    setTimeout(() => exportAnchor.click(), 500)
+    sync.get(keys, (items) => {
+        exportAnchor.href = "data:application/octet-stream," + encodeURIComponent("Wudooh Settings");
+        exportAnchor.download = "settings.wudooh.json";
+        setTimeout(() => exportAnchor.click(), 500)
+    });
 };
 
-let importButton = get("importButton");
-let importInput = get("importInput") as HTMLInputElement;
+let importButton = get<HTMLButtonElement>("importButton");
+let importInput = get<HTMLInputElement>("importInput");
 
 importButton.onclick = () => {
     setTimeout(() => importInput.click(), 500)

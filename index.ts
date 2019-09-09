@@ -2,17 +2,17 @@ const urlParams: URLSearchParams = new URLSearchParams(window.location.search);
 
 const lang: string = urlParams.get("lang") || "en";
 
-function get(elementId: string): HTMLElement | null {
-    return document.getElementById(elementId)
+function get<T extends HTMLElement>(elementId: string): T | null {
+    return document.getElementById(elementId) as T
 }
 
 const arabicFont: string = "Droid Arabic Naskh";
 const farsiFont: string = "Droid Arabic Naskh";
 
-const shortBlurb: HTMLHeadingElement = get("shortBlurb") as HTMLHeadingElement;
-const download: HTMLHeadingElement = get("download") as HTMLHeadingElement;
+const shortBlurb = get<HTMLHeadingElement>("shortBlurb");
+const download = get<HTMLHeadingElement>("download");
 
-const fontsLink: HTMLAnchorElement = get("fontsLink") as HTMLAnchorElement;
+const fontsLink = get<HTMLAnchorElement>("fontsLink");
 
 function en() {
     document.dir = "ltr";
