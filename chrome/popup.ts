@@ -9,23 +9,23 @@ import Tab = tabs.Tab;
  * Currently there are 6 options, textSize, lineHeight, onOff, font, whitelisted and customSettings
  */
 
-function $(elementId: string): HTMLElement | null {
+function get(elementId: string): HTMLElement | null {
     return document.getElementById(elementId)
 }
 
 // Inputs
-const size: HTMLInputElement = $("size") as HTMLInputElement;
-const height: HTMLInputElement = $("height") as HTMLInputElement;
-const onOffSwitch: HTMLInputElement = $("onOffSwitch") as HTMLInputElement;
-const fontSelect: HTMLSelectElement = $("font-select") as HTMLSelectElement;
-const overrideSiteSwitch: HTMLInputElement = $("overrideSettingsSwitch") as HTMLInputElement;
-const whiteListSwitch: HTMLInputElement = $("whitelistSwitch") as HTMLInputElement;
+const size: HTMLInputElement = get("size") as HTMLInputElement;
+const height: HTMLInputElement = get("height") as HTMLInputElement;
+const onOffSwitch: HTMLInputElement = get("onOffSwitch") as HTMLInputElement;
+const fontSelect: HTMLSelectElement = get("font-select") as HTMLSelectElement;
+const overrideSiteSwitch: HTMLInputElement = get("overrideSettingsSwitch") as HTMLInputElement;
+const whiteListSwitch: HTMLInputElement = get("whitelistSwitch") as HTMLInputElement;
 
 // Labels
-const sizeValue: HTMLElement = $("sizeValue");
-const heightValue: HTMLElement = $("heightValue");
-const overrideSettingsValue: HTMLElement = $("overrideSettingsLabel");
-const whitelistedValue: HTMLElement = $("whitelistedLabel");
+const sizeValue: HTMLElement = get("sizeValue");
+const heightValue: HTMLElement = get("heightValue");
+const overrideSettingsValue: HTMLElement = get("overrideSettingsLabel");
+const whitelistedValue: HTMLElement = get("whitelistedLabel");
 
 interface Array<T> {
 
@@ -72,7 +72,7 @@ class CustomSettings {
  * Updates the font of the Arabic Wudooh heading and font select to match the font selected by the user
  */
 function updateWudoohFont(font: string) {
-    $("wudooh").style.fontFamily = font;
+    get("wudooh").style.fontFamily = font;
     fontSelect.style.fontFamily = font;
 }
 
@@ -299,6 +299,6 @@ addListeners();
 //  but because all calls are asynchronous we have to find a way around this somehow
 
 // Export Settings
-let exportButton: HTMLAnchorElement = $("exportButton") as HTMLAnchorElement;
+let exportButton: HTMLAnchorElement = get("exportButton") as HTMLAnchorElement;
 exportButton.href = "data:application/octet-stream," + encodeURIComponent("Wudooh Settings");
 exportButton.download = "settings.wudooh.json";

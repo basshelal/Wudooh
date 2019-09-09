@@ -6,21 +6,21 @@ var tabs = chrome.tabs;
  *
  * Currently there are 6 options, textSize, lineHeight, onOff, font, whitelisted and customSettings
  */
-function $(elementId) {
+function get(elementId) {
     return document.getElementById(elementId);
 }
 // Inputs
-var size = $("size");
-var height = $("height");
-var onOffSwitch = $("onOffSwitch");
-var fontSelect = $("font-select");
-var overrideSiteSwitch = $("overrideSettingsSwitch");
-var whiteListSwitch = $("whitelistSwitch");
+var size = get("size");
+var height = get("height");
+var onOffSwitch = get("onOffSwitch");
+var fontSelect = get("font-select");
+var overrideSiteSwitch = get("overrideSettingsSwitch");
+var whiteListSwitch = get("whitelistSwitch");
 // Labels
-var sizeValue = $("sizeValue");
-var heightValue = $("heightValue");
-var overrideSettingsValue = $("overrideSettingsLabel");
-var whitelistedValue = $("whitelistedLabel");
+var sizeValue = get("sizeValue");
+var heightValue = get("heightValue");
+var overrideSettingsValue = get("overrideSettingsLabel");
+var whitelistedValue = get("whitelistedLabel");
 /**
  * Finds the first element that matches the given {@param predicate} else returns null
  * You can use this as a way to check if the array contains an element that matches the given {@param predicate}, it
@@ -51,7 +51,7 @@ var CustomSettings = /** @class */ (function () {
  * Updates the font of the Arabic Wudooh heading and font select to match the font selected by the user
  */
 function updateWudoohFont(font) {
-    $("wudooh").style.fontFamily = font;
+    get("wudooh").style.fontFamily = font;
     fontSelect.style.fontFamily = font;
 }
 /**
@@ -272,6 +272,6 @@ addListeners();
 // TODO, for export we need to be able to first get ALL the settings before a download is allowed,
 //  but because all calls are asynchronous we have to find a way around this somehow
 // Export Settings
-var exportButton = $("exportButton");
+var exportButton = get("exportButton");
 exportButton.href = "data:application/octet-stream," + encodeURIComponent("Wudooh Settings");
 exportButton.download = "settings.wudooh.json";

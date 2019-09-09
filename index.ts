@@ -9,8 +9,10 @@ function get(elementId: string): HTMLElement | null {
 const arabicFont: string = "Droid Arabic Naskh";
 const farsiFont: string = "Droid Arabic Naskh";
 
-const shortBlurb = get("shortBlurb");
-const download = get("download");
+const shortBlurb: HTMLHeadingElement = get("shortBlurb") as HTMLHeadingElement;
+const download: HTMLHeadingElement = get("download") as HTMLHeadingElement;
+
+const fontsLink: HTMLAnchorElement = get("fontsLink") as HTMLAnchorElement;
 
 function en() {
     document.dir = "ltr";
@@ -18,7 +20,9 @@ function en() {
         `Wudooh <a href=\"https://en.wiktionary.org/wiki/%D9%88%D8%B6%D9%88%D8%AD\" style=\"margin: 0\" target=\"_blank\"> 
         (clarity in Arabic and Persian)</a>
         is a simple browser extension that makes reading Arabic script text clearer and more pleasant.`;
-    download.innerHTML = "Download for free"
+    download.innerHTML = "Download for free";
+
+    fontsLink.href = "fonts.html?lang=en";
 }
 
 function ar() {
@@ -28,6 +32,8 @@ function ar() {
 
     download.innerHTML = "تحميل مجاني";
     download.style.fontFamily = arabicFont;
+
+    fontsLink.href = "fonts.html?lang=ar";
 }
 
 function fa() {
@@ -38,6 +44,7 @@ function fa() {
     download.innerHTML = "دانلود رایگان";
     download.style.fontFamily = farsiFont;
 
+    fontsLink.href = "fonts.html?lang=fa";
 }
 
 switch (lang) {
