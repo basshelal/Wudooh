@@ -22,7 +22,7 @@ function en() {
         is a simple browser extension that makes reading Arabic script text clearer and more pleasant.`;
     download.innerHTML = "Download for free";
 
-    fontsLink.href = "fonts.html?lang=en";
+    fontsLink.href = "pages/fonts.html?lang=en";
 }
 
 function ar() {
@@ -33,7 +33,7 @@ function ar() {
     download.innerHTML = "تحميل مجاني";
     download.style.fontFamily = arabicFont;
 
-    fontsLink.href = "fonts.html?lang=ar";
+    fontsLink.href = "pages/fonts.html?lang=ar";
 }
 
 function fa() {
@@ -44,7 +44,7 @@ function fa() {
     download.innerHTML = "دانلود رایگان";
     download.style.fontFamily = farsiFont;
 
-    fontsLink.href = "fonts.html?lang=fa";
+    fontsLink.href = "pages/fonts.html?lang=fa";
 }
 
 switch (lang) {

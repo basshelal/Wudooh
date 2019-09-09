@@ -172,3 +172,13 @@ select {
     padding: 5px 5px;
     margin: 10px 0;
 }
+
+#importButton, #exportButton {
+    cursor: pointer;
+}
+
+#importInput, #exportAnchor {
+    opacity: 0;
+    position: absolute;
+    z-index: -1;
+}

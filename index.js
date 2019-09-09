@@ -13,7 +13,7 @@ function en() {
     shortBlurb.innerHTML =
         "Wudooh <a href=\"https://en.wiktionary.org/wiki/%D9%88%D8%B6%D9%88%D8%AD\" style=\"margin: 0\" target=\"_blank\"> \n        (clarity in Arabic and Persian)</a>\n        is a simple browser extension that makes reading Arabic script text clearer and more pleasant.";
     download.innerHTML = "Download for free";
-    fontsLink.href = "fonts.html?lang=en";
+    fontsLink.href = "pages/fonts.html?lang=en";
 }
 function ar() {
     document.dir = "rtl";
@@ -21,7 +21,7 @@ function ar() {
     shortBlurb.style.fontFamily = arabicFont;
     download.innerHTML = "تحميل مجاني";
     download.style.fontFamily = arabicFont;
-    fontsLink.href = "fonts.html?lang=ar";
+    fontsLink.href = "pages/fonts.html?lang=ar";
 }
 function fa() {
     document.dir = "rtl";
@@ -29,7 +29,7 @@ function fa() {
     shortBlurb.style.fontFamily = farsiFont;
     download.innerHTML = "دانلود رایگان";
     download.style.fontFamily = farsiFont;
-    fontsLink.href = "fonts.html?lang=fa";
+    fontsLink.href = "pages/fonts.html?lang=fa";
 }
 switch (lang) {
     case "ar": {
