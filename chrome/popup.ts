@@ -298,7 +298,18 @@ addListeners();
 // TODO, for export we need to be able to first get ALL the settings before a download is allowed,
 //  but because all calls are asynchronous we have to find a way around this somehow
 
-// Export Settings
-let exportButton: HTMLAnchorElement = get("exportButton") as HTMLAnchorElement;
-exportButton.href = "data:application/octet-stream," + encodeURIComponent("Wudooh Settings");
-exportButton.download = "settings.wudooh.json";
+let exportButton = get("exportButton");
+let exportAnchor = get("exportAnchor") as HTMLAnchorElement;
+
+exportButton.onclick = () => {
+    exportAnchor.href = "data:application/octet-stream," + encodeURIComponent("Wudooh Settings");
+    exportAnchor.download = "settings.wudooh.json";
+    setTimeout(() => exportAnchor.click(), 500)
+};
+
+let importButton = get("importButton");
+let importInput = get("importInput") as HTMLInputElement;
+
+importButton.onclick = () => {
+    setTimeout(() => importInput.click(), 500)
+};

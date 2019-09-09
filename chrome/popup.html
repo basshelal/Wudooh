@@ -120,21 +120,28 @@
     <br>
 
     <!--TODO Import and Export Settings-->
-    <a id="exportButton">
-        <button>Export Settings</button>
-    </a>
 
-    <input accept="application/json"
-           id="importButton"
-           type="file">
+    <button id="exportButton">Export Settings</button>
+    <a id="exportAnchor"></a>
+
+    <button id="importButton">Import Settings</button>
+    <input accept="application/json" id="importInput" type="file"/>
+
+    <style type="text/css">
+        #importButton, #exportButton {
+            cursor: pointer;
+        }
+
+        #importInput, #exportAnchor {
+            opacity: 0;
+            position: absolute;
+            z-index: -1;
+        }
+    </style>
 </div>
 
 <footer>
-    <!--TODO change this below for firefox!-->
-    <p><a href="https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn/reviews"
-          target="_blank">Review on the Chrome Web Store</a>
-        <br>
-        <a href="mailto:whitecrescent.uk@gmail.com" target="_blank">Feedback/Report a bug</a></p>
+    <p><a href="https://basshelal.github.io/Wudooh/" target="_blank">Help</a>
     <p>By <a href="https://github.com/basshelal/Wudooh" target="_blank">Bassam Helal بسّام هلال</a></p>
 </footer>
 <script src="popup.js"></script>

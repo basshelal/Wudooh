@@ -271,7 +271,19 @@ function addListeners() {
 addListeners();
 // TODO, for export we need to be able to first get ALL the settings before a download is allowed,
 //  but because all calls are asynchronous we have to find a way around this somehow
-// Export Settings
 var exportButton = get("exportButton");
-exportButton.href = "data:application/octet-stream," + encodeURIComponent("Wudooh Settings");
-exportButton.download = "settings.wudooh.json";
+var exportAnchor = get("exportAnchor");
+exportButton.onclick = function () {
+    exportAnchor.href = "data:application/octet-stream," + encodeURIComponent("Wudooh Settings");
+    exportAnchor.download = "settings.wudooh.json";
+    setTimeout(function () {
+        return exportAnchor.click();
+    }, 500);
+};
+var importButton = get("importButton");
+var importInput = get("importInput");
+importButton.onclick = function () {
+    setTimeout(function () {
+        return importInput.click();
+    }, 500);
+};
