@@ -47,6 +47,13 @@ var CustomSettings = /** @class */ (function () {
         this.lineHeight = lineHeight;
         this.font = font;
     }
+
+    CustomSettings.isCustomSettings = function (array) {
+        var result = false;
+        if (array.length === 0)
+            result = true;
+        return result;
+    };
     return CustomSettings;
 }());
 /**
@@ -157,9 +164,9 @@ function updateUI() {
             fontSelect.value = font;
             onOffSwitch.checked = fromStorage.onOff;
             updateWudoohFont(font);
-            var isWhitelisted = !!whiteListed.findFirst(function (it) {
+            var isWhitelisted = !!(whiteListed.findFirst(function (it) {
                 return it === thisURL;
-            });
+            }));
             var isCustom = !!custom;
             whiteListSwitch.checked = !isWhitelisted;
             if (isWhitelisted)
@@ -284,38 +291,106 @@ function addListeners() {
     };
 }
 addListeners();
-// TODO, for export we need to be able to first get ALL the settings before a download is allowed,
-//  but because all calls are asynchronous we have to find a way around this somehow
 var exportButton = get("exportButton");
 var exportAnchor = get("exportAnchor");
 exportButton.onclick = function () {
-    sync.get(keys, function (items) {
-        var json = JSON.stringify(items);
+    sync.get(keys, function (fromStorage) {
+        var json = JSON.stringify(fromStorage);
         exportAnchor.href = "data:application/octet-stream," + encodeURIComponent(json);
         exportAnchor.download = "settings.wudooh.json";
-        setTimeout(function () {
-            return exportAnchor.click();
-        }, 500);
+        exportAnchor.click();
     });
 };
 var importButton = get("importButton");
 var importInput = get("importInput");
-importButton.onclick = function () {
-    setTimeout(function () {
-        return importInput.click();
-    }, 500);
-};
 importInput.oninput = function () {
-    sync.get(keys, function (items) {
-        var file = importInput.files[0];
-        var reader = new FileReader();
-        reader.onload = function (event) {
-            // @ts-ignore
-            var json = event.target.result;
-            var result = JSON.parse(json); // Array of Objects.
-            console.log(result); // You can index every object
-        };
-        reader.readAsText(file);
-        alert("Accepted file!");
-    });
+    var file = importInput.files[0];
+    var reader = new FileReader();
+    reader.onload = function (event) {
+        // @ts-ignore
+        var json = event.target.result;
+        var result = JSON.parse(json);
+        // TODO validate that result is correct and valid and if not then tell the user
+        var textSize = result["textSize"];
+        var lineHeight = result["lineHeight"];
+        var onOff = result["onOff"];
+        var font = result["font"];
+        var whitelisted = result["whitelisted"];
+        var customSettings = result["customSettings"];
+        var valid = true;
+        if (textSize) {
+            if (typeof textSize !== "number" || (textSize < 100 || textSize > 300)) {
+                alert("Import failed!\n\nField \"textSize\" must be a number between 100 and 300");
+                valid = false;
+            }
+        } else {
+            alert("Import failed!\n\nField \"textSize\" is missing! It must be a number between 100 and 300");
+            valid = false;
+        }
+        if (lineHeight) {
+            if (typeof lineHeight !== "number" || (lineHeight < 100 || lineHeight > 300)) {
+                alert("Import failed!\n\nField \"lineHeight\" must be a number between 100 and 300");
+                valid = false;
+            }
+        } else {
+            alert("Import failed!\n\nField \"lineHeight\" is missing! It must be a number between 100 and 300");
+            valid = false;
+        }
+        if (!!onOff) {
+            if (typeof onOff !== "boolean") {
+                alert("Import failed!\n\nField \"onOff\" must be a boolean");
+                valid = false;
+            }
+        } else {
+            alert("Import failed!\n\nField \"onOff\" is missing! It must be a boolean");
+            valid = false;
+        }
+        if (font) {
+            if (typeof font !== "string") {
+                alert("Import failed!\n\nField \"font\" must be a string");
+                valid = false;
+            }
+        } else {
+            alert("Import failed!\n\nField \"font\" is missing! It must be a string");
+            valid = false;
+        }
+        if (whitelisted) {
+            if (!(whitelisted instanceof Array) || (whitelisted.length > 0 && typeof whitelisted[0] !== "string")) {
+                alert("Import failed!\n\nField \"whitelisted\" must be an array of strings");
+                valid = false;
+            }
+        } else {
+            alert("Import failed!\n\nField \"whitelisted\" is missing! It must be an array of strings");
+            valid = false;
+        }
+        if (customSettings) {
+            if (!(customSettings instanceof Array) || !CustomSettings.isCustomSettings(customSettings)) {
+                alert("Import failed!\n\nField \"customSettings\" must be an array of CustomSettings Objects");
+                valid = false;
+            }
+        } else {
+            alert("Import failed!\n\nField \"customSettings\" is missing! It must be an array of CustomSettings Objects");
+            valid = false;
+        }
+        if (!valid) {
+            window.close();
+            return;
+        }
+        sync.set({
+            textSize: textSize,
+            lineHeight: lineHeight,
+            onOff: onOff,
+            font: font,
+            whitelisted: whitelisted,
+            customSettings: customSettings
+        });
+        alert("Imported settings successfully!");
+        // we must close the window otherwise it doesn't work again for some reason!
+        close();
+        window.close();
+    };
+    reader.readAsText(file);
+};
+importButton.onclick = function () {
+    importInput.click();
 };

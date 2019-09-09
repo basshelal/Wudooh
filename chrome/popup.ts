@@ -64,6 +64,12 @@ class CustomSettings {
         this.lineHeight = lineHeight;
         this.font = font;
     }
+
+    static isCustomSettings(array: Array<any>): boolean {
+        let result = false;
+        if (array.length === 0) result = true;
+        return result;
+    }
 }
 
 interface Array<T> {
@@ -187,7 +193,7 @@ function updateUI() {
 
             updateWudoohFont(font);
 
-            let isWhitelisted: boolean = !!whiteListed.findFirst((it) => it === thisURL);
+            let isWhitelisted: boolean = !!(whiteListed.findFirst((it) => it === thisURL));
             let isCustom: boolean = !!custom;
 
             whiteListSwitch.checked = !isWhitelisted;
@@ -311,39 +317,121 @@ function addListeners() {
 
 addListeners();
 
-// TODO, for export we need to be able to first get ALL the settings before a download is allowed,
-//  but because all calls are asynchronous we have to find a way around this somehow
-
 let exportButton = get<HTMLButtonElement>("exportButton");
 let exportAnchor = get<HTMLAnchorElement>("exportAnchor");
 
 exportButton.onclick = () => {
-    sync.get(keys, (items) => {
-        let json = JSON.stringify(items);
+    sync.get(keys, (fromStorage) => {
+        let json = JSON.stringify(fromStorage);
         exportAnchor.href = "data:application/octet-stream," + encodeURIComponent(json);
         exportAnchor.download = "settings.wudooh.json";
-        setTimeout(() => exportAnchor.click(), 500)
+        exportAnchor.click();
     });
 };
 
 let importButton = get<HTMLButtonElement>("importButton");
 let importInput = get<HTMLInputElement>("importInput");
 
-importButton.onclick = () => {
-    setTimeout(() => importInput.click(), 500)
+importInput.oninput = () => {
+    var file: File = importInput.files[0];
+    var reader: FileReader = new FileReader();
+    reader.onload = (event: ProgressEvent) => {
+        // @ts-ignore
+        let json: string = event.target.result;
+        let result: Array<any> = JSON.parse(json);
+
+        // TODO validate that result is correct and valid and if not then tell the user
+
+        let textSize: number = result["textSize"];
+        let lineHeight: number = result["lineHeight"];
+        let onOff: boolean = result["onOff"];
+        let font: string = result["font"];
+        let whitelisted: Array<string> = result["whitelisted"];
+        let customSettings: Array<CustomSettings> = result["customSettings"];
+
+        let valid: boolean = true;
+
+        if (textSize) {
+            if (typeof textSize !== "number" || (textSize < 100 || textSize > 300)) {
+                alert("Import failed!\n\nField \"textSize\" must be a number between 100 and 300");
+                valid = false;
+            }
+        } else {
+            alert("Import failed!\n\nField \"textSize\" is missing! It must be a number between 100 and 300");
+            valid = false;
+        }
+
+        if (lineHeight) {
+            if (typeof lineHeight !== "number" || (lineHeight < 100 || lineHeight > 300)) {
+                alert("Import failed!\n\nField \"lineHeight\" must be a number between 100 and 300");
+                valid = false;
+            }
+        } else {
+            alert("Import failed!\n\nField \"lineHeight\" is missing! It must be a number between 100 and 300");
+            valid = false;
+        }
+
+        if (!!onOff) {
+            if (typeof onOff !== "boolean") {
+                alert("Import failed!\n\nField \"onOff\" must be a boolean");
+                valid = false;
+            }
+        } else {
+            alert("Import failed!\n\nField \"onOff\" is missing! It must be a boolean");
+            valid = false;
+        }
+
+        if (font) {
+            if (typeof font !== "string") {
+                alert("Import failed!\n\nField \"font\" must be a string");
+                valid = false;
+            }
+        } else {
+            alert("Import failed!\n\nField \"font\" is missing! It must be a string");
+            valid = false;
+        }
+
+        if (whitelisted) {
+            if (!(whitelisted instanceof Array) || (whitelisted.length > 0 && typeof whitelisted[0] !== "string")) {
+                alert("Import failed!\n\nField \"whitelisted\" must be an array of strings");
+                valid = false;
+            }
+        } else {
+            alert("Import failed!\n\nField \"whitelisted\" is missing! It must be an array of strings");
+            valid = false;
+        }
+
+        if (customSettings) {
+            if (!(customSettings instanceof Array) || !CustomSettings.isCustomSettings(customSettings)) {
+                alert("Import failed!\n\nField \"customSettings\" must be an array of CustomSettings Objects");
+                valid = false;
+            }
+        } else {
+            alert("Import failed!\n\nField \"customSettings\" is missing! It must be an array of CustomSettings Objects");
+            valid = false;
+        }
+
+        if (!valid) {
+            window.close();
+            return;
+        }
+
+        sync.set({
+            textSize: textSize,
+            lineHeight: lineHeight,
+            onOff: onOff,
+            font: font,
+            whitelisted: whitelisted,
+            customSettings: customSettings
+        });
+        alert("Imported settings successfully!");
+        // we must close the window otherwise it doesn't work again for some reason!
+        close();
+        window.close();
+    };
+    reader.readAsText(file);
 };
 
-importInput.oninput = () => {
-    sync.get(keys, (items) => {
-        var file: File = importInput.files[0];
-        var reader: FileReader = new FileReader();
-        reader.onload = (event: ProgressEvent) => {
-            // @ts-ignore
-            var json: string = event.target.result;
-            var result: Array<any> = JSON.parse(json); // Array of Objects.
-            console.log(result); // You can index every object
-        };
-        reader.readAsText(file);
-        alert("Accepted file!");
-    });
+importButton.onclick = () => {
+    importInput.click();
 };
