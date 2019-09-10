@@ -47,7 +47,7 @@ function ar() {
 
     download.innerHTML = "تحميل مجاني";
     pages.innerHTML = "الصفحات";
-    faq.innerHTML = "الأسئلة متكررة";
+    faq.innerHTML = "الأسئلة المتكررة";
     fonts.innerHTML = "الخطوط";
     changelog.innerHTML = "التغييرات";
 

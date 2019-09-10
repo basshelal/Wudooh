@@ -34,7 +34,7 @@ function ar() {
     shortBlurb.innerHTML = "\"\u0648\u0636\u0648\u062D\" \u0625\u0636\u0627\u0641\u0629 \u0628\u0633\u064A\u0637\u0629 \u0644\u0645\u062A\u0635\u0641\u062D \u0627\u0644\u0623\u0646\u062A\u0631\u0646\u062A \u064A\u062C\u0639\u0644 \u0642\u0631\u0627\u0621\u0629 \u0627\u0644\u062D\u0631\u0648\u0641 \u0627\u0644\u0639\u0631\u0628\u064A\u0629 \u0623\u0643\u062B\u0631 \u0648\u0636\u0648\u062D\u064B\u0627 \u0648\u0633\u0647\u0648\u0644\u0629.";
     download.innerHTML = "تحميل مجاني";
     pages.innerHTML = "الصفحات";
-    faq.innerHTML = "الأسئلة متكررة";
+    faq.innerHTML = "الأسئلة المتكررة";
     fonts.innerHTML = "الخطوط";
     changelog.innerHTML = "التغييرات";
     faq.href += langAr;

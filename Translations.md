@@ -55,7 +55,7 @@ Pages
 Frequently Asked Questions
 
 #### ar
-الأسئلة متكررة
+الأسئلة المتكررة
 
 #### fa
 سوالات مکرر
