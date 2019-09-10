@@ -43,7 +43,7 @@ function en() {
 
 function ar() {
     document.dir = "rtl";
-    shortBlurb.innerHTML = `"وضوح" إضافة بسيطة لمتصفح الأنترنت يجعل قراءة الحروف العربية أكثر وضوحًا وسهولة.`;
+    shortBlurb.innerHTML = `"وضوح" إضافة بسيطة لمتصفح الأنترنت تجعل قراءة الحروف العربية أكثر وضوحًا وسهولة.`;
 
     download.innerHTML = "تحميل مجاني";
     pages.innerHTML = "الصفحات";

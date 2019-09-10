@@ -30,8 +30,7 @@ ul.horizontal {
 
 ul.horizontal li {
     margin: 0 16px;
-    display: block;
-    float: left;
+    display: inline-block;
 }
 
 #bannerImage {
@@ -152,7 +151,6 @@ ul.horizontal li {
     padding: 0;
     height: 40px;
     overflow: hidden;
-    width: 100px;
     transition: all 300ms ease-in-out;
     margin: 0 -100px 0 0;
     vertical-align: top;
