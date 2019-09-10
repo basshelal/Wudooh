@@ -47,7 +47,6 @@ var CustomSettings = /** @class */ (function () {
         this.lineHeight = lineHeight;
         this.font = font;
     }
-
     CustomSettings.isCustomSettings = function (array) {
         var result = false;
         if (array.length === 0)

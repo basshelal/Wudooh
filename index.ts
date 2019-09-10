@@ -9,10 +9,18 @@ function get<T extends HTMLElement>(elementId: string): T | null {
 const arabicFont: string = "Droid Arabic Naskh";
 const farsiFont: string = "Droid Arabic Naskh";
 
+// Text Elements
 const shortBlurb = get<HTMLHeadingElement>("shortBlurb");
 const download = get<HTMLHeadingElement>("download");
+const pages = get<HTMLHeadingElement>("pages");
+const faq = get<HTMLAnchorElement>("faq");
+const fonts = get<HTMLAnchorElement>("fonts");
+const changelog = get<HTMLAnchorElement>("changelog");
+const textElements: Array<HTMLElement> = [shortBlurb, download, pages, faq, fonts, changelog];
 
-const fontsLink = get<HTMLAnchorElement>("fontsLink");
+const langEn: string = "?lang=en";
+const langAr: string = "?lang=ar";
+const langFa: string = "?lang=fa";
 
 function en() {
     document.dir = "ltr";
@@ -22,29 +30,55 @@ function en() {
         is a simple browser extension that makes reading Arabic script text clearer and more pleasant.`;
     download.innerHTML = "Download for free";
 
-    fontsLink.href = "pages/fonts.html?lang=en";
+    pages.innerHTML = "Pages";
+    faq.innerHTML = "Frequently Asked Questions";
+    fonts.innerHTML = "Fonts";
+    changelog.innerHTML = "Changelog";
+
+    faq.href += langEn;
+    fonts.href += langEn;
+    changelog.href += langEn;
+
 }
 
 function ar() {
     document.dir = "rtl";
     shortBlurb.innerHTML = `"وضوح" إضافة بسيطة لمتصفح الأنترنت يجعل قراءة الحروف العربية أكثر وضوحًا وسهولة.`;
-    shortBlurb.style.fontFamily = arabicFont;
 
     download.innerHTML = "تحميل مجاني";
-    download.style.fontFamily = arabicFont;
+    pages.innerHTML = "الصفحات";
+    faq.innerHTML = "الأسئلة متكررة";
+    fonts.innerHTML = "الخطوط";
+    changelog.innerHTML = "التغييرات";
 
-    fontsLink.href = "pages/fonts.html?lang=ar";
+    faq.href += langAr;
+    fonts.href += langAr;
+    changelog.href += langAr;
+
+    textElements.forEach((element: HTMLElement) => {
+        element.style.fontFamily = arabicFont;
+        element.style.lineHeight = "1.3em";
+    })
 }
 
 function fa() {
     document.dir = "rtl";
+
     shortBlurb.innerHTML = `"وضوح" یک پسوند ساده مرورگر است که خواندن متن عربی را واضح تر و آسان تر می کند.`;
-    shortBlurb.style.fontFamily = farsiFont;
-
     download.innerHTML = "دانلود رایگان";
-    download.style.fontFamily = farsiFont;
+    pages.innerHTML = "صفحات";
+    faq.innerHTML = "سوالات مکرر";
+    fonts.innerHTML = "فونت های";
+    changelog.innerHTML = "تغییرات";
 
-    fontsLink.href = "pages/fonts.html?lang=fa";
+    faq.href += langFa;
+    fonts.href += langFa;
+    changelog.href += langFa;
+
+    textElements.forEach((element: HTMLElement) => {
+        element.style.fontFamily = farsiFont;
+        element.style.lineHeight = "1.3em";
+    })
 }
 
 switch (lang) {

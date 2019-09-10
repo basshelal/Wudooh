@@ -37,3 +37,47 @@ Download for free
 
 #### fa
 دانلود رایگان
+
+### Pages
+
+#### en
+Pages
+
+#### ar
+الصفحات
+
+#### fa
+صفحات
+
+### Frequently Asked Questions
+
+#### en
+Frequently Asked Questions
+
+#### ar
+الأسئلة متكررة
+
+#### fa
+سوالات مکرر
+
+### Fonts
+
+#### en
+Fonts
+
+#### ar
+الخطوط
+
+#### fa
+فونت های
+
+### Changelog
+
+#### en
+Changelog
+
+#### ar
+التغييرات
+
+#### fa
+تغییرات
