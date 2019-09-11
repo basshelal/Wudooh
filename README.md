@@ -1,12 +1,12 @@
 # Wudooh وضوح
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/nigfaloeeeakmmgndbdcijjegolpjfhn.svg)](https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn)
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/users/nigfaloeeeakmmgndbdcijjegolpjfhn.svg)](https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn)
-[![Chrome Web Store](https://img.shields.io/chrome-web-store/stars/nigfaloeeeakmmgndbdcijjegolpjfhn.svg)](https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn)
-[![Chrome Web Store](https://img.shields.io/chrome-web-store/rating-count/nigfaloeeeakmmgndbdcijjegolpjfhn.svg)](https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn)
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/stars/nigfaloeeeakmmgndbdcijjegolpjfhn.svg)](https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn/reviews)
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/rating-count/nigfaloeeeakmmgndbdcijjegolpjfhn.svg)](https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn/reviews)
 
 [![Mozilla Add-on](https://img.shields.io/amo/v/wudooh.svg)](https://addons.mozilla.org/en-US/firefox/addon/wudooh/)
 [![Mozilla Add-on](https://img.shields.io/amo/users/wudooh.svg)](https://addons.mozilla.org/en-US/firefox/addon/wudooh/)
-[![Mozilla Add-on](https://img.shields.io/amo/stars/wudooh)](https://addons.mozilla.org/en-US/firefox/addon/wudooh/)
+[![Mozilla Add-on](https://img.shields.io/amo/stars/wudooh)](https://addons.mozilla.org/en-US/firefox/addon/wudooh/reviews)
 
 [![Chrome](https://github.com/basshelal/Wudooh/blob/master/pictures/Chrome50.png)](https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn)
 [![Firefox](https://github.com/basshelal/Wudooh/blob/master/pictures/Firefox50.png)](https://addons.mozilla.org/en-US/firefox/addon/wudooh/)
