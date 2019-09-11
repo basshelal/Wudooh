@@ -14,8 +14,12 @@ h1, h2, h3, h4, h5, p {
 }
 
 .centered {
+    display: inline-list-item;
     text-align: center;
-    display: block;
+    align-items: center;
+    align-content: center;
+    align-self: center;
+    justify-content: center;
     margin-left: auto;
     margin-right: auto;
     width: fit-content;

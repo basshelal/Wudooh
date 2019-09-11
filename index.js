@@ -5,6 +5,9 @@ function get(elementId) {
 }
 var arabicFont = "Droid Arabic Naskh";
 var farsiFont = "Droid Arabic Naskh";
+var langEn = "?lang=en";
+var langAr = "?lang=ar";
+var langFa = "?lang=fa";
 // Text Elements
 var shortBlurb = get("shortBlurb");
 var download = get("download");
@@ -13,9 +16,6 @@ var faq = get("faq");
 var fonts = get("fonts");
 var changelog = get("changelog");
 var textElements = [shortBlurb, download, pages, faq, fonts, changelog];
-var langEn = "?lang=en";
-var langAr = "?lang=ar";
-var langFa = "?lang=fa";
 function en() {
     document.dir = "ltr";
     shortBlurb.innerHTML =

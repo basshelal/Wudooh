@@ -9,6 +9,10 @@ function get<T extends HTMLElement>(elementId: string): T | null {
 const arabicFont: string = "Droid Arabic Naskh";
 const farsiFont: string = "Droid Arabic Naskh";
 
+const langEn: string = "?lang=en";
+const langAr: string = "?lang=ar";
+const langFa: string = "?lang=fa";
+
 // Text Elements
 const shortBlurb = get<HTMLHeadingElement>("shortBlurb");
 const download = get<HTMLHeadingElement>("download");
@@ -17,10 +21,6 @@ const faq = get<HTMLAnchorElement>("faq");
 const fonts = get<HTMLAnchorElement>("fonts");
 const changelog = get<HTMLAnchorElement>("changelog");
 const textElements: Array<HTMLElement> = [shortBlurb, download, pages, faq, fonts, changelog];
-
-const langEn: string = "?lang=en";
-const langAr: string = "?lang=ar";
-const langFa: string = "?lang=fa";
 
 function en() {
     document.dir = "ltr";
