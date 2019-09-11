@@ -47,11 +47,16 @@ var CustomSettings = /** @class */ (function () {
         this.lineHeight = lineHeight;
         this.font = font;
     }
-    CustomSettings.isCustomSettings = function (array) {
-        var result = false;
-        if (array.length === 0)
-            result = true;
-        return result;
+
+    CustomSettings.isCustomSettings = function (obj) {
+        return !!obj && obj.hasOwnProperty("url") && obj.hasOwnProperty("textSize") &&
+            obj.hasOwnProperty("lineHeight") && obj.hasOwnProperty("font");
+    };
+    CustomSettings.isCustomSettingsArray = function (array) {
+        var _this = this;
+        return array.length === 0 || array.every(function (obj) {
+            return _this.isCustomSettings(obj);
+        });
     };
     return CustomSettings;
 }());
@@ -309,7 +314,6 @@ importInput.oninput = function () {
         // @ts-ignore
         var json = event.target.result;
         var result = JSON.parse(json);
-        // TODO validate that result is correct and valid and if not then tell the user
         var textSize = result["textSize"];
         var lineHeight = result["lineHeight"];
         var onOff = result["onOff"];
@@ -363,12 +367,12 @@ importInput.oninput = function () {
             valid = false;
         }
         if (customSettings) {
-            if (!(customSettings instanceof Array) || !CustomSettings.isCustomSettings(customSettings)) {
-                alert("Import failed!\n\nField \"customSettings\" must be an array of CustomSettings Objects");
+            if (!(customSettings instanceof Array) || !CustomSettings.isCustomSettingsArray(customSettings)) {
+                alert("Import failed!\n\nField \"customSettings\" must be an array of CustomSettings objects");
                 valid = false;
             }
         } else {
-            alert("Import failed!\n\nField \"customSettings\" is missing! It must be an array of CustomSettings Objects");
+            alert("Import failed!\n\nField \"customSettings\" is missing! It must be an array of CustomSettings objects");
             valid = false;
         }
         if (!valid) {

@@ -65,10 +65,13 @@ class CustomSettings {
         this.font = font;
     }
 
-    static isCustomSettings(array: Array<any>): boolean {
-        let result = false;
-        if (array.length === 0) result = true;
-        return result;
+    static isCustomSettings(obj: object): boolean {
+        return !!obj && obj.hasOwnProperty("url") && obj.hasOwnProperty("textSize") &&
+            obj.hasOwnProperty("lineHeight") && obj.hasOwnProperty("font");
+    }
+
+    static isCustomSettingsArray(array: Array<any>): boolean {
+        return array.length === 0 || array.every((obj: object) => this.isCustomSettings(obj));
     }
 }
 
@@ -340,8 +343,6 @@ importInput.oninput = () => {
         let json: string = event.target.result;
         let result: Array<any> = JSON.parse(json);
 
-        // TODO validate that result is correct and valid and if not then tell the user
-
         let textSize: number = result["textSize"];
         let lineHeight: number = result["lineHeight"];
         let onOff: boolean = result["onOff"];
@@ -402,12 +403,12 @@ importInput.oninput = () => {
         }
 
         if (customSettings) {
-            if (!(customSettings instanceof Array) || !CustomSettings.isCustomSettings(customSettings)) {
-                alert("Import failed!\n\nField \"customSettings\" must be an array of CustomSettings Objects");
+            if (!(customSettings instanceof Array) || !CustomSettings.isCustomSettingsArray(customSettings)) {
+                alert("Import failed!\n\nField \"customSettings\" must be an array of CustomSettings objects");
                 valid = false;
             }
         } else {
-            alert("Import failed!\n\nField \"customSettings\" is missing! It must be an array of CustomSettings Objects");
+            alert("Import failed!\n\nField \"customSettings\" is missing! It must be an array of CustomSettings objects");
             valid = false;
         }
 
