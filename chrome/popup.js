@@ -48,9 +48,20 @@ var CustomSettings = /** @class */ (function () {
         this.font = font;
     }
 
+    CustomSettings.isValidCustomSettings = function (customSettings) {
+        var url = customSettings.url;
+        var textSize = customSettings.textSize;
+        var lineHeight = customSettings.lineHeight;
+        var font = customSettings.font;
+        return !!url && typeof url === "string" &&
+            !!textSize && typeof textSize === "number" && textSize >= 100 && textSize <= 300 &&
+            !!lineHeight && typeof lineHeight === "number" && lineHeight >= 100 && lineHeight <= 300 &&
+            !!font && typeof font === "string";
+    };
     CustomSettings.isCustomSettings = function (obj) {
         return !!obj && obj.hasOwnProperty("url") && obj.hasOwnProperty("textSize") &&
-            obj.hasOwnProperty("lineHeight") && obj.hasOwnProperty("font");
+            obj.hasOwnProperty("lineHeight") && obj.hasOwnProperty("font") &&
+            this.isValidCustomSettings(obj);
     };
     CustomSettings.isCustomSettingsArray = function (array) {
         var _this = this;

@@ -65,9 +65,22 @@ class CustomSettings {
         this.font = font;
     }
 
+    static isValidCustomSettings(customSettings: CustomSettings): boolean {
+        const url: string = customSettings.url;
+        const textSize: number = customSettings.textSize;
+        const lineHeight: number = customSettings.lineHeight;
+        const font: string = customSettings.font;
+
+        return !!url && typeof url === "string" &&
+            !!textSize && typeof textSize === "number" && textSize >= 100 && textSize <= 300 &&
+            !!lineHeight && typeof lineHeight === "number" && lineHeight >= 100 && lineHeight <= 300 &&
+            !!font && typeof font === "string";
+    }
+
     static isCustomSettings(obj: object): boolean {
         return !!obj && obj.hasOwnProperty("url") && obj.hasOwnProperty("textSize") &&
-            obj.hasOwnProperty("lineHeight") && obj.hasOwnProperty("font");
+            obj.hasOwnProperty("lineHeight") && obj.hasOwnProperty("font") &&
+            this.isValidCustomSettings(obj as CustomSettings);
     }
 
     static isCustomSettingsArray(array: Array<any>): boolean {
