@@ -47,7 +47,6 @@ var CustomSettings = /** @class */ (function () {
         this.lineHeight = lineHeight;
         this.font = font;
     }
-
     CustomSettings.isValidCustomSettings = function (customSettings) {
         var url = customSettings.url;
         var textSize = customSettings.textSize;

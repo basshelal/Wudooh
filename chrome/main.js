@@ -4,8 +4,16 @@ var runtime = chrome.runtime;
 /**
  * This is the main script that reads the document and updates any Arabic script text
  */
-var arabicRegEx = new RegExp('([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF]+(' +
-    ' [\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\W\d]+)*)', 'g');
+/**
+ * @deprecated use {@link newArabicRegex} instead
+ */
+var arabicRegEx = new RegExp("([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF]+(" +
+    " [\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\W\d]+)*)", "g");
+/**
+ * This Arabic regex allows and accepts any non Arabic symbols next to Arabic symbols,
+ * this means that it accepts anything as long as it has some Arabic symbol in it
+ */
+var newArabicRegex = new RegExp(".+[\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF]+", "g");
 var defaultFont = "Droid Arabic Naskh";
 // TODO figure out a way to have common code in one place instead of all this duplicated code
 /** The keys of the {@linkcode chrome.storage.sync} */
@@ -57,7 +65,7 @@ Array.prototype.findFirst = function (predicate) {
  * @return true if the node contains any arabic script, false otherwise
  */
 function hasArabicScript(node) {
-    return !!(node.nodeValue && (node.nodeValue.trim() != "") && (node.nodeValue.match(arabicRegEx)));
+    return !!(node.nodeValue && (node.nodeValue.trim() != "") && (node.nodeValue.match(newArabicRegex)));
 }
 /**
  * Gets all nodes within the passed in node that have any Arabic text
@@ -141,7 +149,7 @@ function updateNode(node, textSize, lineHeight, font) {
                 "font-size:" + newSize + "em;" +
                 "line-height:" + newHeight + "em;" +
                 "'>$&</span>";
-            var text = node.nodeValue.replace(arabicRegEx, newHTML);
+            var text = node.nodeValue.replace(newArabicRegex, newHTML);
             setNodeHtml(node, text);
         } else {
             updateByAdding(node, newSize, newHeight, font);
@@ -157,12 +165,12 @@ function updateByStyling(element, textSize, lineHeight, font) {
     element.setAttribute("wudooh", "true");
 }
 function updateByAdding(node, textSize, lineHeight, font) {
-    var newHTML = "<span wudooh='true' dir='rtl' style='" +
+    var newHTML = "<span wudooh='true' style='" +
         "font-size:" + textSize + "em;" +
         "line-height:" + lineHeight + "em;" +
         "font-family:" + "\"" + font + "\"" + "," + "sans-serif;" +
         "'>$&</span>";
-    var text = node.nodeValue.replace(arabicRegEx, newHTML);
+    var text = node.nodeValue.replace(newArabicRegex, newHTML);
     setNodeHtml(node, text);
 }
 /**
@@ -193,7 +201,7 @@ function startObserver(textSize, lineHeight, font) {
         attributes: false,
         attributeOldValue: false,
         characterData: true,
-        characterDataOldValue: false,
+        characterDataOldValue: true,
         childList: true,
         subtree: true,
     };
@@ -212,6 +220,16 @@ function startObserver(textSize, lineHeight, font) {
                     });
                 });
             }
+            // If the value has changed
+            if (record.target.nodeValue !== record.oldValue && record.target.parentNode instanceof Node) {
+                // If the node now has Arabic text when it didn't, this is rare and only occurs on YouTube
+                getArabicTextNodesIn(record.target.parentNode).forEach(function (arabicNode) {
+                    // Update arabicNode only if it hasn't been updated
+                    if (arabicNode.parentElement && arabicNode.parentElement.getAttribute("wudooh") != "true") {
+                        updateNode(arabicNode, textSize, lineHeight, font);
+                    }
+                });
+            }
         });
     };
     if (!observer) {
@@ -220,6 +238,7 @@ function startObserver(textSize, lineHeight, font) {
     }
 }
 // Tell this document that Wudooh has been executed on it
+// TODO do we need this??
 function notify() {
     var meta = document.createElement('meta');
     meta.setAttribute("wudooh", "true");

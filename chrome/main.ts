@@ -7,8 +7,17 @@ import runtime = chrome.runtime;
  * This is the main script that reads the document and updates any Arabic script text
  */
 
-const arabicRegEx = new RegExp('([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF]+(' +
-    ' [\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\W\d]+)*)', 'g');
+/**
+ * @deprecated use {@link newArabicRegex} instead
+ */
+const arabicRegEx = new RegExp("([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF]+(" +
+    " [\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\W\d]+)*)", "g");
+
+/**
+ * This Arabic regex allows and accepts any non Arabic symbols next to Arabic symbols,
+ * this means that it accepts anything as long as it has some Arabic symbol in it
+ */
+const newArabicRegex = new RegExp(".+[\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF]+", "g");
 
 const defaultFont: string = "Droid Arabic Naskh";
 
@@ -80,7 +89,7 @@ Array.prototype.findFirst = function <T>(predicate: (element: T, index: number) 
  * @return true if the node contains any arabic script, false otherwise
  */
 function hasArabicScript(node: Node): boolean {
-    return !!(node.nodeValue && (node.nodeValue.trim() != "") && (node.nodeValue.match(arabicRegEx)));
+    return !!(node.nodeValue && (node.nodeValue.trim() != "") && (node.nodeValue.match(newArabicRegex)));
 }
 
 /**
@@ -174,7 +183,7 @@ function updateNode(node: Node, textSize: number, lineHeight: number, font: stri
                 "font-size:" + newSize + "em;" +
                 "line-height:" + newHeight + "em;" +
                 "'>$&</span>";
-            let text: string = node.nodeValue.replace(arabicRegEx, newHTML);
+            let text: string = node.nodeValue.replace(newArabicRegex, newHTML);
             setNodeHtml(node, text);
         } else {
             updateByAdding(node, newSize, newHeight, font);
@@ -192,13 +201,13 @@ function updateByStyling(element: HTMLElement, textSize: number, lineHeight: num
 }
 
 function updateByAdding(node: Node, textSize: number, lineHeight: number, font: string) {
-    let newHTML = "<span wudooh='true' dir='rtl' style='" +
+    let newHTML = "<span wudooh='true' style='" +
         "font-size:" + textSize + "em;" +
         "line-height:" + lineHeight + "em;" +
         "font-family:" + "\"" + font + "\"" + "," + "sans-serif;" +
         "'>$&</span>";
 
-    let text: string = node.nodeValue.replace(arabicRegEx, newHTML);
+    let text: string = node.nodeValue.replace(newArabicRegex, newHTML);
     setNodeHtml(node, text);
 }
 
@@ -226,7 +235,7 @@ function startObserver(textSize: number, lineHeight: number, font: string = defa
         attributes: false, // we don't care about attribute changes
         attributeOldValue: false, // we don't care about attribute changes
         characterData: true, // we get notified of any changes to character data
-        characterDataOldValue: false, // we don't keep the old value
+        characterDataOldValue: true, // we keep the old value
         childList: true, // we get notified about changes to a node's children
         subtree: true, // we get notified about any changes to any of a node's descendants
     };
@@ -249,6 +258,19 @@ function startObserver(textSize: number, lineHeight: number, font: string = defa
                     });
                 });
             }
+
+            // If the value has changed
+            if (record.target.nodeValue !== record.oldValue && record.target.parentNode instanceof Node) {
+
+                // If the node now has Arabic text when it didn't, this is rare and only occurs on YouTube
+                getArabicTextNodesIn(record.target.parentNode).forEach((arabicNode: Node) => {
+
+                    // Update arabicNode only if it hasn't been updated
+                    if (arabicNode.parentElement && arabicNode.parentElement.getAttribute("wudooh") != "true") {
+                        updateNode(arabicNode, textSize, lineHeight, font);
+                    }
+                });
+            }
         });
     };
 
@@ -259,6 +281,7 @@ function startObserver(textSize: number, lineHeight: number, font: string = defa
 }
 
 // Tell this document that Wudooh has been executed on it
+// TODO do we need this??
 function notify() {
     var meta = document.createElement('meta');
     meta.setAttribute("wudooh", "true");
