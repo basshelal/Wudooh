@@ -13,7 +13,7 @@ var arabicRegEx = new RegExp("([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\u
  * This Arabic regex allows and accepts any non Arabic symbols next to Arabic symbols,
  * this means that it accepts anything as long as it has some Arabic symbol in it
  */
-var newArabicRegex = new RegExp(".+[\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF]+", "g");
+var newArabicRegex = new RegExp(".+[\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF]+.+", "g");
 var defaultFont = "Droid Arabic Naskh";
 // TODO figure out a way to have common code in one place instead of all this duplicated code
 /** The keys of the {@linkcode chrome.storage.sync} */
@@ -142,34 +142,24 @@ function updateNode(node, textSize, lineHeight, font) {
     if (node.nodeValue) {
         var newSize = textSize / 100;
         var newHeight = lineHeight / 100;
-        var newHTML = void 0;
-        var element = node.parentElement;
-        if (font === "Original") {
-            newHTML = "<span wudooh='true'' style='" +
-                "font-size:" + newSize + "em;" +
-                "line-height:" + newHeight + "em;" +
-                "'>$&</span>";
-            var text = node.nodeValue.replace(newArabicRegex, newHTML);
-            setNodeHtml(node, text);
-        } else {
-            updateByAdding(node, newSize, newHeight, font);
-        }
+        updateByAdding(node, newSize, newHeight, font);
     }
 }
-// TODO remove this later
-function updateByStyling(element, textSize, lineHeight, font) {
-    element.dir = "rtl";
-    element.style.fontSize = textSize + "em";
-    element.style.lineHeight = lineHeight + "em";
-    element.style.fontFamily = "\"" + font + "\"" + "," + "sans-serif";
-    element.setAttribute("wudooh", "true");
-}
+
 function updateByAdding(node, textSize, lineHeight, font) {
-    var newHTML = "<span wudooh='true' style='" +
-        "font-size:" + textSize + "em;" +
-        "line-height:" + lineHeight + "em;" +
-        "font-family:" + "\"" + font + "\"" + "," + "sans-serif;" +
-        "'>$&</span>";
+    var newHTML;
+    if (font === "Original") {
+        newHTML = "<span wudooh='true'' style='" +
+            "font-size:" + textSize + "em;" +
+            "line-height:" + lineHeight + "em;" +
+            "'>$&</span>";
+    } else {
+        newHTML = "<span wudooh='true' style='" +
+            "font-size:" + textSize + "em;" +
+            "line-height:" + lineHeight + "em;" +
+            "font-family:" + "\"" + font + "\"" + "," + "sans-serif;" +
+            "'>$&</span>";
+    }
     var text = node.nodeValue.replace(newArabicRegex, newHTML);
     setNodeHtml(node, text);
 }
@@ -276,7 +266,6 @@ sync.get(keys, function (fromStorage) {
         startObserver(textSize, lineHeight, font);
         notify();
     }
-    log();
 });
 /**
  * Listener to update text if options are modified, the options being text size, line height and font
@@ -294,7 +283,6 @@ runtime.onMessage.addListener(function (message) {
         observer = null;
     }
     startObserver(newSize, newHeight, message.font);
-    log();
 });
 // TODO REMOVE LATER!
 function log() {
