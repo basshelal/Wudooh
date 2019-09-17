@@ -13,7 +13,7 @@ var arabicRegEx = new RegExp("([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\u
  * This Arabic regex allows and accepts any non Arabic symbols next to Arabic symbols,
  * this means that it accepts anything as long as it has some Arabic symbol in it
  */
-var newArabicRegex = new RegExp(".+[\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF]+.+", "g");
+var newArabicRegex = new RegExp("[\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF]+", "g");
 var defaultFont = "Droid Arabic Naskh";
 // TODO figure out a way to have common code in one place instead of all this duplicated code
 /** The keys of the {@linkcode chrome.storage.sync} */
@@ -145,7 +145,6 @@ function updateNode(node, textSize, lineHeight, font) {
         updateByAdding(node, newSize, newHeight, font);
     }
 }
-
 function updateByAdding(node, textSize, lineHeight, font) {
     var newHTML;
     if (font === "Original") {
@@ -157,7 +156,7 @@ function updateByAdding(node, textSize, lineHeight, font) {
         newHTML = "<span wudooh='true' style='" +
             "font-size:" + textSize + "em;" +
             "line-height:" + lineHeight + "em;" +
-            "font-family:" + "\"" + font + "\"" + "," + "sans-serif;" +
+            "font-family:" + "\"" + font + "\";" +
             "'>$&</span>";
     }
     var text = node.nodeValue.replace(newArabicRegex, newHTML);

@@ -17,7 +17,7 @@ const arabicRegEx = new RegExp("([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-
  * This Arabic regex allows and accepts any non Arabic symbols next to Arabic symbols,
  * this means that it accepts anything as long as it has some Arabic symbol in it
  */
-const newArabicRegex = new RegExp(".+[\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF]+.+", "g");
+const newArabicRegex = new RegExp("[\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF]+", "g");
 
 const defaultFont: string = "Droid Arabic Naskh";
 
@@ -191,7 +191,7 @@ function updateByAdding(node: Node, textSize: number, lineHeight: number, font: 
         newHTML = "<span wudooh='true' style='" +
             "font-size:" + textSize + "em;" +
             "line-height:" + lineHeight + "em;" +
-            "font-family:" + "\"" + font + "\"" + "," + "sans-serif;" +
+            "font-family:" + "\"" + font + "\";" +
             "'>$&</span>";
     }
 
