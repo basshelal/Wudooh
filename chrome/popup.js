@@ -6,6 +6,11 @@ var tabs = chrome.tabs;
  *
  * Currently there are 6 options, textSize, lineHeight, onOff, font, whitelisted and customSettings
  */
+/**
+ * Shorthand for {@linkcode document.getElementById}, automatically casts to T, an HTMLElement
+ *
+ * @param elementId the id of the element to get
+ */
 function get(elementId) {
     return document.getElementById(elementId);
 }
@@ -287,8 +292,12 @@ function addListeners() {
         return heightValue.innerHTML = height.value + '%';
     };
     // Save options when mouse is released
-    size.onmouseup = function () { return updateAllText(); };
-    height.onmouseup = function () { return updateAllText(); };
+    size.onmouseup = function () {
+        return updateAllText();
+    };
+    height.onmouseup = function () {
+        return updateAllText();
+    };
     // Update switches when they're clicked
     onOffSwitch.onclick = function () {
         return toggleOnOff();

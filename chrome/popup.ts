@@ -9,6 +9,11 @@ import Tab = tabs.Tab;
  * Currently there are 6 options, textSize, lineHeight, onOff, font, whitelisted and customSettings
  */
 
+/**
+ * Shorthand for {@linkcode document.getElementById}, automatically casts to T, an HTMLElement
+ *
+ * @param elementId the id of the element to get
+ */
 function get<T extends HTMLElement>(elementId: string): T | null {
     return document.getElementById(elementId) as T
 }

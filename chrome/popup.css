@@ -1,7 +1,6 @@
-/* TODO Material Design in pure CSS needed! */
 
 html, body, footer {
-    width: 250px;
+    width: 300px;
     height: auto;
     background-color: #efefef;
     color: #222000;
@@ -10,16 +9,15 @@ html, body, footer {
     font-family: "Roboto Light", serif;
 }
 
-#size, #height {
-    width: 70%;
-    text-align: center;
-}
-
 header {
     background-color: #880e4f;
     color: #efefef;
     padding: 20px;
+    horiz-align: center;
+    vertical-align: center;
     text-align: center;
+    align-self: center;
+    align-content: center;
     font-family: "Droid Arabic Naskh", serif;
     font-size: 5.0em;
 }
@@ -33,6 +31,7 @@ div[role="main"] {
 footer {
     color: #222000;
     text-align: center;
+    font-size: 1.1em;
 }
 
 hr {
@@ -54,6 +53,8 @@ td {
 }
 
 input[type=range] {
+    width: 70%;
+    text-align: center;
     -webkit-appearance: none;
     margin-bottom: 0;
 }
@@ -165,7 +166,7 @@ option {
 select {
     font-size: 1.5em;
     font-family: "Roboto Light", sans-serif;
-    width: 220px;
+    width: 90%;
     text-align-last: center;
     text-align: center;
     text-align-all: center;
