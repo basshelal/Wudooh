@@ -18,6 +18,9 @@ function get<T extends HTMLElement>(elementId: string): T | null {
     return document.getElementById(elementId) as T
 }
 
+const header: HTMLElement = document.getElementsByTagName("header").item(0);
+const wudoohColor: string = "#880E4F";
+
 // Inputs
 const size = get<HTMLInputElement>("size");
 const height = get<HTMLInputElement>("height");
@@ -223,7 +226,10 @@ function updateUI() {
  */
 function toggleOnOff() {
     sync.set({onOff: onOffSwitch.checked}, () => {
-        if (onOffSwitch.checked) updateAllText();
+        if (onOffSwitch.checked) {
+            updateAllText();
+        } else {
+        }
     });
 }
 
@@ -332,7 +338,7 @@ let exportAnchor = get<HTMLAnchorElement>("exportAnchor");
 
 exportButton.onclick = () => {
     sync.get(keys, (fromStorage) => {
-        let json = JSON.stringify(fromStorage);
+        let json: string = JSON.stringify(fromStorage, null, 4);
         exportAnchor.href = "data:application/octet-stream," + encodeURIComponent(json);
         exportAnchor.download = "settings.wudooh.json";
         exportAnchor.click();

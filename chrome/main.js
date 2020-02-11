@@ -148,7 +148,7 @@ function updateNode(node, textSize, lineHeight, font) {
 function updateByAdding(node, textSize, lineHeight, font) {
     var newHTML;
     if (font === "Original") {
-        newHTML = "<span wudooh='true'' style='" +
+        newHTML = "<span wudooh='true' style='" +
             "font-size:" + textSize + "em;" +
             "line-height:" + lineHeight + "em;" +
             "'>$&</span>";

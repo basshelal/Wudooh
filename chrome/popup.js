@@ -14,6 +14,9 @@ var tabs = chrome.tabs;
 function get(elementId) {
     return document.getElementById(elementId);
 }
+
+var header = document.getElementsByTagName("header").item(0);
+var wudoohColor = "#880E4F";
 // Inputs
 var size = get("size");
 var height = get("height");
@@ -197,8 +200,10 @@ function updateUI() {
  */
 function toggleOnOff() {
     sync.set({onOff: onOffSwitch.checked}, function () {
-        if (onOffSwitch.checked)
+        if (onOffSwitch.checked) {
             updateAllText();
+        } else {
+        }
     });
 }
 /**
@@ -309,7 +314,7 @@ var exportButton = get("exportButton");
 var exportAnchor = get("exportAnchor");
 exportButton.onclick = function () {
     sync.get(keys, function (fromStorage) {
-        var json = JSON.stringify(fromStorage);
+        var json = JSON.stringify(fromStorage, null, 4);
         exportAnchor.href = "data:application/octet-stream," + encodeURIComponent(json);
         exportAnchor.download = "settings.wudooh.json";
         exportAnchor.click();

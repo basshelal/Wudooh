@@ -9,9 +9,6 @@
 
 <body>
 
-<!-- TODO add an animation for the header probably but maybe also the entire thing so that
-      we dont' see the inputs being filled-->
-
 <header>
     <img alt="Wudooh Logo" id="wudoohLogo" src="assets/WudoohLogo.svg" width="250">
 </header>
@@ -21,9 +18,9 @@
     <br>
 
     <!-- On off Switch -->
-    <label class="switch">
+    <label class="material-switch">
         <input id="onOffSwitch" type="checkbox">
-        <span class="slider round"></span>
+        <span></span>
     </label>
 
     <!-- Font selector -->
@@ -129,10 +126,10 @@
     <br>
     <br>
 
-    <button class="pure-material-button-contained" id="exportButton">Export</button>
+    <button class="material-button" id="exportButton">Export</button>
     <a id="exportAnchor"></a>
 
-    <button class="pure-material-button-contained" id="importButton">Import</button>
+    <button class="material-button" id="importButton">Import</button>
     <input accept="application/json" id="importInput" type="file"/>
 </div>
 
