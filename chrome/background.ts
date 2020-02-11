@@ -1,4 +1,11 @@
+/**
+ * This is the code that runs on the background page of the extension.
+ *
+ * Here we only run code that will execute when the extension is installed or updated.
+ */
+
 ///<reference path="../../../.WebStorm2019.1/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
+///<reference path="./shared.ts"/>
 
 import tabs = chrome.tabs;
 import runtime = chrome.runtime;
@@ -6,22 +13,6 @@ import sync = chrome.storage.sync;
 import onInstalled = runtime.onInstalled;
 import CreateProperties = tabs.CreateProperties;
 import InstalledDetails = runtime.InstalledDetails;
-
-/** The keys of the {@linkcode chrome.storage.sync} */
-const keys = [
-    /** The font size percent, between 100 and 200 */
-    "textSize",
-    /** The line height percent, between 100 and 200 */
-    "lineHeight",
-    /** Determines whether the extension is on or off, true is on */
-    "onOff",
-    /** The font to update to, this is a string */
-    "font",
-    /** The array of strings of whitelisted websites, this contains their hostnames in the format example.com */
-    "whitelisted",
-    /** The array of {@linkcode CustomSettings} that represents the sites with custom settings */
-    "customSettings"
-];
 
 function launchSite(path: string = "") {
     tabs.create(new class implements CreateProperties {

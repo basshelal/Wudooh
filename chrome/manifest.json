@@ -26,6 +26,7 @@
       "all_frames": true,
       "run_at": "document_end",
       "js": [
+        "shared.js",
         "main.js"
       ],
       "css": [
@@ -35,6 +36,7 @@
   ],
   "background": {
     "scripts": [
+      "shared.js",
       "background.js"
     ],
     "persistent": false

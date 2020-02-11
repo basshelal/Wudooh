@@ -1,11 +1,12 @@
-///<reference path="../../../.WebStorm2019.1/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
-
-import sync = chrome.storage.sync;
-import runtime = chrome.runtime;
-
 /**
  * This is the main script that reads the document and updates any Arabic script text
  */
+
+///<reference path="../../../.WebStorm2019.1/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
+///<reference path="./shared.ts"/>
+
+import sync = chrome.storage.sync;
+import runtime = chrome.runtime;
 
 /**
  * @deprecated use {@link newArabicRegex} instead
@@ -21,67 +22,8 @@ const newArabicRegex = new RegExp("[\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB5
 
 const defaultFont: string = "Droid Arabic Naskh";
 
-// TODO figure out a way to have common code in one place instead of all this duplicated code
-
-/** The keys of the {@linkcode chrome.storage.sync} */
-const keys = [
-    /** The font size percent, between 100 and 200 */
-    "textSize",
-    /** The line height percent, between 100 and 200 */
-    "lineHeight",
-    /** Determines whether the extension is on or off, true is on */
-    "onOff",
-    /** The font to update to, this is a string */
-    "font",
-    /** The array of strings of whitelisted websites, this contains their hostnames in the format example.com */
-    "whitelisted",
-    /** The array of {@linkcode CustomSettings} that represents the sites with custom settings */
-    "customSettings"
-];
-
-/**
- * Represents a site that uses different settings from the default settings
- * The settings themselves may be the same as the default but they will change independently
- */
-class CustomSettings {
-    /** The hostname url of this web site, this will always be in the form of example.com */
-    url: string;
-    /** The font size to use on this site */
-    textSize: number;
-    /** The line height to use on this site */
-    lineHeight: number;
-    /** The font to use on this site */
-    font: string;
-
-    constructor(url: string, textSize: number,
-                lineHeight: number, font: string) {
-        this.url = url;
-        this.textSize = textSize;
-        this.lineHeight = lineHeight;
-        this.font = font;
-    }
-}
-
 /** The observer used in {@linkcode startObserver} to dynamically update any newly added Nodes */
 let observer: MutationObserver;
-
-interface Array<T> {
-
-    findFirst(predicate: (element: T, index: number) => boolean): T | null;
-}
-
-/**
- * Finds the first element that matches the given {@param predicate} else returns null
- * You can use this as a way to check if the array contains an element that matches the given {@param predicate}, it
- * will return null if none exists
- * @param predicate the predicate to match
- */
-Array.prototype.findFirst = function <T>(predicate: (element: T, index: number) => boolean): T | null {
-    for (let i = 0; i < this.length; i++) {
-        if (predicate(this[i], i)) return this[i];
-    }
-    return null;
-};
 
 /**
  * Returns whether the given node has any Arabic script or not, this is any script that matches arabicRegEx

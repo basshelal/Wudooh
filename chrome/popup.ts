@@ -1,13 +1,15 @@
-///<reference path="../../../.WebStorm2019.1/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
-import sync = chrome.storage.sync;
-import tabs = chrome.tabs;
-import Tab = tabs.Tab;
-
 /**
  * This script is used by the extension's popup (popup.html) for options
  *
  * Currently there are 6 options, textSize, lineHeight, onOff, font, whitelisted and customSettings
  */
+
+///<reference path="../../../.WebStorm2019.1/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
+///<reference path="./shared.ts"/>
+
+import sync = chrome.storage.sync;
+import tabs = chrome.tabs;
+import Tab = tabs.Tab;
 
 /**
  * Shorthand for {@linkcode document.getElementById}, automatically casts to T, an HTMLElement
@@ -34,85 +36,6 @@ const sizeValue = get("sizeValue");
 const heightValue = get("heightValue");
 const overrideSettingsValue = get("overrideSettingsLabel");
 const whitelistedValue = get("whitelistedLabel");
-
-/** The keys of the {@linkcode chrome.storage.sync} */
-const keys = [
-    /** The font size percent, between 100 and 200 */
-    "textSize",
-    /** The line height percent, between 100 and 200 */
-    "lineHeight",
-    /** Determines whether the extension is on or off, true is on */
-    "onOff",
-    /** The font to update to, this is a string */
-    "font",
-    /** The array of strings of whitelisted websites, this contains their hostnames in the format example.com */
-    "whitelisted",
-    /** The array of {@linkcode CustomSettings} that represents the sites with custom settings */
-    "customSettings"
-];
-
-/**
- * Represents a site that uses different settings from the default settings
- * The settings themselves may be the same as the default but they will change independently
- */
-class CustomSettings {
-    /** The hostname url of this web site, this will always be in the form of example.com */
-    url: string;
-    /** The font size to use on this site */
-    textSize: number;
-    /** The line height to use on this site */
-    lineHeight: number;
-    /** The font to use on this site */
-    font: string;
-
-    constructor(url: string, textSize: number,
-                lineHeight: number, font: string) {
-        this.url = url;
-        this.textSize = textSize;
-        this.lineHeight = lineHeight;
-        this.font = font;
-    }
-
-    static isValidCustomSettings(customSettings: CustomSettings): boolean {
-        const url: string = customSettings.url;
-        const textSize: number = customSettings.textSize;
-        const lineHeight: number = customSettings.lineHeight;
-        const font: string = customSettings.font;
-
-        return !!url && typeof url === "string" &&
-            !!textSize && typeof textSize === "number" && textSize >= 100 && textSize <= 300 &&
-            !!lineHeight && typeof lineHeight === "number" && lineHeight >= 100 && lineHeight <= 300 &&
-            !!font && typeof font === "string";
-    }
-
-    static isCustomSettings(obj: object): boolean {
-        return !!obj && obj.hasOwnProperty("url") && obj.hasOwnProperty("textSize") &&
-            obj.hasOwnProperty("lineHeight") && obj.hasOwnProperty("font") &&
-            this.isValidCustomSettings(obj as CustomSettings);
-    }
-
-    static isCustomSettingsArray(array: Array<any>): boolean {
-        return array.length === 0 || array.every((obj: object) => this.isCustomSettings(obj));
-    }
-}
-
-interface Array<T> {
-
-    findFirst(predicate: (element: T, index: number) => boolean): T | null;
-}
-
-/**
- * Finds the first element that matches the given {@param predicate} else returns null
- * You can use this as a way to check if the array contains an element that matches the given {@param predicate}, it
- * will return null if none exists
- * @param predicate the predicate to match
- */
-Array.prototype.findFirst = function <T>(predicate: (element: T, index: number) => boolean): T | null {
-    for (let i = 0; i < this.length; i++) {
-        if (predicate(this[i], i)) return this[i];
-    }
-    return null;
-};
 
 /**
  * Updates all Arabic text in all tabs to adhere to the new options. This is done by sending a message to all

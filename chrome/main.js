@@ -1,9 +1,10 @@
-///<reference path="../../../.WebStorm2019.1/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
-var sync = chrome.storage.sync;
-var runtime = chrome.runtime;
 /**
  * This is the main script that reads the document and updates any Arabic script text
  */
+///<reference path="../../../.WebStorm2019.1/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
+///<reference path="./shared.ts"/>
+var sync = chrome.storage.sync;
+var runtime = chrome.runtime;
 /**
  * @deprecated use {@link newArabicRegex} instead
  */
@@ -15,50 +16,8 @@ var arabicRegEx = new RegExp("([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\u
  */
 var newArabicRegex = new RegExp("[\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF]+", "g");
 var defaultFont = "Droid Arabic Naskh";
-// TODO figure out a way to have common code in one place instead of all this duplicated code
-/** The keys of the {@linkcode chrome.storage.sync} */
-var keys = [
-    /** The font size percent, between 100 and 200 */
-    "textSize",
-    /** The line height percent, between 100 and 200 */
-    "lineHeight",
-    /** Determines whether the extension is on or off, true is on */
-    "onOff",
-    /** The font to update to, this is a string */
-    "font",
-    /** The array of strings of whitelisted websites, this contains their hostnames in the format example.com */
-    "whitelisted",
-    /** The array of {@linkcode CustomSettings} that represents the sites with custom settings */
-    "customSettings"
-];
-/**
- * Represents a site that uses different settings from the default settings
- * The settings themselves may be the same as the default but they will change independently
- */
-var CustomSettings = /** @class */ (function () {
-    function CustomSettings(url, textSize, lineHeight, font) {
-        this.url = url;
-        this.textSize = textSize;
-        this.lineHeight = lineHeight;
-        this.font = font;
-    }
-    return CustomSettings;
-}());
 /** The observer used in {@linkcode startObserver} to dynamically update any newly added Nodes */
 var observer;
-/**
- * Finds the first element that matches the given {@param predicate} else returns null
- * You can use this as a way to check if the array contains an element that matches the given {@param predicate}, it
- * will return null if none exists
- * @param predicate the predicate to match
- */
-Array.prototype.findFirst = function (predicate) {
-    for (var i = 0; i < this.length; i++) {
-        if (predicate(this[i], i))
-            return this[i];
-    }
-    return null;
-};
 /**
  * Returns whether the given node has any Arabic script or not, this is any script that matches arabicRegEx
  * @param node the node to check
