@@ -112,14 +112,6 @@ Array.prototype.findFirst = function <T>(predicate: (element: T, index: number) 
 };
 
 /**
- * Updates the font of the Arabic Wudooh heading and font select to match the font selected by the user
- */
-function updateWudoohFont(font: string) {
-    get("wudooh").style.fontFamily = font;
-    fontSelect.style.fontFamily = font;
-}
-
-/**
  * Updates all Arabic text in all tabs to adhere to the new options. This is done by sending a message to all
  * tabs that main.ts will handle.
  * In most cases not closing the popup does not update the text for some reason.
@@ -212,8 +204,6 @@ function updateUI() {
             fontSelect.value = font;
             onOffSwitch.checked = fromStorage.onOff;
 
-            updateWudoohFont(font);
-
             let isWhitelisted: boolean = !!(whiteListed.findFirst((it) => it === thisURL));
             let isCustom: boolean = !!custom;
 
@@ -243,7 +233,6 @@ function toggleOnOff() {
 function changeFont() {
     sync.set({font: fontSelect.value,}, () => {
         updateAllText();
-        updateWudoohFont(fontSelect.value);
     });
 }
 

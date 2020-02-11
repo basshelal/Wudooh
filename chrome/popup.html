@@ -8,16 +8,23 @@
 </head>
 
 <body>
+
+<!-- TODO add an animation for the header probably but maybe also the entire thing so that
+      we dont' see the inputs being filled-->
+
 <header>
-    <span dir="rtl" id="wudooh" lang="ar">وضوح</span>
+    <img alt="Wudooh Logo" id="wudoohLogo" src="assets/WudoohLogo.svg" width="250">
+</header>
+
+<div role="main">
+
+    <br>
+
     <!-- On off Switch -->
     <label class="switch">
         <input id="onOffSwitch" type="checkbox">
         <span class="slider round"></span>
     </label>
-</header>
-
-<div role="main">
 
     <!-- Font selector -->
     <!-- TODO Organize these properly before update release-->
@@ -89,6 +96,9 @@
     </table>
     <input id="height" max="300" min="100" name="height" type="range"/>
 
+    <!-- TODO for the site specific settings such as Custom Settings or Whitelisted we should
+          have a header label describing what is the site we are currently on-->
+
 
     <br>
 
@@ -119,12 +129,10 @@
     <br>
     <br>
 
-    <button id="exportButton">Export Settings</button>
+    <button class="pure-material-button-contained" id="exportButton">Export</button>
     <a id="exportAnchor"></a>
 
-    <input type="number" value="125">
-
-    <button id="importButton">Import Settings</button>
+    <button class="pure-material-button-contained" id="importButton">Import</button>
     <input accept="application/json" id="importInput" type="file"/>
 </div>
 
