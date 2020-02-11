@@ -16,7 +16,7 @@ import InstalledDetails = runtime.InstalledDetails;
 
 function launchSite(path: string = "") {
     tabs.create(new class implements CreateProperties {
-        url: string = "http://basshelal.github.io/Wudooh" + path;
+        url: string = homePage + path;
     });
 }
 
@@ -26,10 +26,10 @@ function launchSite(path: string = "") {
  */
 onInstalled.addListener((details: InstalledDetails) => {
     sync.get(keys, (fromStorage) => {
-        if (!fromStorage.textSize) sync.set({textSize: '115'});
-        if (!fromStorage.lineHeight) sync.set({lineHeight: '125'});
+        if (!fromStorage.textSize) sync.set({textSize: defaultTextSize});
+        if (!fromStorage.lineHeight) sync.set({lineHeight: defaultLineHeight});
         if (!fromStorage.onOff) sync.set({onOff: true,});
-        if (!fromStorage.font) sync.set({font: "Droid Arabic Naskh"});
+        if (!fromStorage.font) sync.set({font: defaultFont});
         if (!fromStorage.whitelisted) sync.set({whitelisted: []});
         if (!fromStorage.customSettings) sync.set({customSettings: []});
 

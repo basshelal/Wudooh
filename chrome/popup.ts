@@ -20,9 +20,6 @@ function get<T extends HTMLElement>(elementId: string): T | null {
     return document.getElementById(elementId) as T
 }
 
-const header: HTMLElement = document.getElementsByTagName("header").item(0);
-const wudoohColor: string = "#880E4F";
-
 // Inputs
 const size = get<HTMLInputElement>("size");
 const height = get<HTMLInputElement>("height");
@@ -95,10 +92,10 @@ function updateAllText() {
 function updateUI() {
 
     sync.get({
-        textSize: '125',
-        lineHeight: '125',
+        textSize: defaultTextSize,
+        lineHeight: defaultLineHeight,
         onOff: true,
-        font: "Droid Arabic Naskh",
+        font: defaultFont,
         whitelisted: [],
         customSettings: []
     }, (fromStorage) => {
@@ -279,12 +276,12 @@ importInput.oninput = () => {
         let json: string = event.target.result;
         let result: Array<any> = JSON.parse(json);
 
-        let textSize: number = result["textSize"];
-        let lineHeight: number = result["lineHeight"];
-        let onOff: boolean = result["onOff"];
-        let font: string = result["font"];
-        let whitelisted: Array<string> = result["whitelisted"];
-        let customSettings: Array<CustomSettings> = result["customSettings"];
+        let textSize: number = result[keyTextSize];
+        let lineHeight: number = result[keyLineHeight];
+        let onOff: boolean = result[keyOnOff];
+        let font: string = result[keyFont];
+        let whitelisted: Array<string> = result[keyWhitelisted];
+        let customSettings: Array<CustomSettings> = result[keyCustomSettings];
 
         let valid: boolean = true;
 

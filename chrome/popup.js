@@ -15,8 +15,6 @@ var tabs = chrome.tabs;
 function get(elementId) {
     return document.getElementById(elementId);
 }
-var header = document.getElementsByTagName("header").item(0);
-var wudoohColor = "#880E4F";
 // Inputs
 var size = get("size");
 var height = get("height");
@@ -84,10 +82,10 @@ function updateAllText() {
  */
 function updateUI() {
     sync.get({
-        textSize: '125',
-        lineHeight: '125',
+        textSize: defaultTextSize,
+        lineHeight: defaultLineHeight,
         onOff: true,
-        font: "Droid Arabic Naskh",
+        font: defaultFont,
         whitelisted: [],
         customSettings: []
     }, function (fromStorage) {
@@ -267,12 +265,12 @@ importInput.oninput = function () {
         // @ts-ignore
         var json = event.target.result;
         var result = JSON.parse(json);
-        var textSize = result["textSize"];
-        var lineHeight = result["lineHeight"];
-        var onOff = result["onOff"];
-        var font = result["font"];
-        var whitelisted = result["whitelisted"];
-        var customSettings = result["customSettings"];
+        var textSize = result[keyTextSize];
+        var lineHeight = result[keyLineHeight];
+        var onOff = result[keyOnOff];
+        var font = result[keyFont];
+        var whitelisted = result[keyWhitelisted];
+        var customSettings = result[keyCustomSettings];
         var valid = true;
         if (textSize) {
             if (typeof textSize !== "number" || (textSize < 100 || textSize > 300)) {

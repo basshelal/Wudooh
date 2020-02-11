@@ -15,7 +15,6 @@ var arabicRegEx = new RegExp("([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\u
  * this means that it accepts anything as long as it has some Arabic symbol in it
  */
 var newArabicRegex = new RegExp("[\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF]+", "g");
-var defaultFont = "Droid Arabic Naskh";
 /** The observer used in {@linkcode startObserver} to dynamically update any newly added Nodes */
 var observer;
 /**

@@ -15,9 +15,8 @@ function launchSite(path) {
     }
     tabs.create(new /** @class */ (function () {
         function class_1() {
-            this.url = "http://basshelal.github.io/Wudooh" + path;
+            this.url = homePage + path;
         }
-
         return class_1;
     }()));
 }
@@ -28,13 +27,13 @@ function launchSite(path) {
 onInstalled.addListener(function (details) {
     sync.get(keys, function (fromStorage) {
         if (!fromStorage.textSize)
-            sync.set({textSize: '115'});
+            sync.set({textSize: defaultTextSize});
         if (!fromStorage.lineHeight)
-            sync.set({lineHeight: '125'});
+            sync.set({lineHeight: defaultLineHeight});
         if (!fromStorage.onOff)
             sync.set({onOff: true,});
         if (!fromStorage.font)
-            sync.set({font: "Droid Arabic Naskh"});
+            sync.set({font: defaultFont});
         if (!fromStorage.whitelisted)
             sync.set({whitelisted: []});
         if (!fromStorage.customSettings)

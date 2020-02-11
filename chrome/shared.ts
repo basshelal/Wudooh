@@ -7,20 +7,32 @@
  * ///<reference path="./shared.ts"/>
  */
 
+/** The font size percent, between 100 and 300 */
+const keyTextSize: string = "textSize";
+
+/** The line height percent, between 100 and 300 */
+const keyLineHeight: string = "lineHeight";
+
+/** Determines whether the extension is on or off, true is on */
+const keyOnOff: string = "onOff";
+
+/** The font to update to, this is a string */
+const keyFont: string = "font";
+
+/** The array of strings of whitelisted websites, this contains their hostnames in the format example.com */
+const keyWhitelisted: string = "whitelisted";
+
+/** The array of {@linkcode CustomSettings} that represents the sites with custom settings */
+const keyCustomSettings: string = "customSettings";
+
 /** The keys of the {@linkcode chrome.storage.sync} */
-const keys = [
-    /** The font size percent, between 100 and 300 */
-    "textSize",
-    /** The line height percent, between 100 and 300 */
-    "lineHeight",
-    /** Determines whether the extension is on or off, true is on */
-    "onOff",
-    /** The font to update to, this is a string */
-    "font",
-    /** The array of strings of whitelisted websites, this contains their hostnames in the format example.com */
-    "whitelisted",
-    /** The array of {@linkcode CustomSettings} that represents the sites with custom settings */
-    "customSettings"
+const keys: Array<string> = [
+    keyTextSize,
+    keyLineHeight,
+    keyOnOff,
+    keyFont,
+    keyWhitelisted,
+    keyCustomSettings
 ];
 
 /**
@@ -89,3 +101,9 @@ Array.prototype.findFirst = function <T>(predicate: (element: T, index: number) 
 };
 
 // endregion Extensions
+
+const defaultFont: string = "Droid Arabic Naskh";
+const defaultTextSize: number = 115;
+const defaultLineHeight: number = 125;
+const defaultColor: string = "#880E4F";
+const homePage: string = "http://basshelal.github.io/Wudooh";
