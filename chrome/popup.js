@@ -35,7 +35,6 @@ var exportButton = get("exportButton");
 var exportAnchor = get("exportAnchor");
 var importButton = get("importButton");
 var importInput = get("importInput");
-
 /**
  * Updates all Arabic text in all tabs to adhere to the new options. This is done by sending a message to all
  * tabs that main.ts will handle.
@@ -221,7 +220,6 @@ function toggleWhitelist() {
         });
     });
 }
-
 function exportSettings() {
     sync.get(keys, function (fromStorage) {
         var json = JSON.stringify(fromStorage, null, 4);
@@ -230,7 +228,6 @@ function exportSettings() {
         exportAnchor.click();
     });
 }
-
 function importSettings() {
     var file = importInput.files[0];
     var reader = new FileReader();
@@ -318,7 +315,6 @@ function importSettings() {
     };
     reader.readAsText(file);
 }
-
 /**
  * Add all listeners to the UI elements
  */
@@ -366,5 +362,4 @@ function addListeners() {
         return importInput.click();
     };
 }
-
 addListeners();
