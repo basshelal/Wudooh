@@ -3,7 +3,6 @@
 <head>
     <title>وضوح</title>
     <meta content="text/html;charset=UTF-8" http-equiv="Content-Type">
-    <link href="fonts.css" rel="stylesheet">
     <link href="popup.css" rel="stylesheet">
 </head>
 
@@ -62,7 +61,6 @@
         <option style="font-family: 'Mehr Nastaliq', sans-serif" value="Mehr Nastaliq">مهر نستعلیق</option>
         <option style="font-family: 'Rooznameh', sans-serif" value="Rooznameh">روزنامه</option>
         <option style="font-family: 'DecoType Naskh', sans-serif" value="DecoType Naskh">ديكوتايپ نسخ</option>
-        <!-- TODO End alphabetical ordering here because boring system defaults are below-->
         <option style="font-family: 'sans-serif', sans-serif" value="sans-serif">سانس سيرف</option>
         <option style="font-family: 'Times New Roman', sans-serif" value="Times New Roman">تايمز نيو رومان</option>
         <option style="font-family: 'Arial', sans-serif" value="Arial">اريال</option>
@@ -93,11 +91,12 @@
     </table>
     <input id="height" max="300" min="100" name="height" type="range"/>
 
-    <!-- TODO for the site specific settings such as Custom Settings or Whitelisted we should
-          have a header label describing what is the site we are currently on-->
-
-
     <br>
+
+    <div class="centered" id="websiteInfo">
+        <img id="websiteIcon" src="">
+        <h2 id="website">Website</h2>
+    </div>
 
     <!-- Override Site Settings Switch -->
     <table>
@@ -133,7 +132,7 @@
     <input accept="application/json" id="importInput" type="file"/>
 </div>
 
-<footer>
+<footer class="" style="font-family: 'Noto Nastaliq Urdu', 'Roboto Light', sans-serif">
     <p><a href="https://basshelal.github.io/Wudooh/" target="_blank">Help</a>
     <p>By <a href="https://github.com/basshelal/Wudooh" target="_blank">Bassam Helal بسّام هلال</a></p>
 </footer>

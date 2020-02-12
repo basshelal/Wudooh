@@ -34,6 +34,16 @@ const heightValue = get("heightValue");
 const overrideSettingsValue = get("overrideSettingsLabel");
 const whitelistedValue = get("whitelistedLabel");
 
+// Website Info
+const websiteText = get<HTMLHeadingElement>("website");
+const websiteIcon = get<HTMLImageElement>("websiteIcon");
+
+// Import / Export
+let exportButton = get<HTMLButtonElement>("exportButton");
+let exportAnchor = get<HTMLAnchorElement>("exportAnchor");
+let importButton = get<HTMLButtonElement>("importButton");
+let importInput = get<HTMLInputElement>("importInput");
+
 /**
  * Updates all Arabic text in all tabs to adhere to the new options. This is done by sending a message to all
  * tabs that main.ts will handle.
@@ -100,7 +110,8 @@ function updateUI() {
         customSettings: []
     }, (fromStorage) => {
         tabs.query({active: true, currentWindow: true}, (tabs: Array<Tab>) => {
-            let thisURL: string = new URL(tabs[0].url).hostname;
+            let thisTab: Tab = tabs[0];
+            let thisURL: string = new URL(thisTab.url).hostname;
 
             let customSettings: Array<CustomSettings> = fromStorage.customSettings as Array<CustomSettings>;
             let whiteListed: Array<string> = fromStorage.whitelisted as Array<string>;
@@ -137,6 +148,9 @@ function updateUI() {
             overrideSiteSwitch.checked = isCustom;
             if (isCustom) overrideSettingsValue.innerText = "Using site specific settings";
             else overrideSettingsValue.innerText = "Using default settings";
+
+            websiteText.innerText = thisURL;
+            websiteIcon.src = "chrome://favicon/size/32/" + thisTab.url;
         });
     });
 }
@@ -162,7 +176,6 @@ function changeFont() {
     });
 }
 
-// TODO not yet finished
 function toggleOverrideSiteSettings() {
     // This only requires this current tab
     tabs.query({active: true, currentWindow: true}, (tabs: Array<Tab>) => {
@@ -179,10 +192,10 @@ function toggleOverrideSiteSettings() {
                 customSettings.push(custom);
                 overrideSettingsValue.innerText = "Using site specific settings";
             } else {
-                // Using default settings
+                // Using global settings
                 // Remove all occurrences of this url from customSettings, just in case
                 customSettings = customSettings.filter((it: CustomSettings) => it.url !== thisURL);
-                overrideSettingsValue.innerText = "Using default settings";
+                overrideSettingsValue.innerText = "Using global settings";
             }
 
             // Set the array of all whitelisted websites in storage
@@ -227,48 +240,16 @@ function toggleWhitelist() {
     });
 }
 
-/**
- * Add all listeners to the UI elements
- */
-function addListeners() {
-    // Get options when the popup.html document is loaded
-    document.addEventListener("DOMContentLoaded", updateUI);
-
-    // Update size and height HTML when input is changed, changes no variables
-    size.oninput = () => sizeValue.innerHTML = size.value + '%';
-    height.oninput = () => heightValue.innerHTML = height.value + '%';
-
-    // Save options when mouse is released
-    size.onmouseup = () => updateAllText();
-    height.onmouseup = () => updateAllText();
-
-    // Update switches when they're clicked
-    onOffSwitch.onclick = () => toggleOnOff();
-    whiteListSwitch.onclick = () => toggleWhitelist();
-    overrideSiteSwitch.onclick = () => toggleOverrideSiteSettings();
-
-    // Update font when a new item is selected
-    fontSelect.oninput = () => changeFont();
-}
-
-addListeners();
-
-let exportButton = get<HTMLButtonElement>("exportButton");
-let exportAnchor = get<HTMLAnchorElement>("exportAnchor");
-
-exportButton.onclick = () => {
+function exportSettings() {
     sync.get(keys, (fromStorage) => {
         let json: string = JSON.stringify(fromStorage, null, 4);
         exportAnchor.href = "data:application/octet-stream," + encodeURIComponent(json);
         exportAnchor.download = "settings.wudooh.json";
         exportAnchor.click();
     });
-};
+}
 
-let importButton = get<HTMLButtonElement>("importButton");
-let importInput = get<HTMLInputElement>("importInput");
-
-importInput.oninput = () => {
+function importSettings() {
     var file: File = importInput.files[0];
     var reader: FileReader = new FileReader();
     reader.onload = (event: ProgressEvent) => {
@@ -364,8 +345,39 @@ importInput.oninput = () => {
         window.close();
     };
     reader.readAsText(file);
-};
+}
 
-importButton.onclick = () => {
-    importInput.click();
-};
+/**
+ * Add all listeners to the UI elements
+ */
+function addListeners() {
+    // Get options when the popup.html document is loaded
+    document.addEventListener("DOMContentLoaded", updateUI);
+
+    // Update size and height HTML when input is changed, changes no variables
+    size.oninput = () => sizeValue.innerHTML = size.value + '%';
+    height.oninput = () => heightValue.innerHTML = height.value + '%';
+
+    // Save options when mouse is released
+    size.onmouseup = () => updateAllText();
+    height.onmouseup = () => updateAllText();
+
+    // Update switches when they're clicked
+    onOffSwitch.onclick = () => toggleOnOff();
+    whiteListSwitch.onclick = () => toggleWhitelist();
+    overrideSiteSwitch.onclick = () => toggleOverrideSiteSettings();
+
+    // Update font when a new item is selected
+    fontSelect.oninput = () => changeFont();
+
+    // Export settings when button is clicked
+    exportButton.onclick = () => exportSettings();
+
+    // The invisible input is the one in charge of dealing with the importing
+    importInput.oninput = () => importSettings();
+
+    // Clicking the button simulates clicking the import input which is the one dealing with the actual file reading
+    importButton.onclick = () => importInput.click();
+}
+
+addListeners();

@@ -1,4 +1,5 @@
 @import "material.css";
+@import "fonts.css";
 
 /* region Animations */
 
@@ -229,7 +230,7 @@ option {
     font-size: 1.25em;
 }
 
-select {
+#font-select {
     font-size: 1.5em;
     font-family: "Roboto Light", sans-serif;
     width: 90%;
