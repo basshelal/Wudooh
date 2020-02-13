@@ -1,12 +1,3 @@
-:root {
-    --material-main: #880E4F;
-    --material-light: #BC477B;
-    --material-dark: #560027;
-    --material-bg: #EFEFEF;
-    --material-text-light: #FFFFFF;
-    --material-text-dark: #000000;
-    --material-font: "Roboto Light", sans-serif;
-}
 
 /* region Material Switch */
 
@@ -17,7 +8,7 @@
     position: relative;
     display: inline-block;
     color: rgba(0, 0, 0, 0.87);
-    font-family: var(--material-font);
+    font-family: "Roboto Light", sans-serif;
     font-size: 16px;
     line-height: 1.5;
 }
@@ -30,9 +21,9 @@
     z-index: -1;
     position: absolute;
     right: -2px;
-    top: -2px;
+    top: -1px;
     display: block;
-    border-radius: 50%;
+    border-radius: 100%;
     width: 60px;
     height: 40px;
     background-color: rgba(0, 0, 0, 0.38);
@@ -69,7 +60,7 @@
     content: "";
     position: absolute;
     top: 8px;
-    left: 18px;
+    left: 16px;
     border-radius: 50%;
     width: 26px;
     height: 26px;
@@ -89,7 +80,7 @@
 
 .material-switch > input:checked + span::after {
     background-color: rgb(173, 20, 87);
-    transform: translateX(20px);
+    transform: translateX(22px);
 }
 
 /* Hover, Focus */
@@ -153,7 +144,7 @@
     color: rgb(255, 255, 255);
     background-color: rgb(173, 20, 87);
     box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
-    font-family: var(--material-font);
+    font-family: "Roboto Light", sans-serif;
     font-size: 14px;
     font-weight: 500;
     line-height: 36px;
@@ -233,3 +224,80 @@
 }
 
 /* endregion Material Button*/
+
+/* region Material Select */
+
+/* Copied from https://codepen.io/pavelvaravko/pen/qjojOr */
+
+.select-text {
+    position: relative;
+    font-family: inherit;
+    background-color: transparent;
+    width: 250px;
+    padding: 10px 10px 10px 0;
+    font-size: 18px;
+    border-radius: 0;
+    border: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+/* Remove focus */
+.select-text:focus {
+    outline: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0);
+}
+
+/* Use custom arrow */
+.select .select-text {
+    appearance: none;
+    -webkit-appearance: none
+}
+
+.select:after {
+    position: relative;
+    bottom: 24px;
+    left: 40%;
+    /* Styling the down arrow */
+    width: 0;
+    height: 0;
+    padding: 0;
+    content: '';
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid rgba(0, 0, 0, 0.15);
+    pointer-events: none;
+}
+
+/* BOTTOM BARS ================================= */
+.select-bar {
+    align-content: center;
+    align-self: center;
+    position: relative;
+    display: block;
+    width: 300px;
+}
+
+.select-bar:before, .select-bar:after {
+    content: '';
+    height: 2px;
+    width: 0;
+    bottom: 1px;
+    position: absolute;
+    background: rgb(173, 20, 87);
+    transition: 0.3s ease all;
+}
+
+.select-bar:before {
+    left: 50%;
+}
+
+.select-bar:after {
+    right: 50%;
+}
+
+/* active state */
+.select-text:focus ~ .select-bar:before, .select-text:focus ~ .select-bar:after {
+    width: 50%;
+}
+
+/* endregion Material Select*/

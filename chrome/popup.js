@@ -122,6 +122,7 @@ function updateUI() {
             height.value = lineHeight.toString();
             heightValue.innerHTML = lineHeight.toString() + '%';
             fontSelect.value = font;
+            fontSelect.style.fontFamily = font;
             onOffSwitch.checked = fromStorage.onOff;
             var isWhitelisted = !!(whiteListed.findFirst(function (it) {
                 return it === thisURL;
@@ -159,6 +160,7 @@ function toggleOnOff() {
  * Changes the font, this will update all text and update the Wudooh header
  */
 function changeFont() {
+    fontSelect.style.fontFamily = fontSelect.value;
     sync.set({font: fontSelect.value,}, function () {
         updateAllText();
     });
