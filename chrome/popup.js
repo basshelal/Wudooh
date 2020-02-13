@@ -149,7 +149,9 @@ function toggleOnOff() {
     sync.set({onOff: onOffSwitch.checked}, function () {
         if (onOffSwitch.checked) {
             updateAllText();
+            get("main").style.display = "block";
         } else {
+            get("main").style.display = "none";
         }
     });
 }

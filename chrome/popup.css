@@ -89,7 +89,7 @@ header {
     width: fit-content;
 }
 
-div[role="main"] {
+#main {
     margin: 0 auto;
     padding: 0;
     text-align: center;

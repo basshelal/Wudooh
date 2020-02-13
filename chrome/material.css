@@ -1,24 +1,12 @@
-/* region Ripple*/
-
-/* Copied from https://codepen.io/finnhvman/pen/jLXKJw */
-
-/* Ripple effect */
-.ripple {
-    background-position: center;
-    transition: background 0.8s;
+:root {
+    --material-main: #880E4F;
+    --material-light: #BC477B;
+    --material-dark: #560027;
+    --material-bg: #EFEFEF;
+    --material-text-light: #FFFFFF;
+    --material-text-dark: #000000;
+    --material-font: "Roboto Light", sans-serif;
 }
-
-.ripple:hover {
-    background: #47a7f5 radial-gradient(circle, transparent 1%, #47a7f5 1%) center/15000%;
-}
-
-.ripple:active {
-    background-color: #6eb9f7;
-    background-size: 100%;
-    transition: background 0.01s;
-}
-
-/* endregion Ripple */
 
 /* region Material Switch */
 
@@ -28,8 +16,8 @@
     z-index: 0;
     position: relative;
     display: inline-block;
-    color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.87);
-    font-family: var(--pure-material-font, "Roboto", "Segoe UI", BlinkMacSystemFont, system-ui, -apple-system);
+    color: rgba(0, 0, 0, 0.87);
+    font-family: var(--material-font);
     font-size: 16px;
     line-height: 1.5;
 }
@@ -48,7 +36,7 @@
     border-radius: 50%;
     width: 40px;
     height: 40px;
-    background-color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.38);
+    background-color: rgba(0, 0, 0, 0.38);
     outline: none;
     opacity: 0;
     transform: scale(1);
@@ -72,7 +60,7 @@
     border-radius: 7px;
     width: 36px;
     height: 14px;
-    background-color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.38);
+    background-color: rgba(0, 0, 0, 0.38);
     vertical-align: top;
     transition: background-color 0.2s, opacity 0.2s;
 }
@@ -86,7 +74,7 @@
     border-radius: 50%;
     width: 20px;
     height: 20px;
-    background-color: rgb(var(--pure-material-onprimary-rgb, 255, 255, 255));
+    background-color: rgb(255, 255, 255);
     box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
     transition: background-color 0.2s, transform 0.2s;
 }
@@ -94,15 +82,15 @@
 /* Checked */
 .material-switch > input:checked {
     right: -10px;
-    background-color: rgb(var(--pure-material-primary-rgb, 33, 150, 243));
+    background-color: rgb(33, 150, 243);
 }
 
 .material-switch > input:checked + span::before {
-    background-color: rgba(var(--pure-material-primary-rgb, 33, 150, 243), 0.6);
+    background-color: rgba(33, 150, 243, 0.6);
 }
 
 .material-switch > input:checked + span::after {
-    background-color: rgb(var(--pure-material-primary-rgb, 33, 150, 243));
+    background-color: rgb(33, 150, 243);
     transform: translateX(16px);
 }
 
@@ -111,13 +99,13 @@
     opacity: 0.04;
 }
 
-.material-switch > input:focus {
+/*.material-switch > input:focus {
     opacity: 0.12;
 }
 
 .material-switch:hover > input:focus {
     opacity: 0.16;
-}
+}*/
 
 /* Active */
 .material-switch > input:active {
@@ -127,11 +115,11 @@
 }
 
 .material-switch > input:active + span::before {
-    background-color: rgba(var(--pure-material-primary-rgb, 33, 150, 243), 0.6);
+    background-color: rgba(33, 150, 243, 0.6);
 }
 
 .material-switch > input:checked:active + span::before {
-    background-color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.38);
+    background-color: rgba(0, 0, 0, 0.38);
 }
 
 /* Disabled */
@@ -140,17 +128,17 @@
 }
 
 .material-switch > input:disabled + span {
-    color: rgb(var(--pure-material-onsurface-rgb, 0, 0, 0));
+    color: rgb(0, 0, 0);
     opacity: 0.38;
     cursor: default;
 }
 
 .material-switch > input:disabled + span::before {
-    background-color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.38);
+    background-color: rgba(0, 0, 0, 0.38);
 }
 
 .material-switch > input:checked:disabled + span::before {
-    background-color: rgba(var(--pure-material-primary-rgb, 33, 150, 243), 0.6);
+    background-color: rgba(33, 150, 243, 0.6);
 }
 
 /* endregion Material Switch */
@@ -172,10 +160,10 @@
     text-align: center;
     text-overflow: ellipsis;
     text-transform: uppercase;
-    color: rgb(var(--pure-material-onprimary-rgb, 255, 255, 255));
-    background-color: rgb(var(--pure-material-primary-rgb, 33, 150, 243));
+    color: rgb(255, 255, 255);
+    background-color: rgb(33, 150, 243);
     box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
-    font-family: var(--pure-material-font, "Roboto", "Segoe UI", BlinkMacSystemFont, system-ui, -apple-system);
+    font-family: var(--material-font);
     font-size: 14px;
     font-weight: 500;
     line-height: 36px;
@@ -197,7 +185,7 @@
     bottom: 0;
     left: 0;
     right: 0;
-    background-color: rgb(var(--pure-material-onprimary-rgb, 255, 255, 255));
+    background-color: rgb(255, 255, 255);
     opacity: 0;
     transition: opacity 0.2s;
 }
@@ -212,7 +200,7 @@
     padding: 50%;
     width: 32px; /* Safari */
     height: 32px; /* Safari */
-    background-color: rgb(var(--pure-material-onprimary-rgb, 255, 255, 255));
+    background-color: rgb(255, 255, 255);
     opacity: 0;
     transform: translate(-50%, -50%) scale(1);
     transition: opacity 1s, transform 0.5s;
@@ -249,8 +237,8 @@
 
 /* Disabled */
 .material-button:disabled {
-    color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.38);
-    background-color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.12);
+    color: rgba(0, 0, 0, 0.38);
+    background-color: rgba(0, 0, 0, 0.12);
     box-shadow: none;
     cursor: initial;
 }
