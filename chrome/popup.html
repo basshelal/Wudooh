@@ -81,7 +81,9 @@
             <td class="value" id="sizeValue"></td>
         </tr>
     </table>
-    <input id="size" max="300" min="100" name="size" type="range"/>
+    <label class="pure-material-slider">
+        <input id="size" max="300" min="100" name="size" type="range">
+    </label>
 
 
     <br>
@@ -93,7 +95,9 @@
             <td class="value" id="heightValue"></td>
         </tr>
     </table>
-    <input id="height" max="300" min="100" name="height" type="range"/>
+    <label class="pure-material-slider">
+        <input id="height" max="300" min="100" name="height" type="range">
+    </label>
 
     <br>
 
@@ -136,6 +140,26 @@
 
     <button class="material-button" id="importButton">Import</button>
     <input accept="application/json" id="importInput" type="file"/>
+
+    <br>
+    <br>
+
+    <div class="centered" style="width: 80%">
+        <label class="label" style="float: left">Text</label>
+
+        <label class="pure-material-textfield-outlined" style="float: right">
+            <input max="300" min="100" placeholder=" " step="1" type="number" value="100">
+            <span>Font Size:</span>
+        </label>
+
+        <label class="pure-material-slider">
+            <input max="100" min="0" type="range">
+        </label>
+
+        <hr style="width: 100%">
+    </div>
+
+
 </div>
 
 <footer class="" style="font-family: 'Noto Nastaliq Urdu', 'Roboto Light', sans-serif">

@@ -1,4 +1,3 @@
-
 /* region Material Switch */
 
 /* Copied from https://codepen.io/finnhvman/pen/pOeyjE */
@@ -301,3 +300,643 @@
 }
 
 /* endregion Material Select*/
+
+/* region Material Slider */
+
+.pure-material-slider {
+    display: inline-block;
+    width: 200px;
+    color: rgba(0, 0, 0, 0.87);
+    font-family: "Roboto Light", sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+/* Input */
+.pure-material-slider > input {
+    -webkit-appearance: none;
+    position: relative;
+    top: 24px;
+    display: block;
+    margin: 0 0 -36px;
+    width: 100%;
+    height: 36px;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+/* Without Span */
+.pure-material-slider > input:last-child {
+    position: static;
+    margin: 0;
+}
+
+/* Span */
+.pure-material-slider > span {
+    display: inline-block;
+    margin-bottom: 36px;
+}
+
+/* Focus */
+.pure-material-slider > input:focus {
+    outline: none;
+}
+
+/* Disabled */
+.pure-material-slider > input:disabled {
+    cursor: default;
+    opacity: 0.38;
+}
+
+.pure-material-slider > input:disabled + span {
+    color: rgba(0, 0, 0, 0.38);
+}
+
+/* Webkit | Track */
+.pure-material-slider > input::-webkit-slider-runnable-track {
+    margin: 17px 0;
+    border-radius: 1px;
+    width: 100%;
+    height: 2px;
+    background-color: rgba(33, 150, 243, 0.24);
+}
+
+/* Webkit | Thumb */
+.pure-material-slider > input::-webkit-slider-thumb {
+    appearance: none;
+    -webkit-appearance: none;
+    border: none;
+    border-radius: 50%;
+    height: 2px;
+    width: 2px;
+    background-color: rgb(33, 150, 243);
+    transform: scale(6, 6);
+    transition: box-shadow 0.2s;
+}
+
+/* Webkit | Hover, Focus */
+.pure-material-slider:hover > input::-webkit-slider-thumb {
+    box-shadow: 0 0 0 2px var(--pure-material-safari-helper1);
+}
+
+.pure-material-slider > input:focus::-webkit-slider-thumb {
+    box-shadow: 0 0 0 2px;
+}
+
+.pure-material-slider:hover > input:focus::-webkit-slider-thumb {
+    box-shadow: 0 0 0 2px;
+}
+
+/* Webkit | Active */
+.pure-material-slider > input:active::-webkit-slider-thumb {
+    box-shadow: 0 0 0 2px !important;
+}
+
+/* Webkit | Disabled */
+.pure-material-slider > input:disabled::-webkit-slider-runnable-track {
+    background-color: rgba(0, 0, 0, 0.38);
+}
+
+.pure-material-slider > input:disabled::-webkit-slider-thumb {
+    background-color: rgb(0, 0, 0);
+    color: rgb(255, 255, 255); /* Safari */
+    box-shadow: 0 0 0 1px rgb(255, 255, 255) !important;
+    transform: scale(4, 4);
+}
+
+/* Moz | Track */
+.pure-material-slider > input::-moz-range-track {
+    margin: 17px 0;
+    border-radius: 1px;
+    width: 100%;
+    height: 2px;
+    background-color: rgba(33, 150, 243, 0.24);
+}
+
+/* Moz | Thumb */
+.pure-material-slider > input::-moz-range-thumb {
+    appearance: none;
+    -moz-appearance: none;
+    border: none;
+    border-radius: 50%;
+    height: 2px;
+    width: 2px;
+    background-color: rgb(33, 150, 243);
+    transform: scale(6, 6);
+    transition: box-shadow 0.2s;
+}
+
+/* Moz | Progress */
+.pure-material-slider > input::-moz-range-progress {
+    border-radius: 1px;
+    height: 2px;
+    background-color: rgb(33, 150, 243);
+}
+
+/* Moz | Hover, Focus */
+.pure-material-slider:hover > input:hover::-moz-range-thumb {
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.04);
+}
+
+.pure-material-slider > input:focus::-moz-range-thumb {
+    box-shadow: 0 0 0 2px rgba(33, 150, 243 0.12);
+}
+
+.pure-material-slider:hover > input:focus::-moz-range-thumb {
+    box-shadow: 0 0 0 2px rgba(33, 150, 243 0.16);
+}
+
+/* Moz | Active */
+.pure-material-slider > input:active::-moz-range-thumb {
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.24) !important;
+}
+
+/* Moz | Disabled */
+.pure-material-slider > input:disabled::-moz-range-track {
+    background-color: rgba(0, 0, 0, 0.38);
+}
+
+.pure-material-slider > input:disabled::-moz-range-progress {
+    background-color: rgba(0, 0, 0, 0.87);
+}
+
+.pure-material-slider > input:disabled::-moz-range-thumb {
+    background-color: rgb(0, 0, 0);
+    box-shadow: 0 0 0 1px rgb(255, 255, 255) !important;
+    transform: scale(4, 4);
+}
+
+.pure-material-slider > input::-moz-focus-outer {
+    border: none;
+}
+
+/* MS | Track */
+.pure-material-slider > input::-ms-track {
+    box-sizing: border-box;
+    margin: 17px 0;
+    border: none;
+    border-radius: 1px;
+    padding: 0 17px;
+    width: 100%;
+    height: 2px;
+    background-color: transparent;
+}
+
+.pure-material-slider > input::-ms-fill-lower {
+    border-radius: 1px;
+    height: 2px;
+    background-color: rgb(33, 150, 243);
+}
+
+/* MS | Progress */
+.pure-material-slider > input::-ms-fill-upper {
+    border-radius: 1px;
+    height: 2px;
+    background-color: rgba(33, 150, 243, 0.24);
+}
+
+/* MS | Thumb */
+.pure-material-slider > input::-ms-thumb {
+    appearance: none;
+    margin: 0 17px;
+    border: none;
+    border-radius: 50%;
+    height: 2px;
+    width: 2px;
+    background-color: rgb(33, 150, 243);
+    transform: scale(6, 6);
+    transition: box-shadow 0.2s;
+}
+
+/* MS | Hover, Focus */
+.pure-material-slider:hover > input::-ms-thumb {
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.04);
+}
+
+.pure-material-slider > input:focus::-ms-thumb {
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.12);
+}
+
+.pure-material-slider:hover > input:focus::-ms-thumb {
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.16);
+}
+
+/* MS | Active */
+.pure-material-slider > input:active::-ms-thumb {
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.24) !important;
+}
+
+/* MS | Disabled */
+.pure-material-slider > input:disabled::-ms-fill-lower {
+    background-color: rgba(0, 0, 0, 0.38);
+}
+
+.pure-material-slider > input:disabled::-ms-fill-upper {
+    background-color: rgba(0, 0, 0, 0.38);
+    opacity: 0.38;
+}
+
+.pure-material-slider > input:disabled::-ms-thumb {
+    background-color: rgb(0, 0, 0);
+    box-shadow: 0 0 0 1px rgb(255, 255, 255) !important;
+    transform: scale(4, 4);
+}
+
+input[type="range"] {
+    margin: auto;
+    -webkit-appearance: none;
+    position: relative;
+    overflow: hidden;
+    height: 40px;
+    width: 200px;
+    cursor: pointer;
+    border-radius: 0; /* iOS */
+}
+
+::-webkit-slider-runnable-track {
+    background: #ddd;
+}
+
+/*
+ * 1. Set to 0 width and remove border for a slider without a thumb
+ */
+::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px; /* 1 */
+    height: 40px;
+    background: #fff;
+    box-shadow: -100vw 0 0 100vw dodgerblue;
+    border: 2px solid #999; /* 1 */
+}
+
+::-moz-range-track {
+    height: 40px;
+    background: #ddd;
+}
+
+::-moz-range-thumb {
+    background: #fff;
+    height: 40px;
+    width: 20px;
+    border: 3px solid #999;
+    border-radius: 0 !important;
+    box-shadow: -100vw 0 0 100vw dodgerblue;
+    box-sizing: border-box;
+}
+
+::-ms-fill-lower {
+    background: dodgerblue;
+}
+
+::-ms-thumb {
+    background: #fff;
+    border: 2px solid #999;
+    height: 40px;
+    width: 20px;
+    box-sizing: border-box;
+}
+
+::-ms-ticks-after {
+    display: none;
+}
+
+::-ms-ticks-before {
+    display: none;
+}
+
+::-ms-track {
+    background: #ddd;
+    color: transparent;
+    height: 40px;
+    border: none;
+}
+
+::-ms-tooltip {
+    display: none;
+}
+
+/* endregion Material Slider */
+
+/* region Material Text Field*/
+
+.pure-material-textfield-outlined {
+    --pure-material-safari-helper1: rgb(33, 150, 243);
+    position: relative;
+    display: inline-block;
+    padding-top: 6px;
+    font-family: "Roboto Light", sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    overflow: hidden;
+}
+
+/* Input, Textarea */
+.pure-material-textfield-outlined > input,
+.pure-material-textfield-outlined > textarea {
+    box-sizing: border-box;
+    margin: 0;
+    border: solid 1px; /* Safari */
+    border-color: rgba(0, 0, 0, 0.6);
+    border-top-color: transparent;
+    border-radius: 4px;
+    padding: 15px 13px 15px;
+    width: 100%;
+    height: inherit;
+    color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.87);
+    background-color: transparent;
+    box-shadow: none; /* Firefox */
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    caret-color: rgb(var(--pure-material-primary-rgb, 33, 150, 243));
+    transition: border 0.2s, box-shadow 0.2s;
+}
+
+/* Span */
+.pure-material-textfield-outlined > input + span,
+.pure-material-textfield-outlined > textarea + span {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    border-color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.6);
+    width: 100%;
+    max-height: 100%;
+    color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.6);
+    font-size: 75%;
+    line-height: 15px;
+    cursor: text;
+    transition: color 0.2s, font-size 0.2s, line-height 0.2s;
+}
+
+/* Corners */
+.pure-material-textfield-outlined > input + span::before,
+.pure-material-textfield-outlined > input + span::after,
+.pure-material-textfield-outlined > textarea + span::before,
+.pure-material-textfield-outlined > textarea + span::after {
+    content: "";
+    display: block;
+    box-sizing: border-box;
+    margin-top: 6px;
+    border-top: solid 1px;
+    border-top-color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.6);
+    min-width: 10px;
+    height: 8px;
+    pointer-events: none;
+    box-shadow: inset 0 1px transparent;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.pure-material-textfield-outlined > input + span::before,
+.pure-material-textfield-outlined > textarea + span::before {
+    margin-right: 4px;
+    border-left: solid 1px transparent;
+    border-radius: 4px 0;
+}
+
+.pure-material-textfield-outlined > input + span::after,
+.pure-material-textfield-outlined > textarea + span::after {
+    flex-grow: 1;
+    margin-left: 4px;
+    border-right: solid 1px transparent;
+    border-radius: 0 4px;
+}
+
+/* Hover */
+.pure-material-textfield-outlined:hover > input,
+.pure-material-textfield-outlined:hover > textarea {
+    border-color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.87);
+    border-top-color: transparent;
+}
+
+.pure-material-textfield-outlined:hover > input + span::before,
+.pure-material-textfield-outlined:hover > textarea + span::before,
+.pure-material-textfield-outlined:hover > input + span::after,
+.pure-material-textfield-outlined:hover > textarea + span::after {
+    border-top-color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.87);
+}
+
+.pure-material-textfield-outlined:hover > input:not(:focus):placeholder-shown,
+.pure-material-textfield-outlined:hover > textarea:not(:focus):placeholder-shown {
+    border-color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.87);
+}
+
+/* Placeholder-shown */
+.pure-material-textfield-outlined > input:not(:focus):placeholder-shown,
+.pure-material-textfield-outlined > textarea:not(:focus):placeholder-shown {
+    border-top-color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.6);
+}
+
+.pure-material-textfield-outlined > input:not(:focus):placeholder-shown + span,
+.pure-material-textfield-outlined > textarea:not(:focus):placeholder-shown + span {
+    font-size: inherit;
+    line-height: 68px;
+}
+
+.pure-material-textfield-outlined > input:not(:focus):placeholder-shown + span::before,
+.pure-material-textfield-outlined > textarea:not(:focus):placeholder-shown + span::before,
+.pure-material-textfield-outlined > input:not(:focus):placeholder-shown + span::after,
+.pure-material-textfield-outlined > textarea:not(:focus):placeholder-shown + span::after {
+    border-top-color: transparent;
+}
+
+/* Focus */
+.pure-material-textfield-outlined > input:focus,
+.pure-material-textfield-outlined > textarea:focus {
+    border-color: rgb(var(--pure-material-primary-rgb, 33, 150, 243));
+    border-top-color: transparent;
+    box-shadow: inset 1px 0 var(--pure-material-safari-helper1), inset -1px 0 var(--pure-material-safari-helper1), inset 0 -1px var(--pure-material-safari-helper1);
+    outline: none;
+}
+
+.pure-material-textfield-outlined > input:focus + span,
+.pure-material-textfield-outlined > textarea:focus + span {
+    color: rgb(var(--pure-material-primary-rgb, 33, 150, 243));
+}
+
+.pure-material-textfield-outlined > input:focus + span::before,
+.pure-material-textfield-outlined > input:focus + span::after,
+.pure-material-textfield-outlined > textarea:focus + span::before,
+.pure-material-textfield-outlined > textarea:focus + span::after {
+    border-top-color: var(--pure-material-safari-helper1) !important;
+    box-shadow: inset 0 1px var(--pure-material-safari-helper1);
+}
+
+/* Disabled */
+.pure-material-textfield-outlined > input:disabled,
+.pure-material-textfield-outlined > input:disabled + span,
+.pure-material-textfield-outlined > textarea:disabled,
+.pure-material-textfield-outlined > textarea:disabled + span {
+    border-color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.38) !important;
+    border-top-color: transparent !important;
+    color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.38);
+    pointer-events: none;
+}
+
+.pure-material-textfield-outlined > input:disabled + span::before,
+.pure-material-textfield-outlined > input:disabled + span::after,
+.pure-material-textfield-outlined > textarea:disabled + span::before,
+.pure-material-textfield-outlined > textarea:disabled + span::after {
+    border-top-color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.38) !important;
+}
+
+.pure-material-textfield-outlined > input:disabled:placeholder-shown,
+.pure-material-textfield-outlined > input:disabled:placeholder-shown + span,
+.pure-material-textfield-outlined > textarea:disabled:placeholder-shown,
+.pure-material-textfield-outlined > textarea:disabled:placeholder-shown + span {
+    border-top-color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.38) !important;
+}
+
+.pure-material-textfield-outlined > input:disabled:placeholder-shown + span::before,
+.pure-material-textfield-outlined > input:disabled:placeholder-shown + span::after,
+.pure-material-textfield-outlined > textarea:disabled:placeholder-shown + span::before,
+.pure-material-textfield-outlined > textarea:disabled:placeholder-shown + span::after {
+    border-top-color: transparent !important;
+}
+
+/* Faster transition in Safari for less noticable fractional font-size issue */
+@media not all and (min-resolution: .001dpcm) {
+    @supports (-webkit-appearance:none) {
+        .pure-material-textfield-outlined > input,
+        .pure-material-textfield-outlined > input + span,
+        .pure-material-textfield-outlined > textarea,
+        .pure-material-textfield-outlined > textarea + span,
+        .pure-material-textfield-outlined > input + span::before,
+        .pure-material-textfield-outlined > input + span::after,
+        .pure-material-textfield-outlined > textarea + span::before,
+        .pure-material-textfield-outlined > textarea + span::after {
+            transition-duration: 0.1s;
+        }
+    }
+}
+
+
+.pure-material-textfield-filled {
+    position: relative;
+    display: inline-block;
+    font-family: var(--pure-material-font, "Roboto", "Segoe UI", BlinkMacSystemFont, system-ui, -apple-system);
+    font-size: 16px;
+    line-height: 1.5;
+    overflow: hidden;
+}
+
+/* Input, Textarea */
+.pure-material-textfield-filled > input,
+.pure-material-textfield-filled > textarea {
+    display: block;
+    box-sizing: border-box;
+    margin: 0;
+    border: none;
+    border-top: solid 27px transparent;
+    border-bottom: solid 1px rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.6);
+    border-radius: 4px 4px 0 0;
+    padding: 0 12px 10px;
+    width: 100%;
+    height: inherit;
+    color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.87);
+    background-color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.04);
+    box-shadow: none; /* Firefox */
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    caret-color: rgb(var(--pure-material-primary-rgb, 33, 150, 243));
+    transition: border-bottom 0.2s, background-color 0.2s;
+}
+
+/* Span */
+.pure-material-textfield-filled > input + span,
+.pure-material-textfield-filled > textarea + span {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: block;
+    box-sizing: border-box;
+    padding: 7px 12px 0;
+    color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.6);
+    font-size: 75%;
+    line-height: 18px;
+    pointer-events: none;
+    transition: color 0.2s, font-size 0.2s, line-height 0.2s;
+}
+
+/* Underline */
+.pure-material-textfield-filled > input + span::after,
+.pure-material-textfield-filled > textarea + span::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    display: block;
+    width: 100%;
+    height: 2px;
+    background-color: rgb(var(--pure-material-primary-rgb, 33, 150, 243));
+    transform-origin: bottom center;
+    transform: scaleX(0);
+    transition: transform 0.3s;
+}
+
+/* Hover */
+.pure-material-textfield-filled > input:hover,
+.pure-material-textfield-filled > textarea:hover {
+    border-bottom-color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.87);
+    background-color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.08);
+}
+
+/* Placeholder-shown */
+.pure-material-textfield-filled > input:not(:focus):placeholder-shown + span,
+.pure-material-textfield-filled > textarea:not(:focus):placeholder-shown + span {
+    font-size: inherit;
+    line-height: 48px;
+}
+
+/* Focus */
+.pure-material-textfield-filled > input:focus,
+.pure-material-textfield-filled > textarea:focus {
+    outline: none;
+}
+
+.pure-material-textfield-filled > input:focus + span,
+.pure-material-textfield-filled > textarea:focus + span {
+    color: rgb(var(--pure-material-primary-rgb, 33, 150, 243));
+}
+
+.pure-material-textfield-filled > input:focus + span::before,
+.pure-material-textfield-filled > textarea:focus + span::before {
+    opacity: 0.12;
+}
+
+.pure-material-textfield-filled > input:focus + span::after,
+.pure-material-textfield-filled > textarea:focus + span::after {
+    transform: scale(1);
+}
+
+/* Disabled */
+.pure-material-textfield-filled > input:disabled,
+.pure-material-textfield-filled > textarea:disabled {
+    border-bottom-color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.38);
+    color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.38);
+    background-color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.24);
+}
+
+.pure-material-textfield-filled > input:disabled + span,
+.pure-material-textfield-filled > textarea:disabled + span {
+    color: rgba(var(--pure-material-onsurface-rgb, 0, 0, 0), 0.38);
+}
+
+/* Faster transition in Safari for less noticable fractional font-size issue */
+@media not all and (min-resolution: .001dpcm) {
+    @supports (-webkit-appearance:none) {
+        .pure-material-textfield-filled > input,
+        .pure-material-textfield-filled > input + span,
+        .pure-material-textfield-filled > input + span::after,
+        .pure-material-textfield-filled > textarea,
+        .pure-material-textfield-filled > textarea + span,
+        .pure-material-textfield-filled > textarea + span::after {
+            transition-duration: 0.1s;
+        }
+    }
+}
+
+/* endregion Material Text Field*/

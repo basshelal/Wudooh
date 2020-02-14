@@ -102,8 +102,9 @@ footer {
 
 hr {
     border: none;
-    border-bottom: solid 1px #aaa;
+    border-bottom: solid 1px #ccc;
     width: 80%;
+    padding-top: 8px;
 }
 
 a {
@@ -117,31 +118,6 @@ a:hover, a:active {
 
 td {
     font-weight: 300;
-}
-
-input[type=range] {
-    width: 70%;
-    text-align: center;
-    -webkit-appearance: none;
-    margin-bottom: 0;
-}
-
-input[type=range]::-webkit-slider-runnable-track {
-    width: 300px;
-    height: 5px;
-    background: #ddd;
-    border: none;
-    border-radius: 3px;
-}
-
-input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    border: none;
-    height: 16px;
-    width: 16px;
-    border-radius: 50%;
-    background: #999;
-    margin-top: -6px;
 }
 
 input[type=range]:focus {
@@ -176,6 +152,7 @@ option {
     text-align-all: center;
     padding: 5px 5px;
     margin: 10px 0;
+    cursor: pointer;
 }
 
 #importButton, #exportButton {

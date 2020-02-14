@@ -44,6 +44,8 @@ let exportAnchor = get<HTMLAnchorElement>("exportAnchor");
 let importButton = get<HTMLButtonElement>("importButton");
 let importInput = get<HTMLInputElement>("importInput");
 
+// TODO bug when changing fonts for custom sites
+
 /**
  * Updates all Arabic text in all tabs to adhere to the new options. This is done by sending a message to all
  * tabs that main.ts will handle.
