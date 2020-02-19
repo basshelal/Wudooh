@@ -11,76 +11,79 @@ var faq = get("faq");
 var fonts = get("fonts");
 var changelog = get("changelog");
 var textElements = [shortBlurb, download, pages, faq, fonts, changelog];
-var refElements = [faq, fonts, changelog];
-var mappings = [
-    new ElementTranslationMapping(shortBlurb, [
-        { lang: "en", translation: "Hello!" },
-        { lang: "ar", translation: "Marhaba!" },
-        { lang: "fa", translation: "Salam!" },
-    ])
+var anchorElements = [faq, fonts, changelog];
+var elementTranslations = [
+    translation(shortBlurb, [
+        {
+            lang: en, translation: "Wudooh <a href=\"https://en.wiktionary.org/wiki/%D9%88%D8%B6%D9%88%D8%AD\" style=\"margin: 0\" target=\"_blank\"> \n        (clarity in Arabic and Persian)</a> is a simple browser extension that makes reading Arabic script text clearer and more pleasant."
+        },
+        {
+            lang: ar,
+            translation: "\"\u0648\u0636\u0648\u062D\" \u0625\u0636\u0627\u0641\u0629 \u0628\u0633\u064A\u0637\u0629 \u0644\u0645\u062A\u0635\u0641\u062D \u0627\u0644\u0623\u0646\u062A\u0631\u0646\u062A \u062A\u062C\u0639\u0644 \u0642\u0631\u0627\u0621\u0629 \u0627\u0644\u062D\u0631\u0648\u0641 \u0627\u0644\u0639\u0631\u0628\u064A\u0629 \u0623\u0643\u062B\u0631 \u0648\u0636\u0648\u062D\u064B\u0627 \u0648\u0633\u0647\u0648\u0644\u0629."
+        },
+        {
+            lang: fa,
+            translation: "\"\u0648\u0636\u0648\u062D\" \u06CC\u06A9 \u067E\u0633\u0648\u0646\u062F \u0633\u0627\u062F\u0647 \u0645\u0631\u0648\u0631\u06AF\u0631 \u0627\u0633\u062A \u06A9\u0647 \u062E\u0648\u0627\u0646\u062F\u0646 \u0645\u062A\u0646 \u0639\u0631\u0628\u06CC \u0631\u0627 \u0648\u0627\u0636\u062D \u062A\u0631 \u0648 \u0622\u0633\u0627\u0646 \u062A\u0631 \u0645\u06CC \u06A9\u0646\u062F."
+        },
+    ]),
+    translation(download, [
+        { lang: en, translation: "Download for free" },
+        { lang: ar, translation: "\u062A\u062D\u0645\u064A\u0644 \u0645\u062C\u0627\u0646\u064A" },
+        { lang: fa, translation: "\u062F\u0627\u0646\u0644\u0648\u062F \u0631\u0627\u06CC\u06AF\u0627\u0646" }
+    ]),
+    translation(pages, [
+        { lang: en, translation: "Pages" },
+        { lang: ar, translation: "\u0627\u0644\u0635\u0641\u062D\u0627\u062A" },
+        { lang: fa, translation: "\u0635\u0641\u062D\u0627\u062A" }
+    ]),
+    translation(faq, [
+        { lang: en, translation: "Frequently Asked Questions" },
+        { lang: ar, translation: "\u0627\u0644\u0623\u0633\u0626\u0644\u0629 \u0627\u0644\u0645\u062A\u0643\u0631\u0631\u0629" },
+        { lang: fa, translation: "\u0633\u0648\u0627\u0644\u0627\u062A \u0645\u06A9\u0631\u0631" }
+    ]),
+    translation(fonts, [
+        { lang: en, translation: "Fonts" },
+        { lang: ar, translation: "\u0627\u0644\u062E\u0637\u0648\u0637" },
+        { lang: fa, translation: "\u0641\u0648\u0646\u062A\u200C\u0647\u0627\u06CC" }
+    ]),
+    translation(changelog, [
+        { lang: en, translation: "Changelog" },
+        { lang: ar, translation: "\u0627\u0644\u062A\u063A\u064A\u064A\u0631\u0627\u062A" },
+        { lang: fa, translation: "\u062A\u063A\u06CC\u06CC\u0631\u0627\u062A" }
+    ]),
 ];
 function i18n() {
-    mappings.forEach(function (it) {
-        it.element.innerText = it.translations.get(lang);
+    document.documentElement.lang = lang;
+    if (isArScript)
+        document.dir = "rtl";
+    else
+        document.dir = "ltr";
+    elementTranslations.forEach(function (it) {
+        it.element.innerHTML = it.translations.get(lang);
     });
+    anchorElements.forEach(function (it) { return it.href += langQueryParamPrefix + lang; });
+    specifics();
 }
-function en() {
-    document.documentElement.lang = "en";
-    document.dir = "ltr";
-    shortBlurb.innerHTML =
-        "Wudooh <a href=\"https://en.wiktionary.org/wiki/%D9%88%D8%B6%D9%88%D8%AD\" style=\"margin: 0\" target=\"_blank\"> \n        (clarity in Arabic and Persian)</a>\n        is a simple browser extension that makes reading Arabic script text clearer and more pleasant.";
-    download.innerHTML = "Download for free";
-    pages.innerHTML = "Pages";
-    faq.innerHTML = "Frequently Asked Questions";
-    fonts.innerHTML = "Fonts";
-    changelog.innerHTML = "Changelog";
-    faq.href += langEn;
-    fonts.href += langEn;
-    changelog.href += langEn;
-}
-function ar() {
-    document.documentElement.lang = "ar";
-    shortBlurb.innerHTML = "\"\u0648\u0636\u0648\u062D\" \u0625\u0636\u0627\u0641\u0629 \u0628\u0633\u064A\u0637\u0629 \u0644\u0645\u062A\u0635\u0641\u062D \u0627\u0644\u0623\u0646\u062A\u0631\u0646\u062A \u062A\u062C\u0639\u0644 \u0642\u0631\u0627\u0621\u0629 \u0627\u0644\u062D\u0631\u0648\u0641 \u0627\u0644\u0639\u0631\u0628\u064A\u0629 \u0623\u0643\u062B\u0631 \u0648\u0636\u0648\u062D\u064B\u0627 \u0648\u0633\u0647\u0648\u0644\u0629.";
-    download.innerHTML = "تحميل مجاني";
-    pages.innerHTML = "الصفحات";
-    faq.innerHTML = "الأسئلة المتكررة";
-    fonts.innerHTML = "الخطوط";
-    changelog.innerHTML = "التغييرات";
-    faq.href += langAr;
-    fonts.href += langAr;
-    changelog.href += langAr;
-    textElements.forEach(function (element) {
-        element.style.fontFamily = arFont;
-        element.style.lineHeight = "1.3em";
-    });
-}
-function fa() {
-    document.documentElement.lang = "fa";
-    shortBlurb.innerHTML = "\"\u0648\u0636\u0648\u062D\" \u06CC\u06A9 \u067E\u0633\u0648\u0646\u062F \u0633\u0627\u062F\u0647 \u0645\u0631\u0648\u0631\u06AF\u0631 \u0627\u0633\u062A \u06A9\u0647 \u062E\u0648\u0627\u0646\u062F\u0646 \u0645\u062A\u0646 \u0639\u0631\u0628\u06CC \u0631\u0627 \u0648\u0627\u0636\u062D \u062A\u0631 \u0648 \u0622\u0633\u0627\u0646 \u062A\u0631 \u0645\u06CC \u06A9\u0646\u062F.";
-    download.innerHTML = "دانلود رایگان";
-    pages.innerHTML = "صفحات";
-    faq.innerHTML = "سوالات مکرر";
-    fonts.innerHTML = "فونت های";
-    changelog.innerHTML = "تغییرات";
-    faq.href += langFa;
-    fonts.href += langFa;
-    changelog.href += langFa;
-    textElements.forEach(function (element) {
-        element.style.fontFamily = faFont;
-        element.style.lineHeight = "1.3em";
-    });
-}
-switch (lang) {
-    case "ar": {
-        ar();
-        break;
-    }
-    case "fa": {
-        fa();
-        break;
-    }
-    default: {
-        en();
-        break;
+function specifics() {
+    // Language specific actions
+    switch (lang) {
+        case ar: {
+            textElements.forEach(function (element) {
+                element.style.fontFamily = arFont;
+                element.style.lineHeight = "1.3em";
+            });
+            break;
+        }
+        case fa: {
+            textElements.forEach(function (element) {
+                element.style.fontFamily = faFont;
+                element.style.lineHeight = "1.3em";
+            });
+            break;
+        }
+        default: {
+            break;
+        }
     }
 }
+i18n();

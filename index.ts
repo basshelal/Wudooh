@@ -13,95 +13,84 @@ const faq = get<HTMLAnchorElement>("faq");
 const fonts = get<HTMLAnchorElement>("fonts");
 const changelog = get<HTMLAnchorElement>("changelog");
 const textElements: Array<HTMLElement> = [shortBlurb, download, pages, faq, fonts, changelog];
-const refElements: Array<HTMLElement> = [faq, fonts, changelog];
+const anchorElements: Array<HTMLAnchorElement> = [faq, fonts, changelog];
 
-const mappings: Array<ElementTranslationMapping> = [
-    new ElementTranslationMapping(
-        shortBlurb, [
-            {lang: "en", translation: "Hello!"},
-            {lang: "ar", translation: "Marhaba!"},
-            {lang: "fa", translation: "Salam!"},
-        ]
-    )
+const elementTranslations: Array<ElementTranslationMapping> = [
+    translation(shortBlurb, [
+        {
+            lang: en, translation: `Wudooh <a href=\"https://en.wiktionary.org/wiki/%D9%88%D8%B6%D9%88%D8%AD\" style=\"margin: 0\" target=\"_blank\"> 
+        (clarity in Arabic and Persian)</a> is a simple browser extension that makes reading Arabic script text clearer and more pleasant.`
+        },
+        {
+            lang: ar,
+            translation: `"وضوح" إضافة بسيطة لمتصفح الأنترنت تجعل قراءة الحروف العربية أكثر وضوحًا وسهولة.`
+        },
+        {
+            lang: fa,
+            translation: `"وضوح" یک پسوند ساده مرورگر است که خواندن متن عربی را واضح تر و آسان تر می کند.`
+        },
+    ]),
+    translation(download, [
+        {lang: en, translation: `Download for free`},
+        {lang: ar, translation: `تحميل مجاني`},
+        {lang: fa, translation: `دانلود رایگان`}
+    ]),
+    translation(pages, [
+        {lang: en, translation: `Pages`},
+        {lang: ar, translation: `الصفحات`},
+        {lang: fa, translation: `صفحات`}
+    ]),
+    translation(faq, [
+        {lang: en, translation: `Frequently Asked Questions`},
+        {lang: ar, translation: `الأسئلة المتكررة`},
+        {lang: fa, translation: `سوالات مکرر`}
+    ]),
+    translation(fonts, [
+        {lang: en, translation: `Fonts`},
+        {lang: ar, translation: `الخطوط`},
+        {lang: fa, translation: `فونت‌های`}
+    ]),
+    translation(changelog, [
+        {lang: en, translation: `Changelog`},
+        {lang: ar, translation: `التغييرات`},
+        {lang: fa, translation: `تغییرات`}
+    ]),
 ];
 
 function i18n() {
-    mappings.forEach((it: ElementTranslationMapping) => {
-        it.element.innerText = it.translations.get(lang);
+    document.documentElement.lang = lang;
+    if (isArScript) document.dir = "rtl";
+    else document.dir = "ltr";
+
+    elementTranslations.forEach((it: ElementTranslationMapping) => {
+        it.element.innerHTML = it.translations.get(lang);
     });
+    anchorElements.forEach((it: HTMLAnchorElement) => it.href += langQueryParamPrefix + lang);
+
+    specifics();
 }
 
-function en() {
-    document.documentElement.lang = "en";
-    document.dir = "ltr";
-
-    shortBlurb.innerHTML =
-        `Wudooh <a href=\"https://en.wiktionary.org/wiki/%D9%88%D8%B6%D9%88%D8%AD\" style=\"margin: 0\" target=\"_blank\"> 
-        (clarity in Arabic and Persian)</a>
-        is a simple browser extension that makes reading Arabic script text clearer and more pleasant.`;
-    download.innerHTML = "Download for free";
-    pages.innerHTML = "Pages";
-    faq.innerHTML = "Frequently Asked Questions";
-    fonts.innerHTML = "Fonts";
-    changelog.innerHTML = "Changelog";
-
-    faq.href += langEn;
-    fonts.href += langEn;
-    changelog.href += langEn;
-
-}
-
-function ar() {
-    document.documentElement.lang = "ar";
-
-    shortBlurb.innerHTML = `"وضوح" إضافة بسيطة لمتصفح الأنترنت تجعل قراءة الحروف العربية أكثر وضوحًا وسهولة.`;
-    download.innerHTML = "تحميل مجاني";
-    pages.innerHTML = "الصفحات";
-    faq.innerHTML = "الأسئلة المتكررة";
-    fonts.innerHTML = "الخطوط";
-    changelog.innerHTML = "التغييرات";
-
-    faq.href += langAr;
-    fonts.href += langAr;
-    changelog.href += langAr;
-
-    textElements.forEach((element: HTMLElement) => {
-        element.style.fontFamily = arFont;
-        element.style.lineHeight = "1.3em";
-    })
-}
-
-function fa() {
-    document.documentElement.lang = "fa";
-
-    shortBlurb.innerHTML = `"وضوح" یک پسوند ساده مرورگر است که خواندن متن عربی را واضح تر و آسان تر می کند.`;
-    download.innerHTML = "دانلود رایگان";
-    pages.innerHTML = "صفحات";
-    faq.innerHTML = "سوالات مکرر";
-    fonts.innerHTML = "فونت های";
-    changelog.innerHTML = "تغییرات";
-
-    faq.href += langFa;
-    fonts.href += langFa;
-    changelog.href += langFa;
-
-    textElements.forEach((element: HTMLElement) => {
-        element.style.fontFamily = faFont;
-        element.style.lineHeight = "1.3em";
-    })
-}
-
-switch (lang) {
-    case "ar": {
-        ar();
-        break;
-    }
-    case "fa": {
-        fa();
-        break;
-    }
-    default : {
-        en();
-        break;
+function specifics() {
+// Language specific actions
+    switch (lang) {
+        case ar: {
+            textElements.forEach((element: HTMLElement) => {
+                element.style.fontFamily = arFont;
+                element.style.lineHeight = "1.3em";
+            });
+            break;
+        }
+        case fa: {
+            textElements.forEach((element: HTMLElement) => {
+                element.style.fontFamily = faFont;
+                element.style.lineHeight = "1.3em";
+            });
+            break;
+        }
+        default : {
+            break;
+        }
     }
 }
+
+i18n();
