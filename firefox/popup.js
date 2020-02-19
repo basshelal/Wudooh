@@ -4,22 +4,22 @@
  *
  * Currently there are 5 options, textSize, lineHeight, onOff, font and whitelisted
  */
-const size = document.getElementById("size");
-const height = document.getElementById("height");
-const onOffSwitch = document.getElementById("onOffSwitch");
-const fontSelect = document.getElementById("font-select");
-const whiteListSwitch = document.getElementById("whitelistSwitch");
-const sizeValue = document.getElementById("sizeValue");
-const heightValue = document.getElementById("heightValue");
-const whitelistedValue = document.getElementById("whitelistedLabel");
+var size = document.getElementById("size");
+var height = document.getElementById("height");
+var onOffSwitch = document.getElementById("onOffSwitch");
+var fontSelect = document.getElementById("font-select");
+var whiteListSwitch = document.getElementById("whitelistSwitch");
+var sizeValue = document.getElementById("sizeValue");
+var heightValue = document.getElementById("heightValue");
+var whitelistedValue = document.getElementById("whitelistedLabel");
 /**
  * Extension function for a contains function in an array
  * @param element the element to check whether is in this array or not
  * @return true if the element exists in this array, false otherwise
  */
 Array.prototype.contains = function (element) {
-    let result = false;
-    for (let i = 0; i < this.length; i++) {
+    var result = false;
+    for (var i = 0; i < this.length; i++) {
         if (element === this[i]) {
             result = true;
             break;
@@ -31,7 +31,7 @@ Array.prototype.contains = function (element) {
  * Updates the font of the Arabic Wudooh heading to match the font selected by the user
  */
 function updateWudoohFont() {
-    browser.storage.sync.get("font").then((fromStorage) => {
+    browser.storage.sync.get("font").then(function (fromStorage) {
         document.getElementById("wudooh").style.fontFamily = fromStorage.font;
     });
 }
@@ -43,18 +43,19 @@ function updateWudoohFont() {
  * somewhat from the live updated look, a page refresh will always solve this
  * @param close whether to close the popup after updating text or not, defaults to true
  */
-function updateAllText(close = true) {
+function updateAllText(close) {
+    if (close === void 0) { close = true; }
     // Only update text if this site is checked and is not whitelisted
     if (onOffSwitch.checked && whiteListSwitch.checked) {
-        browser.storage.sync.get(["textSize", "lineHeight", "font"]).then((fromStorage) => {
+        browser.storage.sync.get(["textSize", "lineHeight", "font"]).then(function (fromStorage) {
             // We need the old values to know how much we should change the options in main.ts
-            let oldS = fromStorage.textSize;
-            let oldH = fromStorage.lineHeight;
-            let font = fromStorage.font;
+            var oldS = fromStorage.textSize;
+            var oldH = fromStorage.lineHeight;
+            var font = fromStorage.font;
             // Send a message to all tabs
-            browser.tabs.query({}).then((tabs) => {
-                tabs.forEach((tab) => {
-                    let message = {
+            browser.tabs.query({}).then(function (tabs) {
+                tabs.forEach(function (tab) {
+                    var message = {
                         oldSize: oldS,
                         oldHeight: oldH,
                         newSize: parseInt(size.value),
@@ -91,7 +92,7 @@ function getOptions() {
         onOff: true,
         font: "Droid Arabic Naskh",
         whitelisted: []
-    }).then((fromStorage) => {
+    }).then(function (fromStorage) {
         size.value = fromStorage.textSize;
         sizeValue.innerHTML = fromStorage.textSize + '%';
         height.value = fromStorage.lineHeight;
@@ -100,8 +101,8 @@ function getOptions() {
         fontSelect.value = fromStorage.font;
         updateWudoohFont();
         // update HTML to say whether running on this site or whitelisted
-        browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
-            let running = !fromStorage.whitelisted.contains(new URL(tabs[0].url).hostname);
+        browser.tabs.query({ active: true, currentWindow: true }).then(function (tabs) {
+            var running = !fromStorage.whitelisted.contains(new URL(tabs[0].url).hostname);
             whiteListSwitch.checked = running;
             if (running)
                 whitelistedValue.innerText = "Running on this site";
@@ -138,7 +139,7 @@ function toggleOnOff() {
 function changeFont() {
     browser.storage.sync.set({
         font: fontSelect.value,
-    }).then(() => {
+    }).then(function () {
         updateAllText();
         updateWudoohFont();
     });
@@ -153,16 +154,16 @@ function changeFont() {
  */
 function toggleWhitelist() {
     // This only requires this current tab
-    browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
+    browser.tabs.query({ active: true, currentWindow: true }).then(function (tabs) {
         // Get the url we are on right now
-        let url = new URL(tabs[0].url).hostname;
-        browser.storage.sync.get({ "whitelisted": [] }).then((fromStorage) => {
+        var url = new URL(tabs[0].url).hostname;
+        browser.storage.sync.get({ "whitelisted": [] }).then(function (fromStorage) {
             // Get the array of all whitelisted websites
-            let whitelisted = fromStorage.whitelisted;
+            var whitelisted = fromStorage.whitelisted;
             // Allowed to run on this site
             if (whiteListSwitch.checked) {
                 // Remove all occurrences of this url from that array, just in case
-                whitelisted = whitelisted.filter((it) => it != url);
+                whitelisted = whitelisted.filter(function (it) { return it != url; });
                 whitelistedValue.innerText = "Running on this site, reload to see changes";
             }
             else {
@@ -184,15 +185,14 @@ function addListeners() {
     // Get options when the popup.html document is loaded
     document.addEventListener("DOMContentLoaded", getOptions);
     // Update size and height HTML when input is changed, changes no variables
-    size.oninput = () => updateSizeHTML();
-    height.oninput = () => updateHeightHTML();
+    size.oninput = function () { return updateSizeHTML(); };
+    height.oninput = function () { return updateHeightHTML(); };
     // Save options when mouse is released
-    size.onmouseup = () => updateAllText();
-    height.onmouseup = () => updateAllText();
+    size.onmouseup = function () { return updateAllText(); };
+    height.onmouseup = function () { return updateAllText(); };
     // Update on off switch when on off switch is clicked
-    onOffSwitch.onclick = () => toggleOnOff();
-    fontSelect.oninput = () => changeFont();
-    whiteListSwitch.onclick = () => toggleWhitelist();
+    onOffSwitch.onclick = function () { return toggleOnOff(); };
+    fontSelect.oninput = function () { return changeFont(); };
+    whiteListSwitch.onclick = function () { return toggleWhitelist(); };
 }
 addListeners();
-//# sourceMappingURL=popup.js.map

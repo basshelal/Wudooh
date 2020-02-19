@@ -2,8 +2,8 @@
 /**
  * Runs on install to check if the storage has been initialized or not, and if not will initialize with default values
  */
-browser.runtime.onInstalled.addListener((details) => {
-    browser.storage.sync.get(["textSize", "lineHeight", "onOff", "font", "whitelisted"]).then((fromStorage) => {
+browser.runtime.onInstalled.addListener(function (details) {
+    browser.storage.sync.get(["textSize", "lineHeight", "onOff", "font", "whitelisted"]).then(function (fromStorage) {
         if (!fromStorage.textSize || !fromStorage.lineHeight || !fromStorage.onOff || !fromStorage.font || !fromStorage.whitelisted) {
             browser.storage.sync.set({
                 textSize: '115',
@@ -15,4 +15,3 @@ browser.runtime.onInstalled.addListener((details) => {
         }
     });
 });
-//# sourceMappingURL=background.js.map
