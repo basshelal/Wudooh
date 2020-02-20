@@ -6,30 +6,36 @@ function get(elementId) {
 // Text Elements
 var shortBlurb = get("shortBlurb");
 var download = get("download");
+var comingSoon = get("comingSoon");
 var pages = get("pages");
 var faq = get("faq");
 var fonts = get("fonts");
 var changelog = get("changelog");
-var textElements = [shortBlurb, download, pages, faq, fonts, changelog];
+var textElements = [shortBlurb, download, comingSoon, pages, faq, fonts, changelog];
 var anchorElements = [faq, fonts, changelog];
 var elementTranslations = [
     translation(shortBlurb, [
         {
-            lang: en, translation: "Wudooh <a href=\"https://en.wiktionary.org/wiki/%D9%88%D8%B6%D9%88%D8%AD\" style=\"margin: 0\" target=\"_blank\"> \n        (clarity in Arabic and Persian)</a> is a simple browser extension that makes reading Arabic script text clearer and more pleasant."
+            lang: en, translation: "Wudooh <a href=\"https://en.wiktionary.org/wiki/%D9%88%D8%B6%D9%88%D8%AD\" style=\"margin: 0\" target=\"_blank\"\n        title=\"\u0648\u0636\u0648\u062D Wiktionary\">(clarity in Arabic and Persian)</a> is a simple browser extension that makes reading Arabic script text clearer and more pleasant."
         },
         {
             lang: ar,
-            translation: "\"\u0648\u0636\u0648\u062D\" \u0625\u0636\u0627\u0641\u0629 \u0628\u0633\u064A\u0637\u0629 \u0644\u0645\u062A\u0635\u0641\u062D \u0627\u0644\u0623\u0646\u062A\u0631\u0646\u062A \u062A\u062C\u0639\u0644 \u0642\u0631\u0627\u0621\u0629 \u0627\u0644\u062D\u0631\u0648\u0641 \u0627\u0644\u0639\u0631\u0628\u064A\u0629 \u0623\u0643\u062B\u0631 \u0648\u0636\u0648\u062D\u064B\u0627 \u0648\u0633\u0647\u0648\u0644\u0629."
+            translation: "\"\u0648\u0636\u0648\u062D\" \u0625\u0636\u0627\u0641\u0629 \u0628\u0633\u064A\u0637\u0629 \u0644\u0645\u062A\u0635\u0641\u062D \u0627\u0644\u0623\u0646\u062A\u0631\u0646\u062A \u062A\u062C\u0639\u0644 \u0642\u0631\u0627\u0621\u0629 \u0627\u0644\u062D\u0631\u0648\u0641 \u0627\u0644\u0639\u0631\u0628\u064A\u0629 \u0623\u0643\u062B\u0631 \u0648\u0636\u0648\u062D\u0627\u064B \u0648\u0633\u0647\u0648\u0644\u0629."
         },
         {
             lang: fa,
-            translation: "\"\u0648\u0636\u0648\u062D\" \u06CC\u06A9 \u067E\u0633\u0648\u0646\u062F \u0633\u0627\u062F\u0647 \u0645\u0631\u0648\u0631\u06AF\u0631 \u0627\u0633\u062A \u06A9\u0647 \u062E\u0648\u0627\u0646\u062F\u0646 \u0645\u062A\u0646 \u0639\u0631\u0628\u06CC \u0631\u0627 \u0648\u0627\u0636\u062D \u062A\u0631 \u0648 \u0622\u0633\u0627\u0646 \u062A\u0631 \u0645\u06CC \u06A9\u0646\u062F."
+            translation: "\"\u0648\u0636\u0648\u062D\" \u06CC\u06A9 \u067E\u0633\u0648\u0646\u062F \u0633\u0627\u062F\u0647 \u0645\u0631\u0648\u0631\u06AF\u0631 \u0627\u0633\u062A \u06A9\u0647 \u062E\u0648\u0627\u0646\u062F\u0646 \u062D\u0631\u0641\u200C\u0647\u0627 \u0639\u0631\u0628\u06CC \u0631\u0627 \u0648\u0627\u0636\u062D \u062A\u0631 \u0648 \u0622\u0633\u0627\u0646 \u062A\u0631 \u0645\u06CC \u06A9\u0646\u062F."
         },
     ]),
     translation(download, [
-        { lang: en, translation: "Download for free" },
+        { lang: en, translation: "Free Download" },
         { lang: ar, translation: "\u062A\u062D\u0645\u064A\u0644 \u0645\u062C\u0627\u0646\u064A" },
         { lang: fa, translation: "\u062F\u0627\u0646\u0644\u0648\u062F \u0631\u0627\u06CC\u06AF\u0627\u0646" }
+    ]),
+    translation(comingSoon, [
+        { lang: en, translation: "Coming soon" },
+        { lang: ar, translation: "\u0642\u0631\u064A\u0628\u0627\u064B \u0639\u0644\u0649" },
+        { lang: fa, translation: "\u0628\u0647 \u0632\u0648\u062F\u06CC" }
     ]),
     translation(pages, [
         { lang: en, translation: "Pages" },

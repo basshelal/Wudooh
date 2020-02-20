@@ -8,32 +8,38 @@ function get<T extends HTMLElement>(elementId: string): T | null {
 // Text Elements
 const shortBlurb = get<HTMLHeadingElement>("shortBlurb");
 const download = get<HTMLHeadingElement>("download");
+const comingSoon = get<HTMLHeadingElement>("comingSoon");
 const pages = get<HTMLHeadingElement>("pages");
 const faq = get<HTMLAnchorElement>("faq");
 const fonts = get<HTMLAnchorElement>("fonts");
 const changelog = get<HTMLAnchorElement>("changelog");
-const textElements: Array<HTMLElement> = [shortBlurb, download, pages, faq, fonts, changelog];
+const textElements: Array<HTMLElement> = [shortBlurb, download, comingSoon, pages, faq, fonts, changelog];
 const anchorElements: Array<HTMLAnchorElement> = [faq, fonts, changelog];
 
 const elementTranslations: Array<ElementTranslationMapping> = [
     translation(shortBlurb, [
         {
-            lang: en, translation: `Wudooh <a href=\"https://en.wiktionary.org/wiki/%D9%88%D8%B6%D9%88%D8%AD\" style=\"margin: 0\" target=\"_blank\"> 
-        (clarity in Arabic and Persian)</a> is a simple browser extension that makes reading Arabic script text clearer and more pleasant.`
+            lang: en, translation: `Wudooh <a href=\"https://en.wiktionary.org/wiki/%D9%88%D8%B6%D9%88%D8%AD\" style=\"margin: 0\" target=\"_blank\"
+        title="وضوح Wiktionary">(clarity in Arabic and Persian)</a> is a simple browser extension that makes reading Arabic script text clearer and more pleasant.`
         },
         {
             lang: ar,
-            translation: `"وضوح" إضافة بسيطة لمتصفح الأنترنت تجعل قراءة الحروف العربية أكثر وضوحًا وسهولة.`
+            translation: `"وضوح" إضافة بسيطة لمتصفح الأنترنت تجعل قراءة الحروف العربية أكثر وضوحاً وسهولة.`
         },
         {
             lang: fa,
-            translation: `"وضوح" یک پسوند ساده مرورگر است که خواندن متن عربی را واضح تر و آسان تر می کند.`
+            translation: `"وضوح" یک پسوند ساده مرورگر است که خواندن حرف‌ها عربی را واضح تر و آسان تر می کند.`
         },
     ]),
     translation(download, [
-        {lang: en, translation: `Download for free`},
+        {lang: en, translation: `Free Download`},
         {lang: ar, translation: `تحميل مجاني`},
         {lang: fa, translation: `دانلود رایگان`}
+    ]),
+    translation(comingSoon, [
+        {lang: en, translation: `Coming soon`},
+        {lang: ar, translation: `قريباً على`},
+        {lang: fa, translation: `به زودی`}
     ]),
     translation(pages, [
         {lang: en, translation: `Pages`},
