@@ -1,7 +1,58 @@
 @import "pages/res/common.css";
 
+/* region Animations */
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@-moz-keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@-webkit-keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@-o-keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+/* endregion Animations */
+
+html {
+    animation: fadeIn ease-in 500ms;
+    -webkit-animation: fadeIn ease-in 500ms;
+    -moz-animation: fadeIn ease-in 500ms;
+    -o-animation: fadeIn ease-in 500ms;
+}
+
 #bannerImage {
     display: block;
     margin-left: auto;
     margin-right: auto;
+    animation: fadeIn ease-in 1000ms;
+    -webkit-animation: fadeIn ease-in 1000ms;
+    -moz-animation: fadeIn ease-in 1000ms;
+    -o-animation: fadeIn ease-in 1000ms;
 }
