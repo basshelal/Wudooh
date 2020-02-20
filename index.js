@@ -11,7 +11,8 @@ var pages = get("pages");
 var faq = get("faq");
 var fonts = get("fonts");
 var changelog = get("changelog");
-var textElements = [shortBlurb, download, comingSoon, pages, faq, fonts, changelog];
+var totalUsers = get("totalUsers");
+var textElements = [shortBlurb, download, comingSoon, pages, faq, fonts, changelog, totalUsers];
 var anchorElements = [faq, fonts, changelog];
 var elementTranslations = [
     translation(shortBlurb, [
@@ -57,6 +58,11 @@ var elementTranslations = [
         { lang: ar, translation: "\u0627\u0644\u062A\u063A\u064A\u064A\u0631\u0627\u062A" },
         { lang: fa, translation: "\u062A\u063A\u06CC\u06CC\u0631\u0627\u062A" }
     ]),
+    translation(totalUsers, [
+        { lang: en, translation: "Total Users" },
+        { lang: ar, translation: "\u0645\u062C\u0645\u0648\u0639 \u0627\u0644\u0645\u0633\u062A\u062E\u062F\u0645\u064A\u0646" },
+        { lang: fa, translation: "\u0645\u062C\u0645\u0648\u0639 \u06A9\u0627\u0631\u0628\u0631\u0627\u0646" }
+    ])
 ];
 function i18n() {
     document.documentElement.lang = lang;
@@ -68,7 +74,6 @@ function i18n() {
         it.element.innerHTML = it.translations.get(lang);
     });
     anchorElements.forEach(function (it) { return it.href += langQueryParamPrefix + lang; });
-    specifics();
 }
 function specifics() {
     // Language specific actions
@@ -92,4 +97,23 @@ function specifics() {
         }
     }
 }
+function displayTotalUsers() {
+    $.getJSON('http://www.whateverorigin.org/get?url=' +
+        encodeURIComponent("https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn") + '&callback=?', function (response) {
+        var chromeUsers = parseInt(("" + response.contents.match(/<span class="e-f-ih" title="([\d]*?) users">([\d]*?) users<\/span>/)).split(",")[2]);
+        $.getJSON('http://www.whateverorigin.org/get?url=' +
+            encodeURIComponent("https://addons.mozilla.org/en-US/firefox/addon/wudooh/") + '&callback=?', function (response) {
+            var firefoxUsers = parseInt(("" + response.contents.match(/<dd class="MetadataCard-content">80<\/dd>/)).match(/\d+/g)[0]);
+            var totalUsers = chromeUsers + firefoxUsers;
+            var text;
+            if (isNaN(totalUsers))
+                text = "Error";
+            else
+                text = totalUsers.toString();
+            get("numUsers").innerHTML = text;
+        });
+    });
+}
 i18n();
+specifics();
+displayTotalUsers();
