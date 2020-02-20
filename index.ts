@@ -104,26 +104,26 @@ function specifics() {
 }
 
 function displayTotalUsers() {
-    $.getJSON('http://www.whateverorigin.org/get?url=' +
-        encodeURIComponent("https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn") + '&callback=?',
-        response => {
-            let chromeUsers: number = parseInt(
-                ("" + response.contents.match(/<span class="e-f-ih" title="([\d]*?) users">([\d]*?) users<\/span>/)).split(",")[2]
+    $.getJSON(`https://api.allorigins.win/get?url=${encodeURIComponent(
+        "https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn")}`
+    ).then(response => {
+        let chromeUsers: number = parseInt(
+            ("" + response.contents.match(/<span class="e-f-ih" title="([\d]*?) users">([\d]*?) users<\/span>/)).split(",")[2]
+        );
+        $.getJSON(`https://api.allorigins.win/get?url=${encodeURIComponent(
+            "https://addons.mozilla.org/en-US/firefox/addon/wudooh/")}`
+        ).then(response => {
+            let firefoxUsers = parseInt(
+                ("" + response.contents.match(/<dd class="MetadataCard-content">80<\/dd>/)).match(/\d+/g)[0]
             );
-            $.getJSON('http://www.whateverorigin.org/get?url=' +
-                encodeURIComponent("https://addons.mozilla.org/en-US/firefox/addon/wudooh/") + '&callback=?',
-                response => {
-                    let firefoxUsers = parseInt(
-                        ("" + response.contents.match(/<dd class="MetadataCard-content">80<\/dd>/)).match(/\d+/g)[0]
-                    );
 
-                    let totalUsers = chromeUsers + firefoxUsers;
-                    let text: string;
-                    if (isNaN(totalUsers)) text = "Error";
-                    else text = totalUsers.toString();
-                    get("numUsers").innerHTML = text;
-                });
-        });
+            let totalUsers = chromeUsers + firefoxUsers;
+            let text: string;
+            if (isNaN(totalUsers)) text = "Error";
+            else text = totalUsers.toString();
+            get("numUsers").innerHTML = text;
+        })
+    });
 }
 
 i18n();

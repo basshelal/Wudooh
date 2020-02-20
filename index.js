@@ -98,11 +98,9 @@ function specifics() {
     }
 }
 function displayTotalUsers() {
-    $.getJSON('http://www.whateverorigin.org/get?url=' +
-        encodeURIComponent("https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn") + '&callback=?', function (response) {
+    $.getJSON("https://api.allorigins.win/get?url=" + encodeURIComponent("https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn")).then(function (response) {
         var chromeUsers = parseInt(("" + response.contents.match(/<span class="e-f-ih" title="([\d]*?) users">([\d]*?) users<\/span>/)).split(",")[2]);
-        $.getJSON('http://www.whateverorigin.org/get?url=' +
-            encodeURIComponent("https://addons.mozilla.org/en-US/firefox/addon/wudooh/") + '&callback=?', function (response) {
+        $.getJSON("https://api.allorigins.win/get?url=" + encodeURIComponent("https://addons.mozilla.org/en-US/firefox/addon/wudooh/")).then(function (response) {
             var firefoxUsers = parseInt(("" + response.contents.match(/<dd class="MetadataCard-content">80<\/dd>/)).match(/\d+/g)[0]);
             var totalUsers = chromeUsers + firefoxUsers;
             var text;
