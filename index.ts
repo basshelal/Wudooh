@@ -5,7 +5,6 @@ function get<T extends HTMLElement>(elementId: string): T | null {
     return document.getElementById(elementId) as T
 }
 
-// Text Elements
 const shortBlurb = get<HTMLHeadingElement>("shortBlurb");
 const download = get<HTMLHeadingElement>("download");
 const comingSoon = get<HTMLHeadingElement>("comingSoon");
@@ -114,7 +113,7 @@ function displayTotalUsers() {
             "https://addons.mozilla.org/en-US/firefox/addon/wudooh/")}`
         ).then(response => {
             let firefoxUsers = parseInt(
-                ("" + response.contents.match(/<dd class="MetadataCard-content">80<\/dd>/)).match(/\d+/g)[0]
+                ("" + response.contents.match(/<dd class="MetadataCard-content">([\d]*?)<\/dd>/)).match(/\d+/g)[0]
             );
 
             let totalUsers = chromeUsers + firefoxUsers;
