@@ -117,9 +117,10 @@ function displayTotalUsers() {
             );
 
             let totalUsers = chromeUsers + firefoxUsers;
-            let text: string;
-            if (isNaN(totalUsers)) text = "Error";
-            else text = totalUsers.toString();
+            let text: string = "...";
+            if (isNaN(totalUsers)) {
+                displayTotalUsers();
+            } else text = totalUsers.toString();
             get("numUsers").innerHTML = text;
         })
     });

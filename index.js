@@ -102,9 +102,10 @@ function displayTotalUsers() {
         $.getJSON("https://api.allorigins.win/get?url=" + encodeURIComponent("https://addons.mozilla.org/en-US/firefox/addon/wudooh/")).then(function (response) {
             var firefoxUsers = parseInt(("" + response.contents.match(/<dd class="MetadataCard-content">([\d]*?)<\/dd>/)).match(/\d+/g)[0]);
             var totalUsers = chromeUsers + firefoxUsers;
-            var text;
-            if (isNaN(totalUsers))
-                text = "Error";
+            var text = "...";
+            if (isNaN(totalUsers)) {
+                displayTotalUsers();
+            }
             else
                 text = totalUsers.toString();
             get("numUsers").innerHTML = text;
