@@ -102,23 +102,6 @@ ul.horizontal li {
     border: 2px dotted rgba(100, 100, 100, 0.2);
 }
 
-.content {
-    padding: 0 18px;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 300ms ease-out;
-    background-color: white;
-    border-radius: 8px;
-    margin: 0 4px;
-}
-
-.content p {
-    font-size: 2em;
-    line-height: 2em;
-    -webkit-text-fill-color: black;
-    -webkit-text-stroke-color: black;
-}
-
 .languagePicker {
     background-color: white;
     display: inline-block;

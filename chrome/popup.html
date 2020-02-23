@@ -22,7 +22,7 @@
 
 <div id="main">
 
-    <!-- Font selector -->
+    <!-- Font select -->
     <div class="select">
         <select class="select-text" id="font-select">
             <option style="font-family: 'Droid Arabic Naskh', sans-serif" value="Droid Arabic Naskh">درويد نسخ</option>
@@ -69,85 +69,69 @@
         <span class="select-bar"></span>
     </div>
 
+    <!-- Font Size -->
     <div class="centered" style="width: 80%">
         <label class="label">Font Size:</label>
-
         <label class="value" id="sizeValue"></label>
-
         <label class="pure-material-slider" style="width: 95%">
             <input id="size" max="300" min="100" name="size" type="range">
         </label>
-
         <hr>
     </div>
 
-
-    <br>
-
+    <!-- Line Height -->
     <div class="centered" style="width: 80%">
         <label class="label">Line Height:</label>
-
         <label class="value" id="heightValue"></label>
-
         <label class="pure-material-slider" style="width: 95%">
             <input id="height" max="300" min="100" name="height" type="range">
         </label>
-
         <hr>
     </div>
 
-    <br>
-
-    <div class="centered" id="websiteInfo">
-        <img alt="Website Icon" id="websiteIcon" src="">
+    <!-- Website Info -->
+    <div class="centered" style="width: 80%">
+        <img alt="Website Icon" height="32" id="websiteIcon" src="" width="32">
         <h2 id="website">Website</h2>
     </div>
 
+    <hr style="width: 80%">
+
     <!-- Override Site Settings Switch -->
-    <div class="centered">
+    <div class="centered" style="width: 80%">
         <label class="centered" id="overrideSettingsLabel" style="font-size: 1.3em">
             Using global settings</label>
     </div>
-    <br>
     <label class="material-switch centered">
         <input class="centered" id="overrideSettingsSwitch" type="checkbox">
         <span></span>
     </label>
     <hr style="width: 80%">
 
-    <br>
-
     <!-- Whitelist Switch -->
-    <div class="centered">
+    <div class="centered" style="width: 80%">
         <label class="centered" id="whitelistedLabel" style="font-size: 1.3em">
             Running on this site</label>
     </div>
-    <br>
     <label class="material-switch centered">
         <input class="centered" id="whitelistSwitch" type="checkbox">
         <span></span>
     </label>
     <hr style="width: 80%">
 
-    <br>
-    <br>
-
+    <!-- Export / Import -->
     <button class="material-button" id="exportButton">Export</button>
     <a id="exportAnchor"></a>
-
     <button class="material-button" id="importButton">Import</button>
     <input accept="application/json" id="importInput" type="file"/>
-
-    <br>
 
 </div>
 
 <br>
 
 <div class="centered">
-    <a href="https://basshelal.github.io/Wudooh/" style="font-size: 1.3em" target="_blank">Help</a>
+    <a href="https://basshelal.github.io/Wudooh/" target="_blank">Help</a>
 </div>
-
 <div class="centered" style="font-family: 'Noto Nastaliq Urdu', 'Roboto Light', sans-serif">
     By <a href="https://github.com/basshelal/Wudooh" target="_blank">Bassam Helal بسّام هلال</a>
 </div>

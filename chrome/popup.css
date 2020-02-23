@@ -114,16 +114,6 @@ a:hover, a:active {
     text-decoration: underline;
 }
 
-input[type=range]:focus {
-    outline: none;
-}
-
-table {
-    border: none;
-    width: 80%;
-    border-bottom: solid 1px #ccc;
-}
-
 .label {
     float: left;
     text-align: left;

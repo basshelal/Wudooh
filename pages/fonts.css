@@ -13,6 +13,23 @@
     border-radius: 8px;
 }
 
+.content {
+    padding: 0 18px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 300ms ease-out;
+    background-color: white;
+    border-radius: 8px;
+    margin: 0 4px;
+}
+
+.content p {
+    font-size: 2em;
+    line-height: 2em;
+    -webkit-text-fill-color: black;
+    -webkit-text-stroke-color: black;
+}
+
 .active, .collapsible:hover {
     background-color: #560027;
 }

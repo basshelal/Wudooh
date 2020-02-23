@@ -17,7 +17,6 @@ Array.prototype.contains = function (element) {
         return it === element;
     }) !== null;
 };
-
 // endregion Extensions
 function include(path, onload) {
     if (onload === void 0) {
@@ -34,7 +33,6 @@ function include(path, onload) {
         onload();
     };
 }
-
 var urlParams = new URLSearchParams(window.location.search);
 var lang = urlParams.get("lang") || "en";
 var arFont = "Droid Arabic Naskh";
@@ -57,13 +55,11 @@ var ElementTranslationMapping = /** @class */ (function () {
             _this.addTranslation(it["lang"], it["translation"]);
         });
     }
-
     ElementTranslationMapping.prototype.addTranslation = function (lang, translation) {
         this.translations.set(lang, translation);
     };
     return ElementTranslationMapping;
 }());
-
 function translation(element, translations) {
     return new ElementTranslationMapping(element, translations);
 }
