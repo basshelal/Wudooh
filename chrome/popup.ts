@@ -150,7 +150,7 @@ function updateUI() {
 
             overrideSiteSwitch.checked = isCustom;
             if (isCustom) overrideSettingsValue.innerText = "Using site specific settings";
-            else overrideSettingsValue.innerText = "Using default settings";
+            else overrideSettingsValue.innerText = "Using global settings";
 
             websiteText.innerText = thisURL;
             websiteIcon.src = "chrome://favicon/size/32/" + thisTab.url;

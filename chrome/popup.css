@@ -103,8 +103,6 @@ footer {
 hr {
     border: none;
     border-bottom: solid 1px #ccc;
-    width: 80%;
-    padding-top: 8px;
 }
 
 a {
@@ -116,10 +114,6 @@ a:hover, a:active {
     text-decoration: underline;
 }
 
-td {
-    font-weight: 300;
-}
-
 input[type=range]:focus {
     outline: none;
 }
@@ -127,27 +121,28 @@ input[type=range]:focus {
 table {
     border: none;
     width: 80%;
-    margin: 12px auto;
     border-bottom: solid 1px #ccc;
 }
 
 .label {
+    float: left;
     text-align: left;
+    font-size: 1.3em;
 }
 
 .value {
+    float: right;
     text-align: right;
+    font-size: 1.3em;
 }
 
 #font-select {
-    font-size: 1.5em;
+    font-size: 20px;
     font-family: "Roboto Light", sans-serif;
-    width: 90%;
+    width: 95%;
     text-align-last: center;
     text-align: center;
     text-align-all: center;
-    padding: 5px 5px;
-    margin: 10px 0;
     cursor: pointer;
 }
 

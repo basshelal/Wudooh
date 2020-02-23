@@ -7,7 +7,6 @@
 ///<reference path="./shared.ts"/>
 var sync = chrome.storage.sync;
 var tabs = chrome.tabs;
-
 /**
  * Shorthand for {@linkcode document.getElementById}, automatically casts to T, an HTMLElement
  *
@@ -16,7 +15,6 @@ var tabs = chrome.tabs;
 function get(elementId) {
     return document.getElementById(elementId);
 }
-
 // Inputs
 var sizeSlider = get("size");
 var heightSlider = get("height");
@@ -140,7 +138,7 @@ function updateUI() {
             if (isCustom)
                 overrideSettingsValue.innerText = "Using site specific settings";
             else
-                overrideSettingsValue.innerText = "Using default settings";
+                overrideSettingsValue.innerText = "Using global settings";
             websiteText.innerText = thisURL;
             websiteIcon.src = "chrome://favicon/size/32/" + thisTab.url;
         });
