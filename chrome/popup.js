@@ -8,13 +8,15 @@
 var sync = chrome.storage.sync;
 var tabs = chrome.tabs;
 /**
- * Shorthand for {@linkcode document.getElementById}, automatically casts to T, an HTMLElement
+ * Shorthand for {@linkcode document.getElementById}, automatically casts to T, a HTMLElement
  *
  * @param elementId the id of the element to get
  */
 function get(elementId) {
     return document.getElementById(elementId);
 }
+
+var main = get("main");
 // Inputs
 var sizeSlider = get("size");
 var heightSlider = get("height");
@@ -118,13 +120,18 @@ function updateUI() {
                 lineHeight = fromStorage.lineHeight;
                 font = fromStorage.font;
             }
+            onOffSwitch.checked = fromStorage.onOff;
+            if (fromStorage.onOff) {
+                main.style.display = "block";
+            } else {
+                main.style.display = "none";
+            }
             sizeSlider.value = textSize.toString();
             sizeValue.innerHTML = textSize.toString() + '%';
             heightSlider.value = lineHeight.toString();
             heightValue.innerHTML = lineHeight.toString() + '%';
             fontSelect.value = font;
             fontSelect.style.fontFamily = font;
-            onOffSwitch.checked = fromStorage.onOff;
             var isWhitelisted = !!(whiteListed.findFirst(function (it) {
                 return it === thisURL;
             }));
@@ -151,9 +158,9 @@ function toggleOnOff() {
     sync.set({onOff: onOffSwitch.checked}, function () {
         if (onOffSwitch.checked) {
             updateAllText();
-            get("main").style.display = "block";
+            main.style.display = "block";
         } else {
-            get("main").style.display = "none";
+            main.style.display = "none";
         }
     });
 }

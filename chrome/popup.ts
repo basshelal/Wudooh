@@ -12,13 +12,15 @@ import tabs = chrome.tabs;
 import Tab = tabs.Tab;
 
 /**
- * Shorthand for {@linkcode document.getElementById}, automatically casts to T, an HTMLElement
+ * Shorthand for {@linkcode document.getElementById}, automatically casts to T, a HTMLElement
  *
  * @param elementId the id of the element to get
  */
 function get<T extends HTMLElement>(elementId: string): T | null {
     return document.getElementById(elementId) as T
 }
+
+const main = get<HTMLDivElement>("main");
 
 // Inputs
 const sizeSlider = get<HTMLInputElement>("size");
@@ -133,13 +135,19 @@ function updateUI() {
                 font = fromStorage.font;
             }
 
+            onOffSwitch.checked = fromStorage.onOff;
+            if (fromStorage.onOff) {
+                main.style.display = "block";
+            } else {
+                main.style.display = "none";
+            }
+
             sizeSlider.value = textSize.toString();
             sizeValue.innerHTML = textSize.toString() + '%';
             heightSlider.value = lineHeight.toString();
             heightValue.innerHTML = lineHeight.toString() + '%';
             fontSelect.value = font;
             fontSelect.style.fontFamily = font;
-            onOffSwitch.checked = fromStorage.onOff;
 
             let isWhitelisted: boolean = !!(whiteListed.findFirst((it: string) => it === thisURL));
             let isCustom: boolean = !!custom;
@@ -165,9 +173,9 @@ function toggleOnOff() {
     sync.set({onOff: onOffSwitch.checked}, () => {
         if (onOffSwitch.checked) {
             updateAllText();
-            get("main").style.display = "block";
+            main.style.display = "block";
         } else {
-            get("main").style.display = "none";
+            main.style.display = "none";
         }
     });
 }

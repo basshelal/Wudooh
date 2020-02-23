@@ -185,9 +185,8 @@ function startObserver(textSize, lineHeight, font) {
     }
 }
 // Tell this document that Wudooh has been executed on it
-// TODO do we need this??
 function notify() {
-    var meta = document.createElement('meta');
+    var meta = document.createElement("meta");
     meta.setAttribute("wudooh", "true");
     document.head.appendChild(meta);
 }
@@ -241,18 +240,3 @@ runtime.onMessage.addListener(function (message) {
     }
     startObserver(newSize, newHeight, message.font);
 });
-// TODO REMOVE LATER!
-function log() {
-    sync.get(null, function (items) {
-        keys.forEach(function (key) {
-            if (key === "customSettings") {
-                console.log(key + " : " + items[key].length);
-                items[key].forEach(function (customSetting) {
-                    return console.log(customSetting.url);
-                });
-            } else {
-                console.log(key + " : " + items[key]);
-            }
-        });
-    });
-}
