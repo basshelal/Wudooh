@@ -7,6 +7,7 @@
 ///<reference path="./shared.ts"/>
 var sync = chrome.storage.sync;
 var tabs = chrome.tabs;
+
 /**
  * Shorthand for {@linkcode document.getElementById}, automatically casts to T, an HTMLElement
  *
@@ -15,9 +16,10 @@ var tabs = chrome.tabs;
 function get(elementId) {
     return document.getElementById(elementId);
 }
+
 // Inputs
-var size = get("size");
-var height = get("height");
+var sizeSlider = get("size");
+var heightSlider = get("height");
 var onOffSwitch = get("onOffSwitch");
 var fontSelect = get("font-select");
 var overrideSiteSwitch = get("overrideSettingsSwitch");
@@ -67,8 +69,8 @@ function updateAllText() {
                     var message = {
                         oldSize: oldS,
                         oldHeight: oldH,
-                        newSize: parseInt(size.value),
-                        newHeight: parseInt(height.value),
+                        newSize: parseInt(sizeSlider.value),
+                        newHeight: parseInt(heightSlider.value),
                         font: font
                     };
                     tabs.sendMessage(tab.id, message);
@@ -78,8 +80,8 @@ function updateAllText() {
     }
     // Save options at the end, even if the above if statement was false
     sync.set({
-        textSize: parseInt(size.value),
-        lineHeight: parseInt(height.value),
+        textSize: parseInt(sizeSlider.value),
+        lineHeight: parseInt(heightSlider.value),
         onOff: onOffSwitch.checked,
         font: fontSelect.value
     });
@@ -118,9 +120,9 @@ function updateUI() {
                 lineHeight = fromStorage.lineHeight;
                 font = fromStorage.font;
             }
-            size.value = textSize.toString();
+            sizeSlider.value = textSize.toString();
             sizeValue.innerHTML = textSize.toString() + '%';
-            height.value = lineHeight.toString();
+            heightSlider.value = lineHeight.toString();
             heightValue.innerHTML = lineHeight.toString() + '%';
             fontSelect.value = font;
             fontSelect.style.fontFamily = font;
@@ -176,7 +178,7 @@ function toggleOverrideSiteSettings() {
             var customSettings = fromStorage.customSettings;
             // Overridden so use custom settings
             if (overrideSiteSwitch.checked) {
-                var custom = new CustomSettings(thisURL, parseInt(size.value), parseInt(height.value), fontSelect.value);
+                var custom = new CustomSettings(thisURL, parseInt(sizeSlider.value), parseInt(heightSlider.value), fontSelect.value);
                 customSettings.push(custom);
                 overrideSettingsValue.innerText = "Using site specific settings";
             } else {
@@ -326,18 +328,19 @@ function importSettings() {
 function addListeners() {
     // Get options when the popup.html document is loaded
     document.addEventListener("DOMContentLoaded", updateUI);
+    // TODO when do we update settings?
     // Update size and height HTML when input is changed, changes no variables
-    size.oninput = function () {
-        return sizeValue.innerHTML = size.value + '%';
+    sizeSlider.oninput = function () {
+        return sizeValue.innerHTML = sizeSlider.value + '%';
     };
-    height.oninput = function () {
-        return heightValue.innerHTML = height.value + '%';
+    heightSlider.oninput = function () {
+        return heightValue.innerHTML = heightSlider.value + '%';
     };
     // Save options when mouse is released
-    size.onmouseup = function () {
+    sizeSlider.onmouseup = function () {
         return updateAllText();
     };
-    height.onmouseup = function () {
+    heightSlider.onmouseup = function () {
         return updateAllText();
     };
     // Update switches when they're clicked

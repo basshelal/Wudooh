@@ -21,8 +21,8 @@ function get<T extends HTMLElement>(elementId: string): T | null {
 }
 
 // Inputs
-const size = get<HTMLInputElement>("size");
-const height = get<HTMLInputElement>("height");
+const sizeSlider = get<HTMLInputElement>("size");
+const heightSlider = get<HTMLInputElement>("height");
 const onOffSwitch = get<HTMLInputElement>("onOffSwitch");
 const fontSelect = get<HTMLSelectElement>("font-select");
 const overrideSiteSwitch = get<HTMLInputElement>("overrideSettingsSwitch");
@@ -77,8 +77,8 @@ function updateAllText() {
                     let message = {
                         oldSize: oldS,
                         oldHeight: oldH,
-                        newSize: parseInt(size.value),
-                        newHeight: parseInt(height.value),
+                        newSize: parseInt(sizeSlider.value),
+                        newHeight: parseInt(heightSlider.value),
                         font: font
                     };
                     tabs.sendMessage(tab.id, message);
@@ -89,8 +89,8 @@ function updateAllText() {
 
     // Save options at the end, even if the above if statement was false
     sync.set({
-        textSize: parseInt(size.value),
-        lineHeight: parseInt(height.value),
+        textSize: parseInt(sizeSlider.value),
+        lineHeight: parseInt(heightSlider.value),
         onOff: onOffSwitch.checked,
         font: fontSelect.value
     });
@@ -133,9 +133,9 @@ function updateUI() {
                 font = fromStorage.font;
             }
 
-            size.value = textSize.toString();
+            sizeSlider.value = textSize.toString();
             sizeValue.innerHTML = textSize.toString() + '%';
-            height.value = lineHeight.toString();
+            heightSlider.value = lineHeight.toString();
             heightValue.innerHTML = lineHeight.toString() + '%';
             fontSelect.value = font;
             fontSelect.style.fontFamily = font;
@@ -194,7 +194,7 @@ function toggleOverrideSiteSettings() {
 
             // Overridden so use custom settings
             if (overrideSiteSwitch.checked) {
-                let custom = new CustomSettings(thisURL, parseInt(size.value), parseInt(height.value), fontSelect.value);
+                let custom = new CustomSettings(thisURL, parseInt(sizeSlider.value), parseInt(heightSlider.value), fontSelect.value);
                 customSettings.push(custom);
                 overrideSettingsValue.innerText = "Using site specific settings";
             } else {
@@ -360,13 +360,15 @@ function addListeners() {
     // Get options when the popup.html document is loaded
     document.addEventListener("DOMContentLoaded", updateUI);
 
+    // TODO when do we update settings?
+
     // Update size and height HTML when input is changed, changes no variables
-    size.oninput = () => sizeValue.innerHTML = size.value + '%';
-    height.oninput = () => heightValue.innerHTML = height.value + '%';
+    sizeSlider.oninput = () => sizeValue.innerHTML = sizeSlider.value + '%';
+    heightSlider.oninput = () => heightValue.innerHTML = heightSlider.value + '%';
 
     // Save options when mouse is released
-    size.onmouseup = () => updateAllText();
-    height.onmouseup = () => updateAllText();
+    sizeSlider.onmouseup = () => updateAllText();
+    heightSlider.onmouseup = () => updateAllText();
 
     // Update switches when they're clicked
     onOffSwitch.onclick = () => toggleOnOff();

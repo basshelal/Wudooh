@@ -28,7 +28,6 @@
     <div class="select">
         <select class="select-text" id="font-select">
             <option style="font-family: 'Droid Arabic Naskh', sans-serif" value="Droid Arabic Naskh">درويد نسخ</option>
-            <!-- TODO Start alphabetical ordering here-->
             <option style="font-family: 'Noto Naskh Arabic', sans-serif" value="Noto Naskh Arabic">نوتو نسخ</option>
             <option style="font-family: 'Arabic Typesetting', sans-serif" value="Arabic Typesetting">تنضيد</option>
             <option style="font-family: 'Simplified Arabic', sans-serif" value="Simplified Arabic">مبسَّط</option>
@@ -74,7 +73,6 @@
 
     <br>
 
-    <!-- Font Size TODO make the label become an input that user can enter value into -->
     <table>
         <tr>
             <td class="label">Font Size:</td>
@@ -88,7 +86,6 @@
 
     <br>
 
-    <!-- Line Height TODO make the label become an input that user can enter value into -->
     <table>
         <tr>
             <td class="label">Line Height:</td>
@@ -145,14 +142,11 @@
     <br>
 
     <div class="centered" style="width: 80%">
-        <label class="label" style="float: left">Text</label>
+        <label class="label" style="float: left; font-size: 1.3em">Text</label>
 
-        <label class="pure-material-textfield-outlined" style="float: right">
-            <input max="300" min="100" placeholder=" " step="1" type="number" value="100">
-            <span>Font Size:</span>
-        </label>
+        <label class="label" style="float: right; font-size: 1.3em">150%</label>
 
-        <label class="pure-material-slider">
+        <label class="pure-material-slider" style="width: 100%">
             <input max="100" min="0" type="range">
         </label>
 
