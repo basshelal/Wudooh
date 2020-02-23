@@ -202,13 +202,18 @@ function startObserver(textSize: number, lineHeight: number, font: string = defa
         });
     };
 
+    // If observer is null then make a new one and start observing
     if (!observer) {
         observer = new MutationObserver(callback);
         observer.observe(document.body, config);
     }
 }
 
-// Tell this document that Wudooh has been executed on it
+/**
+ * Notify the current document that Wudooh has been executed on it.
+ * This has no use currently but may be useful later for sites to know if Wudooh is changing their content and for
+ * testing
+ */
 function notify() {
     let meta = document.createElement("meta");
     meta.setAttribute("wudooh", "true");
@@ -261,7 +266,8 @@ runtime.onMessage.addListener((message) => {
     let newHeight: number = 100 * (message.newHeight / message.oldHeight);
     updateAll(newSize, newHeight, message.font);
 
-    if (!observer) {
+    // If observer was existing then disconnect it and delete it
+    if (!!observer) {
         observer.disconnect();
         observer = null;
     }

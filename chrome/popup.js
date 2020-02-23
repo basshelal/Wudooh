@@ -15,7 +15,6 @@ var tabs = chrome.tabs;
 function get(elementId) {
     return document.getElementById(elementId);
 }
-
 var main = get("main");
 // Inputs
 var sizeSlider = get("size");
@@ -37,21 +36,19 @@ var exportButton = get("exportButton");
 var exportAnchor = get("exportAnchor");
 var importButton = get("importButton");
 var importInput = get("importInput");
-// TODO bug when changing fonts for custom sites
 /**
  * Updates all Arabic text in all tabs to adhere to the new options. This is done by sending a message to all
  * tabs that main.ts will handle.
- * In most cases not closing the popup does not update the text for some reason.
- * Also, the updated text will have problems with spacing, making the actual look of a set of options differ
- * somewhat from the live updated look, a page refresh will always solve this
+ * The updated text will sometimes have problems with spacing, making the actual look of a set of options differ
+ * somewhat from the live updated look, a page refresh will always solve this.
  */
 function updateAllText() {
     // Only update text if this site is checked and is not whitelisted
     if (onOffSwitch.checked && whiteListSwitch.checked) {
         sync.get(["textSize", "lineHeight", "font", "customSettings"], function (fromStorage) {
             // We need the old values to know how much we should change the options in main.ts
-            var oldS = fromStorage.textSize;
-            var oldH = fromStorage.lineHeight;
+            var oldSize = fromStorage.textSize;
+            var oldHeight = fromStorage.lineHeight;
             var font = fromStorage.font;
             var customSettings = fromStorage.customSettings;
             // Send a message to all tabs
@@ -62,13 +59,13 @@ function updateAllText() {
                         return custom.url === thisURL;
                     });
                     if (custom) {
-                        oldS = custom.textSize;
-                        oldH = custom.lineHeight;
+                        oldSize = custom.textSize;
+                        oldHeight = custom.lineHeight;
                         font = custom.font;
                     }
                     var message = {
-                        oldSize: oldS,
-                        oldHeight: oldH,
+                        oldSize: oldSize,
+                        oldHeight: oldHeight,
                         newSize: parseInt(sizeSlider.value),
                         newHeight: parseInt(heightSlider.value),
                         font: font
@@ -78,20 +75,15 @@ function updateAllText() {
             });
         });
     }
-    // Save options at the end, even if the above if statement was false
-    sync.set({
-        textSize: parseInt(sizeSlider.value),
-        lineHeight: parseInt(heightSlider.value),
-        onOff: onOffSwitch.checked,
-        font: fontSelect.value
-    });
 }
+
 /**
- * Gets options, this gets them from the chrome's storage sync for the user with default values if they do not
- * already exist, this is only called when the document (popup.html) is loaded, it only initializes values and
- * updates UI
+ * Gets options from the chrome's storage sync for the user with default values if they do not already exist,
+ * this is only called when the document (popup.html) is loaded, it only initializes values and updates the UI
+ * to match the settings
  */
-function updateUI() {
+function initializeUI() {
+    // Get all the options with default values if they're not found for some reason
     sync.get({
         textSize: defaultTextSize,
         lineHeight: defaultLineHeight,
@@ -108,6 +100,7 @@ function updateUI() {
             var textSize;
             var lineHeight;
             var font;
+            // The above will be different if thisURL is a custom one so we set them depending on this
             var custom = customSettings.findFirst(function (custom) {
                 return custom.url === thisURL;
             });
@@ -120,18 +113,22 @@ function updateUI() {
                 lineHeight = fromStorage.lineHeight;
                 font = fromStorage.font;
             }
+            // If the extension is off then hide the main div
             onOffSwitch.checked = fromStorage.onOff;
             if (fromStorage.onOff) {
                 main.style.display = "block";
             } else {
                 main.style.display = "none";
             }
+            // Initialize all the HTMLElements to the values from storage
             sizeSlider.value = textSize.toString();
             sizeValue.innerHTML = textSize.toString() + '%';
             heightSlider.value = lineHeight.toString();
             heightValue.innerHTML = lineHeight.toString() + '%';
             fontSelect.value = font;
             fontSelect.style.fontFamily = font;
+            websiteText.innerText = thisURL;
+            websiteIcon.src = "chrome://favicon/size/32/" + thisTab.url;
             var isWhitelisted = !!(whiteListed.findFirst(function (it) {
                 return it === thisURL;
             }));
@@ -146,13 +143,12 @@ function updateUI() {
                 overrideSettingsValue.innerText = "Using site specific settings";
             else
                 overrideSettingsValue.innerText = "Using global settings";
-            websiteText.innerText = thisURL;
-            websiteIcon.src = "chrome://favicon/size/32/" + thisTab.url;
         });
     });
 }
+
 /**
- * Toggles the on off switch, this will update all text if the switch is turned on
+ * Toggles the on off switch and saves the "onOff" setting, this will update all text if the switch is turned on
  */
 function toggleOnOff() {
     sync.set({onOff: onOffSwitch.checked}, function () {
@@ -164,8 +160,27 @@ function toggleOnOff() {
         }
     });
 }
+
 /**
- * Changes the font, this will update all text and update the Wudooh header
+ * Update font size by updating all text and then saving the setting
+ */
+function updateSize() {
+    // Update before saving because we need the old value in the update function before saving
+    updateAllText();
+    sync.set({textSize: parseInt(sizeSlider.value)});
+}
+
+/**
+ * Update line height by updating all text and then saving the setting
+ */
+function updateHeight() {
+    // Update before saving because we need the old value in the update function before saving
+    updateAllText();
+    sync.set({lineHeight: parseInt(heightSlider.value)});
+}
+
+/**
+ * Changes the font and saves the "font" setting, this will update all text
  */
 function changeFont() {
     fontSelect.style.fontFamily = fontSelect.value;
@@ -173,15 +188,19 @@ function changeFont() {
         updateAllText();
     });
 }
+
+/**
+ * Toggles the override site settings switch and saves the setting
+ */
 function toggleOverrideSiteSettings() {
     // This only requires this current tab
     tabs.query({active: true, currentWindow: true}, function (tabs) {
-        // Get the url we are on right now
+        // Get the url we are currently on
         var thisURL = new URL(tabs[0].url).hostname;
         sync.get({"customSettings": []}, function (fromStorage) {
             // Get the array of all custom websites
             var customSettings = fromStorage.customSettings;
-            // Overridden so use custom settings
+            // Override switch is on so use custom settings
             if (overrideSiteSwitch.checked) {
                 var custom = new CustomSettings(thisURL, parseInt(sizeSlider.value), parseInt(heightSlider.value), fontSelect.value);
                 customSettings.push(custom);
@@ -232,6 +251,10 @@ function toggleWhitelist() {
         });
     });
 }
+
+/**
+ * Exports all settings saved in chrome sync storage to a pretty json file called "settings.wudooh.json"
+ */
 function exportSettings() {
     sync.get(keys, function (fromStorage) {
         var json = JSON.stringify(fromStorage, null, 4);
@@ -240,6 +263,11 @@ function exportSettings() {
         exportAnchor.click();
     });
 }
+
+/**
+ * Imports settings from a json file, this function has extensive error checking to ensure that all fields read are
+ * valid
+ */
 function importSettings() {
     var file = importInput.files[0];
     var reader = new FileReader();
@@ -312,6 +340,7 @@ function importSettings() {
             window.close();
             return;
         }
+        // If we've reached here the JSON was valid, save all new settings!
         sync.set({
             textSize: textSize,
             lineHeight: lineHeight,
@@ -332,8 +361,7 @@ function importSettings() {
  */
 function addListeners() {
     // Get options when the popup.html document is loaded
-    document.addEventListener("DOMContentLoaded", updateUI);
-    // TODO when do we update settings?
+    document.addEventListener("DOMContentLoaded", initializeUI);
     // Update size and height HTML when input is changed, changes no variables
     sizeSlider.oninput = function () {
         return sizeValue.innerHTML = sizeSlider.value + '%';
@@ -341,12 +369,12 @@ function addListeners() {
     heightSlider.oninput = function () {
         return heightValue.innerHTML = heightSlider.value + '%';
     };
-    // Save options when mouse is released
+    // Update text and save options when mouse is released, not onChange because that will be too much
     sizeSlider.onmouseup = function () {
-        return updateAllText();
+        return updateSize();
     };
     heightSlider.onmouseup = function () {
-        return updateAllText();
+        return updateHeight();
     };
     // Update switches when they're clicked
     onOffSwitch.onclick = function () {
