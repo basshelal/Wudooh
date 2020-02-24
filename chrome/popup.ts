@@ -416,26 +416,35 @@ function addListeners() {
 
 addListeners();
 
-let fontName = "Iranica";
+// Custom font shit below
 
-let style: HTMLStyleElement = document.createElement("style");
-style.innerHTML = `
+let fontName = "Iranica";
+let fontName2 = "Source Code Pro";
+let fontName3 = "Roboto Mono";
+let customFonts: Array<string> = [fontName, fontName2, fontName3];
+
+// Example code below for when we use chrome.storage.local
+
+let fontsStyle: HTMLStyleElement = document.createElement("style");
+document.head.append(fontsStyle);
+
+customFonts.forEach((font: string) => {
+    fontsStyle.innerHTML = fontsStyle.innerHTML.concat(`
 @font-face {
-    font-family: '${fontName}';
+    font-family: '${font}';
     font-style: normal;
     font-weight: normal;
-    src: local('${fontName}');
-}`;
+    src: local('${font}');
+}`);
 
-document.head.append(style);
+    let option: HTMLOptionElement = document.createElement("option");
+    option.style.fontFamily = font;
+    option.value = font;
+    option.innerHTML = font;
+    option.style.color = "#ff00ff";
 
-let option: HTMLOptionElement = document.createElement("option");
-option.style.fontFamily = fontName;
-option.value = fontName;
-option.innerHTML = fontName;
-option.style.color = "#ff00ff";
+    fontSelect.add(option);
+});
 
-fontSelect.add(option);
-
-
-// Supported font types are otf, ttf, woff and woff2
+// @ts-ignore, this works in Chrome
+document.fonts.forEach(it => console.log(it));
