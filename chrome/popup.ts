@@ -415,3 +415,27 @@ function addListeners() {
 }
 
 addListeners();
+
+let fontName = "Iranica";
+
+let style: HTMLStyleElement = document.createElement("style");
+style.innerHTML = `
+@font-face {
+    font-family: '${fontName}';
+    font-style: normal;
+    font-weight: normal;
+    src: local('${fontName}');
+}`;
+
+document.head.append(style);
+
+let option: HTMLOptionElement = document.createElement("option");
+option.style.fontFamily = fontName;
+option.value = fontName;
+option.innerHTML = fontName;
+option.style.color = "#ff00ff";
+
+fontSelect.add(option);
+
+
+// Supported font types are otf, ttf, woff and woff2

@@ -76,7 +76,6 @@ function updateAllText() {
         });
     }
 }
-
 /**
  * Gets options from the chrome's storage sync for the user with default values if they do not already exist,
  * this is only called when the document (popup.html) is loaded, it only initializes values and updates the UI
@@ -146,7 +145,6 @@ function initializeUI() {
         });
     });
 }
-
 /**
  * Toggles the on off switch and saves the "onOff" setting, this will update all text if the switch is turned on
  */
@@ -160,7 +158,6 @@ function toggleOnOff() {
         }
     });
 }
-
 /**
  * Update font size by updating all text and then saving the setting
  */
@@ -169,7 +166,6 @@ function updateSize() {
     updateAllText();
     sync.set({textSize: parseInt(sizeSlider.value)});
 }
-
 /**
  * Update line height by updating all text and then saving the setting
  */
@@ -178,7 +174,6 @@ function updateHeight() {
     updateAllText();
     sync.set({lineHeight: parseInt(heightSlider.value)});
 }
-
 /**
  * Changes the font and saves the "font" setting, this will update all text
  */
@@ -188,7 +183,6 @@ function changeFont() {
         updateAllText();
     });
 }
-
 /**
  * Toggles the override site settings switch and saves the setting
  */
@@ -251,7 +245,6 @@ function toggleWhitelist() {
         });
     });
 }
-
 /**
  * Exports all settings saved in chrome sync storage to a pretty json file called "settings.wudooh.json"
  */
@@ -263,7 +256,6 @@ function exportSettings() {
         exportAnchor.click();
     });
 }
-
 /**
  * Imports settings from a json file, this function has extensive error checking to ensure that all fields read are
  * valid
@@ -403,4 +395,16 @@ function addListeners() {
         return importInput.click();
     };
 }
+
 addListeners();
+var fontName = "Iranica";
+var style = document.createElement("style");
+style.innerHTML = "\n@font-face {\n    font-family: '" + fontName + "';\n    font-style: normal;\n    font-weight: normal;\n    src: local('" + fontName + "');\n}";
+document.head.append(style);
+var option = document.createElement("option");
+option.style.fontFamily = fontName;
+option.value = fontName;
+option.innerHTML = fontName;
+option.style.color = "#ff00ff";
+fontSelect.add(option);
+// Supported font types are otf, ttf, woff and woff2
