@@ -107,3 +107,12 @@ const defaultTextSize: number = 115;
 const defaultLineHeight: number = 125;
 const defaultColor: string = "#880E4F";
 const homePage: string = "http://basshelal.github.io/Wudooh";
+
+/**
+ * Shorthand for {@linkcode document.getElementById}, automatically casts to T, a HTMLElement
+ *
+ * @param elementId the id of the element to get
+ */
+function get<T extends HTMLElement>(elementId: string): T | null {
+    return document.getElementById(elementId) as T
+}

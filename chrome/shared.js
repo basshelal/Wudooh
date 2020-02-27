@@ -78,3 +78,11 @@ var defaultTextSize = 115;
 var defaultLineHeight = 125;
 var defaultColor = "#880E4F";
 var homePage = "http://basshelal.github.io/Wudooh";
+/**
+ * Shorthand for {@linkcode document.getElementById}, automatically casts to T, a HTMLElement
+ *
+ * @param elementId the id of the element to get
+ */
+function get(elementId) {
+    return document.getElementById(elementId);
+}

@@ -185,7 +185,6 @@ function startObserver(textSize, lineHeight, font) {
         observer.observe(document.body, config);
     }
 }
-
 /**
  * Notify the current document that Wudooh has been executed on it.
  * This has no use currently but may be useful later for sites to know if Wudooh is changing their content and for

@@ -28,7 +28,8 @@
       "run_at": "document_end",
       "js": [
         "shared.js",
-        "main.js"
+        "main.js",
+        "custom_fonts.js"
       ],
       "css": [
         "fonts.css"

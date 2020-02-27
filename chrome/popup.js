@@ -7,14 +7,6 @@
 ///<reference path="./shared.ts"/>
 var sync = chrome.storage.sync;
 var tabs = chrome.tabs;
-/**
- * Shorthand for {@linkcode document.getElementById}, automatically casts to T, a HTMLElement
- *
- * @param elementId the id of the element to get
- */
-function get(elementId) {
-    return document.getElementById(elementId);
-}
 var main = get("main");
 // Inputs
 var sizeSlider = get("size");
@@ -395,7 +387,6 @@ function addListeners() {
         return importInput.click();
     };
 }
-
 addListeners();
 // Custom font shit below
 var fontName = "Iranica";

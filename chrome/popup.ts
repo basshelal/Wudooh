@@ -11,15 +11,6 @@ import sync = chrome.storage.sync;
 import tabs = chrome.tabs;
 import Tab = tabs.Tab;
 
-/**
- * Shorthand for {@linkcode document.getElementById}, automatically casts to T, a HTMLElement
- *
- * @param elementId the id of the element to get
- */
-function get<T extends HTMLElement>(elementId: string): T | null {
-    return document.getElementById(elementId) as T
-}
-
 const main = get<HTMLDivElement>("main");
 
 // Inputs
