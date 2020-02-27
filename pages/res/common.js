@@ -13,9 +13,9 @@ Array.prototype.findFirst = function (predicate) {
     return null;
 };
 Array.prototype.contains = function (element) {
-    return this.findFirst(function (it) {
+    return !!this.findFirst(function (it) {
         return it === element;
-    }) !== null;
+    });
 };
 // endregion Extensions
 function include(path, onload) {

@@ -72,6 +72,9 @@ Array.prototype.findFirst = function (predicate) {
     }
     return null;
 };
+Array.prototype.contains = function (element) {
+    return !!this.findFirst(function (it) { return it === element; });
+};
 // endregion Extensions
 var defaultFont = "Droid Arabic Naskh";
 var defaultTextSize = 115;

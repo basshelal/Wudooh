@@ -83,8 +83,9 @@ class CustomSettings {
 // region Extensions
 
 interface Array<T> {
-
     findFirst(predicate: (element: T, index: number) => boolean): T | null;
+
+    contains(element: T): boolean;
 }
 
 /**
@@ -98,6 +99,10 @@ Array.prototype.findFirst = function <T>(predicate: (element: T, index: number) 
         if (predicate(this[i], i)) return this[i];
     }
     return null;
+};
+
+Array.prototype.contains = function <T>(element: T): boolean {
+    return !!this.findFirst((it: T) => it === element);
 };
 
 // endregion Extensions
