@@ -1,5 +1,5 @@
 ///<reference path="../../.WebStorm2019.3/config/javascript/extLibs/global-types/node_modules/@types/jquery/misc.d.ts"/>
-///<reference path="pages/res/common.ts"/>
+///<reference path="site/pages/res/common.ts"/>
 
 function get<T extends HTMLElement>(elementId: string): T | null {
     return document.getElementById(elementId) as T
