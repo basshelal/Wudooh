@@ -1,3 +1,20 @@
+/**
+ * This file contains common shared code that is used by all three main TypeScript files
+ * These are background.ts, main.ts, and popup.ts.
+ *
+ * This trick is done by loading this script before any others when they are requested and
+ * then adding the following line at the top of the file for support from WebStorm IDE.
+ * ///<reference path="./shared.ts"/>
+ */
+
+// Import Types
+// noinspection ES6UnusedImports
+import Tab = chrome.tabs.Tab;
+// noinspection ES6UnusedImports
+import InstalledDetails = chrome.runtime.InstalledDetails;
+// noinspection ES6UnusedImports
+import CreateProperties = chrome.tabs.CreateProperties;
+
 // Declare Browser APIs
 const tabs = chrome.tabs;
 const runtime = chrome.runtime;
