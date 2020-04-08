@@ -4,63 +4,48 @@ var template = get("template");
 var fontsDiv = get("fontsDiv");
 var newInput = get("newInput");
 var addButton = get("addButton");
-var errorLabel = get("errorLabel");
+var infoLabel = get("infoLabel");
+var templateDiv = template.content.querySelector("div");
 // Use this to reduce the number of requests made to chrome storage
 var displayedFonts = [];
-var templateDiv = template.content.querySelector("div");
 function displayFont(font) {
     var rootDiv = document.importNode(templateDiv, true);
-    var label = rootDiv.children.namedItem("label");
-    var input = rootDiv.children.namedItem("input");
+    var inputs = rootDiv.getElementsByTagName("input");
+    var fontNameInput = inputs.namedItem("fontNameInput");
+    var displayedNameInput = inputs.namedItem("displayedNameInput");
+    var urlInput = inputs.namedItem("urlInput");
     var deleteButton = rootDiv.children.namedItem("deleteButton");
-    label.innerText = font;
-    input.value = font;
-    input.size = font.length;
+    fontNameInput.value = font;
     rootDiv.id += "-" + font;
-    label.id += "-" + font;
-    input.id += "-" + font;
-    label.htmlFor = input.id;
+    fontNameInput.id += "-" + font;
     deleteButton.id += "-" + font;
     // Temporary variable so that we don't perform a save every time the user leaves the input
     var savedValue = font;
     if (CustomFont.isFontInstalled(font)) {
-        label.style.color = "green";
-        input.style.color = "green";
-        label.style.fontFamily = font;
+        fontNameInput.style.color = "green";
     }
     else {
-        label.style.color = "red";
-        input.style.color = "red";
+        fontNameInput.style.color = "red";
     }
-    input.oninput = function () {
-        input.size = input.value.length;
-        label.innerText = input.value;
-        if (CustomFont.isFontInstalled(input.value)) {
-            input.style.color = "green";
-            label.style.color = "green";
+    fontNameInput.oninput = function () {
+        fontNameInput.size = fontNameInput.value.length;
+        if (CustomFont.isFontInstalled(fontNameInput.value)) {
+            fontNameInput.style.color = "green";
         }
         else {
-            input.style.color = "red";
-            label.style.color = "red";
+            fontNameInput.style.color = "red";
         }
     };
-    label.onmouseenter = function () {
-        input.style.display = "inline";
-        label.style.display = "none";
-        savedValue = input.value;
-    };
-    input.onmouseleave = function () {
-        input.style.display = "none";
-        label.style.display = "inline";
+    fontNameInput.onmouseleave = function () {
         // Save only if input value has changed
-        if (savedValue !== input.value) {
-            savedValue = input.value;
+        if (savedValue !== fontNameInput.value) {
+            savedValue = fontNameInput.value;
             console.log("Saved: " + savedValue);
         }
     };
     deleteButton.onclick = function () {
-        if (confirm("Are you sure you want to delete " + input.value + "\nThis cannot be undone")) {
-            var font_1 = input.value;
+        if (confirm("Are you sure you want to delete " + fontNameInput.value + "\nThis cannot be undone")) {
+            var font_1 = fontNameInput.value;
             storage.local.get({ customFonts: [] }, function (fromStorage) {
                 var customFonts = fromStorage.customFonts;
                 customFonts = customFonts.filter(function (it) { return it !== font_1; });
@@ -97,24 +82,23 @@ addButton.onclick = function () {
     var isValid = true;
     if (value.length === 0) {
         isValid = false;
-        errorLabel.style.display = "inline";
-        errorLabel.innerText = "Cannot be empty!";
+        infoLabel.innerText = "Cannot be empty!";
         return;
     }
     if (displayedFonts.contains(value)) {
         isValid = false;
-        errorLabel.style.display = "inline";
-        errorLabel.innerText = "Already in list!";
+        infoLabel.innerText = "Already in list!";
         return;
     }
     // TODO only allow inputs of letters and - and _, no commas and exclamation marks etc
     if (isValid) {
         var font_2 = newInput.value;
+        infoLabel.innerText = "";
         storage.local.get({ customFonts: [] }, function (fromStorage) {
             var customFonts = fromStorage.customFonts;
             customFonts.push(font_2);
             storage.local.set({ customFonts: customFonts }, function () {
-                errorLabel.style.display = "none";
+                infoLabel.style.display = "none";
                 displayFont(newInput.value);
                 newInput.value = "";
             });

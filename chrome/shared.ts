@@ -120,7 +120,7 @@ class CustomFont {
     }
 
     /**
-     * Trick to make sure that a font is available on the client's machine.
+     * Trick to make sure that a font is installed on the client's machine.
      * I found this somewhere online and they claimed it works 99% of the time,
      * it's worked perfectly for me so far
      */
@@ -153,8 +153,17 @@ class CustomFont {
             serifWidth !== getWidth(font + ',serif');
     }
 
+    static isFontUrlValid(fontUrl: string): Promise<boolean> {
+        return fetch(fontUrl).then(response => response.ok);
+    }
+
     isFontInstalled(): boolean {
         return CustomFont.isFontInstalled(this.fontName);
+    }
+
+    isUrlValid(): Promise<boolean> {
+        if (!this.url) return Promise.resolve(false);
+        if (this.url) return CustomFont.isFontUrlValid(this.url);
     }
 }
 

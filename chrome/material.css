@@ -538,3 +538,181 @@
 }
 
 /* endregion Material Slider */
+
+/* region Material TextField */
+
+.material-text-field {
+    position: relative;
+    display: inline-block;
+    padding-top: 6px;
+    font-family: "Roboto", sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    overflow: hidden;
+}
+
+/* Input, Textarea */
+.material-text-field > input,
+.material-text-field > textarea {
+    box-sizing: border-box;
+    margin: 0;
+    border: solid 1px; /* Safari */
+    border-color: rgba(0, 0, 0, 0.6);
+    border-top-color: transparent;
+    border-radius: 4px;
+    padding: 15px 13px 15px;
+    width: 100%;
+    height: inherit;
+    color: rgba(0, 0, 0, 0.87);
+    background-color: transparent;
+    box-shadow: none; /* Firefox */
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    caret-color: rgb(173, 20, 87);
+    transition: border 0.2s, box-shadow 0.2s;
+}
+
+/* Span */
+.material-text-field > input + span,
+.material-text-field > textarea + span {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    border-color: rgba(0, 0, 0, 0.6);
+    width: 100%;
+    max-height: 100%;
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 75%;
+    line-height: 15px;
+    cursor: text;
+    transition: color 0.2s, font-size 0.2s, line-height 0.2s;
+}
+
+/* Corners */
+.material-text-field > input + span::before,
+.material-text-field > input + span::after,
+.material-text-field > textarea + span::before,
+.material-text-field > textarea + span::after {
+    content: "";
+    display: block;
+    box-sizing: border-box;
+    margin-top: 6px;
+    border-top: solid 1px;
+    border-top-color: rgba(0, 0, 0, 0.6);
+    min-width: 10px;
+    height: 8px;
+    pointer-events: none;
+    box-shadow: inset 0 1px transparent;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.material-text-field > input + span::before,
+.material-text-field > textarea + span::before {
+    margin-right: 4px;
+    border-left: solid 1px transparent;
+    border-radius: 4px 0;
+}
+
+.material-text-field > input + span::after,
+.material-text-field > textarea + span::after {
+    flex-grow: 1;
+    margin-left: 4px;
+    border-right: solid 1px transparent;
+    border-radius: 0 4px;
+}
+
+/* Hover */
+.material-text-field:hover > input,
+.material-text-field:hover > textarea {
+    border-color: rgba(0, 0, 0, 0.87);
+    border-top-color: transparent;
+}
+
+.material-text-field:hover > input + span::before,
+.material-text-field:hover > textarea + span::before,
+.material-text-field:hover > input + span::after,
+.material-text-field:hover > textarea + span::after {
+    border-top-color: rgba(0, 0, 0, 0.87);
+}
+
+.material-text-field:hover > input:not(:focus):placeholder-shown,
+.material-text-field:hover > textarea:not(:focus):placeholder-shown {
+    border-color: rgba(0, 0, 0, 0.87);
+}
+
+/* Placeholder-shown */
+.material-text-field > input:not(:focus):placeholder-shown,
+.material-text-field > textarea:not(:focus):placeholder-shown {
+    border-top-color: rgba(0, 0, 0, 0.6);
+}
+
+.material-text-field > input:not(:focus):placeholder-shown + span,
+.material-text-field > textarea:not(:focus):placeholder-shown + span {
+    font-size: inherit;
+    line-height: 68px;
+}
+
+.material-text-field > input:not(:focus):placeholder-shown + span::before,
+.material-text-field > textarea:not(:focus):placeholder-shown + span::before,
+.material-text-field > input:not(:focus):placeholder-shown + span::after,
+.material-text-field > textarea:not(:focus):placeholder-shown + span::after {
+    border-top-color: transparent;
+}
+
+/* Focus */
+.material-text-field > input:focus,
+.material-text-field > textarea:focus {
+    border-color: rgb(173, 20, 87);
+    border-top-color: transparent;
+    box-shadow: inset 1px 0 rgb(173, 20, 87), inset -1px 0 rgb(173, 20, 87), inset 0 -1px rgb(173, 20, 87);
+    outline: none;
+}
+
+.material-text-field > input:focus + span,
+.material-text-field > textarea:focus + span {
+    color: rgb(173, 20, 87);
+}
+
+.material-text-field > input:focus + span::before,
+.material-text-field > input:focus + span::after,
+.material-text-field > textarea:focus + span::before,
+.material-text-field > textarea:focus + span::after {
+    border-top-color: rgb(173, 20, 87) !important;
+    box-shadow: inset 0 1px rgb(173, 20, 87);
+}
+
+/* Disabled */
+.material-text-field > input:disabled,
+.material-text-field > input:disabled + span,
+.material-text-field > textarea:disabled,
+.material-text-field > textarea:disabled + span {
+    border-color: rgba(0, 0, 0, 0.38) !important;
+    border-top-color: transparent !important;
+    color: rgba(0, 0, 0, 0.38);
+    pointer-events: none;
+}
+
+.material-text-field > input:disabled + span::before,
+.material-text-field > input:disabled + span::after,
+.material-text-field > textarea:disabled + span::before,
+.material-text-field > textarea:disabled + span::after {
+    border-top-color: rgba(0, 0, 0, 0.38) !important;
+}
+
+.material-text-field > input:disabled:placeholder-shown,
+.material-text-field > input:disabled:placeholder-shown + span,
+.material-text-field > textarea:disabled:placeholder-shown,
+.material-text-field > textarea:disabled:placeholder-shown + span {
+    border-top-color: rgba(0, 0, 0, 0.38) !important;
+}
+
+.material-text-field > input:disabled:placeholder-shown + span::before,
+.material-text-field > input:disabled:placeholder-shown + span::after,
+.material-text-field > textarea:disabled:placeholder-shown + span::before,
+.material-text-field > textarea:disabled:placeholder-shown + span::after {
+    border-top-color: transparent !important;
+}
+
+/* endregion Material TextField */

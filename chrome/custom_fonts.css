@@ -1,0 +1,83 @@
+@import "animations.css";
+@import "material.css";
+@import "fonts.css";
+
+/* The main parts of the HTML, but not the items */
+html, header, body, footer {
+    background-color: #efefef;
+    color: #222000;
+    margin: 0;
+    padding: 0;
+    font-family: "Roboto Light", sans-serif;
+    animation: fadeIn ease-in 500ms;
+    -webkit-animation: fadeIn ease-in 500ms;
+    -moz-animation: fadeIn ease-in 500ms;
+    -o-animation: fadeIn ease-in 500ms;
+}
+
+/* Contains the Wudooh logo */
+header {
+    background-color: #880e4f;
+    color: #efefef;
+    horiz-align: center;
+    vertical-align: center;
+    text-align: center;
+    align-self: center;
+    align-content: center;
+    box-shadow: 0 4px 8px -1px rgba(0, 0, 0, 0.2);
+    width: initial;
+}
+
+h1 {
+    font-size: 40px;
+    font-weight: 100;
+}
+
+.centered {
+    display: inline-list-item;
+    text-align: center;
+    align-items: center;
+    align-content: center;
+    align-self: center;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+    width: fit-content;
+}
+
+#wudoohLogo {
+    animation: fadeIn ease-in 1000ms;
+    -webkit-animation: fadeIn ease-in 1000ms;
+    -moz-animation: fadeIn ease-in 1000ms;
+    -o-animation: fadeIn ease-in 1000ms;
+}
+
+#main {
+
+}
+
+.material-button {
+    width: 56px;
+    height: 56px;
+    position: relative;
+    bottom: 25px;
+}
+
+.material-icons {
+    position: relative;
+    bottom: 20px;
+}
+
+.material-icons.green {
+    position: relative;
+    bottom: 10px;
+    font-size: 36px;
+    color: greenyellow;
+}
+
+.material-icons.red {
+    position: relative;
+    bottom: 10px;
+    font-size: 36px;
+    color: red;
+}

@@ -82,7 +82,7 @@ var CustomFont = /** @class */ (function () {
         this.url = url;
     }
     /**
-     * Trick to make sure that a font is available on the client's machine.
+     * Trick to make sure that a font is installed on the client's machine.
      * I found this somewhere online and they claimed it works 99% of the time,
      * it's worked perfectly for me so far
      */
@@ -111,8 +111,17 @@ var CustomFont = /** @class */ (function () {
             sansWidth !== getWidth(font + ',sans-serif') ||
             serifWidth !== getWidth(font + ',serif');
     };
+    CustomFont.isFontUrlValid = function (fontUrl) {
+        return fetch(fontUrl).then(function (response) { return response.ok; });
+    };
     CustomFont.prototype.isFontInstalled = function () {
         return CustomFont.isFontInstalled(this.fontName);
+    };
+    CustomFont.prototype.isUrlValid = function () {
+        if (!this.url)
+            return Promise.resolve(false);
+        if (this.url)
+            return CustomFont.isFontUrlValid(this.url);
     };
     return CustomFont;
 }());

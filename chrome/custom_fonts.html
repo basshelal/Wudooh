@@ -3,31 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <title>Wudooh Custom Font Manager</title>
+    <link href="custom_fonts.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
+
 <body>
 
-<h1>Custom Fonts Manager</h1>
+<header>
+    <img alt="Wudooh Logo" id="wudoohLogo" src="assets/WudoohLogo.svg" width="350">
+    <h1>Custom Fonts Manager</h1>
+    <br>
+</header>
 
 <template id="template">
     <div id="rootDiv">
-        <label for="input" id="label" style="display: inline">Example</label>
-        <input id="input" size="7" style="display: none" type="text" value="Example">
-        <button id="deleteButton" style="display: inline">Delete</button>
+        <span id="fontInfo" style="display: block">This is where information goes</span>
+        <label class="material-text-field">
+            <input id="fontNameInput" placeholder=" ">
+            <span>Font Name (Required)</span>
+        </label>
+        <label class="material-text-field">
+            <input id="displayedNameInput" placeholder=" ">
+            <span>Optional Displayed Name</span>
+        </label>
+        <label class="material-text-field">
+            <input id="urlInput" placeholder=" ">
+            <span>Optional URL</span>
+        </label>
+        <button class="material-button"
+                id="deleteButton"><i class="material-icons" style="bottom: -5px">delete</i></button>
+        <span class="material-icons green" id="checkIcon" style="display: inline">check</span>
+        <span class="material-icons red" id="errorIcon" style="display: inline">error_outline</span>
     </div>
 </template>
 
-<div id="fontsDiv"></div>
-
-<br>
 <br>
 
-<div id="addNewDiv">
-    <label for="newInput" id="addLabel" style="display: inline">Add New Font</label>
-    <input id="newInput" placeholder="Font Name" size="7" style="display: inline" type="text" value="">
-    <button id="addButton" style="display: inline">Add Font</button>
-    <label id="errorLabel" style="display: none">Error</label>
+<div class="centered" id="main">
+
+    <div id="fontsDiv"></div>
+
+    <br>
+
+    <h2>Add New Font</h2>
+
+    <div class="centered" id="addNewFontDiv">
+        <p class="centered" id="infoLabel">This is where information goes</p>
+        <label class="material-text-field">
+            <input id="newInput" placeholder=" ">
+            <span>Font Name (Required)</span>
+        </label>
+        <label class="material-text-field">
+            <input placeholder=" ">
+            <span>Optional Displayed Name</span>
+        </label>
+        <label class="material-text-field">
+            <input placeholder=" ">
+            <span>Optional URL</span>
+        </label>
+        <button class="material-button" id="addButton"><i class="material-icons" style="bottom: -5px">add</i></button>
+        <span class="material-icons green" id="addCheckIcon" style="display: inline">check</span>
+        <span class="material-icons red" id="addErrorIcon" style="display: inline">error_outline</span>
+    </div>
+
 </div>
-
 </body>
 <script src="shared.js"></script>
 <script src="custom_fonts.js"></script>
