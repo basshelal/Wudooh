@@ -77,9 +77,7 @@ function isEditable(node) {
     var element = node;
     var nodeName = element.nodeName.toLowerCase();
     var editables = ["textarea", "input", "text", "email", "number", "search", "tel", "url", "password"];
-    return (element.isContentEditable || (element.nodeType === Node.ELEMENT_NODE && !!editables.findFirst(function (it) {
-        return it === nodeName;
-    })));
+    return (element.isContentEditable || (element.nodeType === Node.ELEMENT_NODE && !!editables.findFirst(function (it) { return it === nodeName; })));
 }
 /**
  * Updates the passed in node's html to have the properties of a modified Arabic text node, this will
@@ -92,9 +90,7 @@ function isEditable(node) {
  * @param font the name of the font to update the text to
  */
 function updateNode(node, textSize, lineHeight, font) {
-    if (font === void 0) {
-        font = defaultFont;
-    }
+    if (font === void 0) { font = defaultFont; }
     if (node.nodeValue) {
         var newSize = textSize / 100;
         var newHeight = lineHeight / 100;
@@ -108,7 +104,8 @@ function updateByAdding(node, textSize, lineHeight, font) {
             "font-size:" + textSize + "em;" +
             "line-height:" + lineHeight + "em;" +
             "'>$&</span>";
-    } else {
+    }
+    else {
         newHTML = "<span wudooh='true' style='" +
             "font-size:" + textSize + "em;" +
             "line-height:" + lineHeight + "em;" +
@@ -126,9 +123,7 @@ function updateByAdding(node, textSize, lineHeight, font) {
  * @param font the name of the font to update the text to
  */
 function updateAll(textSize, lineHeight, font) {
-    if (font === void 0) {
-        font = defaultFont;
-    }
+    if (font === void 0) { font = defaultFont; }
     getArabicTextNodesIn(document.body).forEach(function (it) { return updateNode(it, textSize, lineHeight, font); });
 }
 /**
@@ -139,9 +134,7 @@ function updateAll(textSize, lineHeight, font) {
  * @param font the name of the font to update the text to
  */
 function startObserver(textSize, lineHeight, font) {
-    if (font === void 0) {
-        font = defaultFont;
-    }
+    if (font === void 0) { font = defaultFont; }
     var config = {
         attributes: false,
         attributeOldValue: false,
@@ -207,12 +200,8 @@ sync.get(keys, function (fromStorage) {
     var whitelisted = fromStorage.whitelisted;
     var customSettings = fromStorage.customSettings;
     var thisHostname = new URL(document.URL).hostname;
-    var isWhitelisted = !!whitelisted.findFirst(function (it) {
-        return it === thisHostname;
-    });
-    var customSite = customSettings.findFirst(function (custom) {
-        return custom.url === thisHostname;
-    });
+    var isWhitelisted = !!whitelisted.findFirst(function (it) { return it === thisHostname; });
+    var customSite = customSettings.findFirst(function (custom) { return custom.url === thisHostname; });
     // Only do anything if the switch is on and this site is not whitelisted
     if (isOn && !isWhitelisted) {
         // If it's a custom site then change the textSize, lineHeight and font

@@ -45,9 +45,7 @@ function updateAllText() {
             tabs.query({}, function (allTabs) {
                 allTabs.forEach(function (tab) {
                     var thisURL = new URL(tab.url).hostname;
-                    var custom = customSettings.findFirst(function (custom) {
-                        return custom.url === thisURL;
-                    });
+                    var custom = customSettings.findFirst(function (custom) { return custom.url === thisURL; });
                     if (custom) {
                         oldSize = custom.textSize;
                         oldHeight = custom.lineHeight;
@@ -81,7 +79,7 @@ function initializeUI() {
         whitelisted: [],
         customSettings: []
     }, function (fromStorage) {
-        tabs.query({active: true, currentWindow: true}, function (tabs) {
+        tabs.query({ active: true, currentWindow: true }, function (tabs) {
             var thisTab = tabs[0];
             var thisURL = new URL(thisTab.url).hostname;
             var customSettings = fromStorage.customSettings;
@@ -90,14 +88,13 @@ function initializeUI() {
             var lineHeight;
             var font;
             // The above will be different if thisURL is a custom one so we set them depending on this
-            var custom = customSettings.findFirst(function (custom) {
-                return custom.url === thisURL;
-            });
+            var custom = customSettings.findFirst(function (custom) { return custom.url === thisURL; });
             if (custom) {
                 textSize = custom.textSize;
                 lineHeight = custom.lineHeight;
                 font = custom.font;
-            } else {
+            }
+            else {
                 textSize = fromStorage.textSize;
                 lineHeight = fromStorage.lineHeight;
                 font = fromStorage.font;
@@ -106,7 +103,8 @@ function initializeUI() {
             onOffSwitch.checked = fromStorage.onOff;
             if (fromStorage.onOff) {
                 main.style.display = "block";
-            } else {
+            }
+            else {
                 main.style.display = "none";
             }
             // Initialize all the HTMLElements to the values from storage
@@ -118,9 +116,7 @@ function initializeUI() {
             fontSelect.style.fontFamily = font;
             websiteText.innerText = thisURL;
             websiteIcon.src = "chrome://favicon/size/32/" + thisTab.url;
-            var isWhitelisted = !!(whiteListed.findFirst(function (it) {
-                return it === thisURL;
-            }));
+            var isWhitelisted = !!(whiteListed.findFirst(function (it) { return it === thisURL; }));
             var isCustom = !!custom;
             whiteListSwitch.checked = !isWhitelisted;
             if (isWhitelisted)
@@ -139,11 +135,12 @@ function initializeUI() {
  * Toggles the on off switch and saves the "onOff" setting, this will update all text if the switch is turned on
  */
 function toggleOnOff() {
-    sync.set({onOff: onOffSwitch.checked}, function () {
+    sync.set({ onOff: onOffSwitch.checked }, function () {
         if (onOffSwitch.checked) {
             updateAllText();
             main.style.display = "block";
-        } else {
+        }
+        else {
             main.style.display = "none";
         }
     });
@@ -154,7 +151,7 @@ function toggleOnOff() {
 function updateSize() {
     // Update before saving because we need the old value in the update function before saving
     updateAllText();
-    sync.set({textSize: parseInt(sizeSlider.value)});
+    sync.set({ textSize: parseInt(sizeSlider.value) });
 }
 /**
  * Update line height by updating all text and then saving the setting
@@ -162,14 +159,14 @@ function updateSize() {
 function updateHeight() {
     // Update before saving because we need the old value in the update function before saving
     updateAllText();
-    sync.set({lineHeight: parseInt(heightSlider.value)});
+    sync.set({ lineHeight: parseInt(heightSlider.value) });
 }
 /**
  * Changes the font and saves the "font" setting, this will update all text
  */
 function changeFont() {
     fontSelect.style.fontFamily = fontSelect.value;
-    sync.set({font: fontSelect.value,}, function () {
+    sync.set({ font: fontSelect.value, }, function () {
         updateAllText();
     });
 }
@@ -178,10 +175,10 @@ function changeFont() {
  */
 function toggleOverrideSiteSettings() {
     // This only requires this current tab
-    tabs.query({active: true, currentWindow: true}, function (tabs) {
+    tabs.query({ active: true, currentWindow: true }, function (tabs) {
         // Get the url we are currently on
         var thisURL = new URL(tabs[0].url).hostname;
-        sync.get({"customSettings": []}, function (fromStorage) {
+        sync.get({ "customSettings": [] }, function (fromStorage) {
             // Get the array of all custom websites
             var customSettings = fromStorage.customSettings;
             // Override switch is on so use custom settings
@@ -189,16 +186,15 @@ function toggleOverrideSiteSettings() {
                 var custom = new CustomSettings(thisURL, parseInt(sizeSlider.value), parseInt(heightSlider.value), fontSelect.value);
                 customSettings.push(custom);
                 overrideSettingsValue.innerText = "Using site specific settings";
-            } else {
+            }
+            else {
                 // Using global settings
                 // Remove all occurrences of this url from customSettings, just in case
-                customSettings = customSettings.filter(function (it) {
-                    return it.url !== thisURL;
-                });
+                customSettings = customSettings.filter(function (it) { return it.url !== thisURL; });
                 overrideSettingsValue.innerText = "Using global settings";
             }
             // Set the array of all whitelisted websites in storage
-            sync.set({customSettings: customSettings});
+            sync.set({ customSettings: customSettings });
         });
     });
 }
@@ -212,26 +208,25 @@ function toggleOverrideSiteSettings() {
  */
 function toggleWhitelist() {
     // This only requires this current tab
-    tabs.query({active: true, currentWindow: true}, function (tabs) {
+    tabs.query({ active: true, currentWindow: true }, function (tabs) {
         // Get the url we are on right now
         var thisURL = new URL(tabs[0].url).hostname;
-        sync.get({"whitelisted": []}, function (fromStorage) {
+        sync.get({ "whitelisted": [] }, function (fromStorage) {
             // Get the array of all whitelisted websites
             var whitelisted = fromStorage.whitelisted;
             // Allowed to run on this site
             if (whiteListSwitch.checked) {
                 // Remove all occurrences of this url from that array, just in case
-                whitelisted = whitelisted.filter(function (it) {
-                    return it != thisURL;
-                });
+                whitelisted = whitelisted.filter(function (it) { return it != thisURL; });
                 whitelistedValue.innerText = "Running on this site, reload to see changes";
-            } else {
+            }
+            else {
                 // Whitelisted, add this url to the whitelisted array
                 whitelisted.push(thisURL);
                 whitelistedValue.innerText = "This site is whitelisted, reload to see changes";
             }
             // Set the array of all whitelisted websites in storage
-            sync.set({whitelisted: whitelisted});
+            sync.set({ whitelisted: whitelisted });
         });
     });
 }
@@ -269,7 +264,8 @@ function importSettings() {
                 alert("Import failed!\n\nField \"textSize\" must be a number between 100 and 300");
                 valid = false;
             }
-        } else {
+        }
+        else {
             alert("Import failed!\n\nField \"textSize\" is missing! It must be a number between 100 and 300");
             valid = false;
         }
@@ -278,7 +274,8 @@ function importSettings() {
                 alert("Import failed!\n\nField \"lineHeight\" must be a number between 100 and 300");
                 valid = false;
             }
-        } else {
+        }
+        else {
             alert("Import failed!\n\nField \"lineHeight\" is missing! It must be a number between 100 and 300");
             valid = false;
         }
@@ -287,7 +284,8 @@ function importSettings() {
                 alert("Import failed!\n\nField \"onOff\" must be a boolean");
                 valid = false;
             }
-        } else {
+        }
+        else {
             alert("Import failed!\n\nField \"onOff\" is missing! It must be a boolean");
             valid = false;
         }
@@ -296,7 +294,8 @@ function importSettings() {
                 alert("Import failed!\n\nField \"font\" must be a string");
                 valid = false;
             }
-        } else {
+        }
+        else {
             alert("Import failed!\n\nField \"font\" is missing! It must be a string");
             valid = false;
         }
@@ -305,7 +304,8 @@ function importSettings() {
                 alert("Import failed!\n\nField \"whitelisted\" must be an array of strings");
                 valid = false;
             }
-        } else {
+        }
+        else {
             alert("Import failed!\n\nField \"whitelisted\" is missing! It must be an array of strings");
             valid = false;
         }
@@ -314,7 +314,8 @@ function importSettings() {
                 alert("Import failed!\n\nField \"customSettings\" must be an array of CustomSettings objects");
                 valid = false;
             }
-        } else {
+        }
+        else {
             alert("Import failed!\n\nField \"customSettings\" is missing! It must be an array of CustomSettings objects");
             valid = false;
         }
@@ -345,45 +346,23 @@ function addListeners() {
     // Get options when the popup.html document is loaded
     document.addEventListener("DOMContentLoaded", initializeUI);
     // Update size and height HTML when input is changed, changes no variables
-    sizeSlider.oninput = function () {
-        return sizeValue.innerHTML = sizeSlider.value + '%';
-    };
-    heightSlider.oninput = function () {
-        return heightValue.innerHTML = heightSlider.value + '%';
-    };
+    sizeSlider.oninput = function () { return sizeValue.innerHTML = sizeSlider.value + '%'; };
+    heightSlider.oninput = function () { return heightValue.innerHTML = heightSlider.value + '%'; };
     // Update text and save options when mouse is released, not onChange because that will be too much
-    sizeSlider.onmouseup = function () {
-        return updateSize();
-    };
-    heightSlider.onmouseup = function () {
-        return updateHeight();
-    };
+    sizeSlider.onmouseup = function () { return updateSize(); };
+    heightSlider.onmouseup = function () { return updateHeight(); };
     // Update switches when they're clicked
-    onOffSwitch.onclick = function () {
-        return toggleOnOff();
-    };
-    whiteListSwitch.onclick = function () {
-        return toggleWhitelist();
-    };
-    overrideSiteSwitch.onclick = function () {
-        return toggleOverrideSiteSettings();
-    };
+    onOffSwitch.onclick = function () { return toggleOnOff(); };
+    whiteListSwitch.onclick = function () { return toggleWhitelist(); };
+    overrideSiteSwitch.onclick = function () { return toggleOverrideSiteSettings(); };
     // Update font when a new item is selected
-    fontSelect.oninput = function () {
-        return changeFont();
-    };
+    fontSelect.oninput = function () { return changeFont(); };
     // Export settings when button is clicked
-    exportButton.onclick = function () {
-        return exportSettings();
-    };
+    exportButton.onclick = function () { return exportSettings(); };
     // The invisible input is the one in charge of dealing with the importing
-    importInput.oninput = function () {
-        return importSettings();
-    };
+    importInput.oninput = function () { return importSettings(); };
     // Clicking the button simulates clicking the import input which is the one dealing with the actual file reading
-    importButton.onclick = function () {
-        return importInput.click();
-    };
+    importButton.onclick = function () { return importInput.click(); };
 }
 addListeners();
 // Custom font shit below
@@ -404,6 +383,4 @@ customFonts.forEach(function (font) {
     fontSelect.add(option);
 });
 // @ts-ignore, this works in Chrome
-document.fonts.forEach(function (it) {
-    return console.log(it);
-});
+document.fonts.forEach(function (it) { return console.log(it); });
