@@ -91,6 +91,11 @@ function initializeUI() {
         customSettings: []
     }, (fromStorage) => {
         tabs.query({active: true, currentWindow: true}, (tabs: Array<Tab>) => {
+            // If the extension is off then hide the main div
+            onOffSwitch.checked = fromStorage.onOff;
+            if (fromStorage.onOff) main.style.maxHeight = "100%";
+            else main.style.maxHeight = "0";
+
             let thisTab: Tab = tabs[0];
             let thisURL: string = new URL(thisTab.url).hostname;
 
@@ -110,14 +115,6 @@ function initializeUI() {
                 textSize = fromStorage.textSize;
                 lineHeight = fromStorage.lineHeight;
                 font = fromStorage.font;
-            }
-
-            // If the extension is off then hide the main div
-            onOffSwitch.checked = fromStorage.onOff;
-            if (fromStorage.onOff) {
-                main.style.display = "block";
-            } else {
-                main.style.display = "none";
             }
 
             // Initialize all the HTMLElements to the values from storage
@@ -153,9 +150,9 @@ function toggleOnOff() {
     sync.set({onOff: onOffSwitch.checked}, () => {
         if (onOffSwitch.checked) {
             updateAllText();
-            main.style.display = "block";
+            main.style.maxHeight = "100%";
         } else {
-            main.style.display = "none";
+            main.style.maxHeight = "0";
         }
     });
 }

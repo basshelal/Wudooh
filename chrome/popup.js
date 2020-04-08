@@ -80,6 +80,12 @@ function initializeUI() {
         customSettings: []
     }, function (fromStorage) {
         tabs.query({ active: true, currentWindow: true }, function (tabs) {
+            // If the extension is off then hide the main div
+            onOffSwitch.checked = fromStorage.onOff;
+            if (fromStorage.onOff)
+                main.style.maxHeight = "100%";
+            else
+                main.style.maxHeight = "0";
             var thisTab = tabs[0];
             var thisURL = new URL(thisTab.url).hostname;
             var customSettings = fromStorage.customSettings;
@@ -98,14 +104,6 @@ function initializeUI() {
                 textSize = fromStorage.textSize;
                 lineHeight = fromStorage.lineHeight;
                 font = fromStorage.font;
-            }
-            // If the extension is off then hide the main div
-            onOffSwitch.checked = fromStorage.onOff;
-            if (fromStorage.onOff) {
-                main.style.display = "block";
-            }
-            else {
-                main.style.display = "none";
             }
             // Initialize all the HTMLElements to the values from storage
             sizeSlider.value = textSize.toString();
@@ -140,10 +138,10 @@ function toggleOnOff() {
     sync.set({ onOff: onOffSwitch.checked }, function () {
         if (onOffSwitch.checked) {
             updateAllText();
-            main.style.display = "block";
+            main.style.maxHeight = "100%";
         }
         else {
-            main.style.display = "none";
+            main.style.maxHeight = "0";
         }
     });
 }

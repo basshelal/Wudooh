@@ -91,6 +91,9 @@ header {
     margin: 0 auto;
     padding: 0;
     text-align: center;
+    transition: max-height 0.3s ease-in-out;
+    max-height: 100%;
+    overflow: hidden;
 }
 
 footer {
