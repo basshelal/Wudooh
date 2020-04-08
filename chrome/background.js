@@ -5,10 +5,6 @@
  */
 ///<reference path="../../../.WebStorm2019.1/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
 ///<reference path="./shared.ts"/>
-var tabs = chrome.tabs;
-var runtime = chrome.runtime;
-var sync = chrome.storage.sync;
-var onInstalled = runtime.onInstalled;
 function launchSite(path) {
     if (path === void 0) {
         path = "";
@@ -24,7 +20,7 @@ function launchSite(path) {
  * Runs on install or update to check if the storage has initialized all its values correctly.
  * If some key has not been initialized then it will create it and set it to its default value
  */
-onInstalled.addListener(function (details) {
+runtime.onInstalled.addListener(function (details) {
     sync.get(keys, function (fromStorage) {
         if (!fromStorage.textSize)
             sync.set({textSize: defaultTextSize});

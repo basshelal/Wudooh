@@ -5,8 +5,6 @@
  */
 ///<reference path="../../../.WebStorm2019.1/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
 ///<reference path="./shared.ts"/>
-var sync = chrome.storage.sync;
-var tabs = chrome.tabs;
 var main = get("main");
 // Inputs
 var sizeSlider = get("size");

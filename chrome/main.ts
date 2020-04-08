@@ -5,9 +5,6 @@
 ///<reference path="../../../.WebStorm2019.1/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
 ///<reference path="./shared.ts"/>
 
-import sync = chrome.storage.sync;
-import runtime = chrome.runtime;
-
 /**
  * @deprecated use {@link newArabicRegex} instead
  */

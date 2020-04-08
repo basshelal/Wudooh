@@ -1,11 +1,7 @@
-/**
- * This file contains common shared code that is used by all three main TypeScript files
- * These are background.ts, main.ts, and popup.ts.
- *
- * This trick is done by loading this script before any others when they are requested and
- * then adding the following line at the top of the file for support from WebStorm IDE.
- * ///<reference path="./shared.ts"/>
- */
+// Declare Browser APIs
+var tabs = chrome.tabs;
+var runtime = chrome.runtime;
+var sync = chrome.storage.sync;
 /** The font size percent, between 100 and 300 */
 var keyTextSize = "textSize";
 /** The line height percent, between 100 and 300 */
@@ -27,6 +23,12 @@ var keys = [
     keyWhitelisted,
     keyCustomSettings
 ];
+// Defaults
+var defaultFont = "Droid Arabic Naskh";
+var defaultTextSize = 115;
+var defaultLineHeight = 125;
+var defaultColor = "#880E4F";
+var homePage = "http://basshelal.github.io/Wudooh";
 /**
  * Represents a site that uses different settings from the global settings
  * The settings themselves may be the same as the global but they will change independently
@@ -76,11 +78,6 @@ Array.prototype.contains = function (element) {
     return !!this.findFirst(function (it) { return it === element; });
 };
 // endregion Extensions
-var defaultFont = "Droid Arabic Naskh";
-var defaultTextSize = 115;
-var defaultLineHeight = 125;
-var defaultColor = "#880E4F";
-var homePage = "http://basshelal.github.io/Wudooh";
 /**
  * Shorthand for {@linkcode document.getElementById}, automatically casts to T, a HTMLElement
  *

@@ -7,10 +7,6 @@
 ///<reference path="../../../.WebStorm2019.1/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
 ///<reference path="./shared.ts"/>
 
-import sync = chrome.storage.sync;
-import tabs = chrome.tabs;
-import Tab = tabs.Tab;
-
 const main = get<HTMLDivElement>("main");
 
 // Inputs
@@ -22,10 +18,10 @@ const overrideSiteSwitch = get<HTMLInputElement>("overrideSettingsSwitch");
 const whiteListSwitch = get<HTMLInputElement>("whitelistSwitch");
 
 // Labels
-const sizeValue = get("sizeValue");
-const heightValue = get("heightValue");
-const overrideSettingsValue = get("overrideSettingsLabel");
-const whitelistedValue = get("whitelistedLabel");
+const sizeValue = get<HTMLLabelElement>("sizeValue");
+const heightValue = get<HTMLLabelElement>("heightValue");
+const overrideSettingsValue = get<HTMLLabelElement>("overrideSettingsLabel");
+const whitelistedValue = get<HTMLLabelElement>("whitelistedLabel");
 
 // Website Info
 const websiteText = get<HTMLHeadingElement>("website");

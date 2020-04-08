@@ -7,13 +7,6 @@
 ///<reference path="../../../.WebStorm2019.1/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
 ///<reference path="./shared.ts"/>
 
-import tabs = chrome.tabs;
-import runtime = chrome.runtime;
-import sync = chrome.storage.sync;
-import onInstalled = runtime.onInstalled;
-import CreateProperties = tabs.CreateProperties;
-import InstalledDetails = runtime.InstalledDetails;
-
 function launchSite(path: string = "") {
     tabs.create(new class implements CreateProperties {
         url: string = homePage + path;
@@ -24,7 +17,7 @@ function launchSite(path: string = "") {
  * Runs on install or update to check if the storage has initialized all its values correctly.
  * If some key has not been initialized then it will create it and set it to its default value
  */
-onInstalled.addListener((details: InstalledDetails) => {
+runtime.onInstalled.addListener((details: InstalledDetails) => {
     sync.get(keys, (fromStorage) => {
         if (!fromStorage.textSize) sync.set({textSize: defaultTextSize});
         if (!fromStorage.lineHeight) sync.set({lineHeight: defaultLineHeight});
