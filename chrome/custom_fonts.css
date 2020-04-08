@@ -24,7 +24,7 @@ header {
     text-align: center;
     align-self: center;
     align-content: center;
-    box-shadow: 0 4px 8px -1px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 12px 12px -1px rgba(0, 0, 0, 0.2);
     width: initial;
 }
 

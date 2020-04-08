@@ -2,26 +2,33 @@
 ///<reference path="./shared.ts"/>
 var template = get("template");
 var fontsDiv = get("fontsDiv");
-var newInput = get("newInput");
+var fontNameInput = get("fontNameInput");
+var displayedNameInput = get("displayedNameInput");
+var urlInput = get("urlInput");
 var addButton = get("addButton");
 var infoLabel = get("infoLabel");
 var templateDiv = template.content.querySelector("div");
 // Use this to reduce the number of requests made to chrome storage
 var displayedFonts = [];
-function displayFont(font) {
+function displayFont(customFont) {
+    var fontName = customFont.fontName;
+    var displayedName = customFont.displayedName;
+    var fontUrl = customFont.url;
     var rootDiv = document.importNode(templateDiv, true);
     var inputs = rootDiv.getElementsByTagName("input");
-    var fontNameInput = inputs.namedItem("fontNameInput");
-    var displayedNameInput = inputs.namedItem("displayedNameInput");
-    var urlInput = inputs.namedItem("urlInput");
-    var deleteButton = rootDiv.children.namedItem("deleteButton");
-    fontNameInput.value = font;
-    rootDiv.id += "-" + font;
-    fontNameInput.id += "-" + font;
-    deleteButton.id += "-" + font;
+    var fontNameInput = inputs.namedItem("templateFontNameInput");
+    var displayedNameInput = inputs.namedItem("templateDisplayedNameInput");
+    var urlInput = inputs.namedItem("templateUrlInput");
+    var deleteButton = rootDiv.children.namedItem("templateDeleteButton");
+    fontNameInput.value = fontName;
+    displayedNameInput.value = displayedName;
+    urlInput.value = fontUrl;
+    rootDiv.id += "-" + customFont;
+    fontNameInput.id += "-" + customFont;
+    deleteButton.id += "-" + customFont;
     // Temporary variable so that we don't perform a save every time the user leaves the input
-    var savedValue = font;
-    if (CustomFont.isFontInstalled(font)) {
+    var savedValue = customFont.fontName;
+    if (CustomFont.isFontInstalled(customFont.fontName)) {
         fontNameInput.style.color = "green";
     }
     else {
@@ -46,11 +53,11 @@ function displayFont(font) {
     deleteButton.onclick = function () {
         if (confirm("Are you sure you want to delete " + fontNameInput.value + "\nThis cannot be undone")) {
             var font_1 = fontNameInput.value;
-            storage.local.get({ customFonts: [] }, function (fromStorage) {
+            sync.get({ customFonts: [] }, function (fromStorage) {
                 var customFonts = fromStorage.customFonts;
-                customFonts = customFonts.filter(function (it) { return it !== font_1; });
-                storage.local.set({ customFonts: customFonts }, function () {
-                    displayedFonts = customFonts;
+                customFonts = customFonts.filter(function (it) { return it.fontName !== font_1; });
+                sync.set({ customFonts: customFonts }, function () {
+                    displayedFonts = customFonts.map(function (it) { return it.fontName; });
                     rootDiv.parentNode.removeChild(rootDiv);
                 });
             });
@@ -58,50 +65,59 @@ function displayFont(font) {
     };
     fontsDiv.appendChild(rootDiv);
 }
-storage.local.get({ customFonts: [] }, function (fromStorage) {
+sync.get({ customFonts: [] }, function (fromStorage) {
     var customFonts = fromStorage.customFonts;
     customFonts.forEach(function (it) {
         displayFont(it);
     });
-    displayedFonts = customFonts;
+    displayedFonts = customFonts.map(function (it) { return it.fontName; });
 });
-newInput.oninput = function () {
-    if (CustomFont.isFontInstalled(newInput.value)) {
-        newInput.style.color = "green";
+fontNameInput.oninput = function () {
+    if (CustomFont.isFontInstalled(fontNameInput.value)) {
+        fontNameInput.style.color = "green";
     }
     else {
-        newInput.style.color = "red";
+        fontNameInput.style.color = "red";
     }
 };
-newInput.onkeypress = function (event) {
+fontNameInput.onkeypress = function (event) {
     if (event.code === "Enter")
         addButton.click();
 };
 addButton.onclick = function () {
-    var value = newInput.value;
+    var fontName = fontNameInput.value;
+    var displayedName = displayedNameInput.value;
+    var url = urlInput.value;
+    if (displayedName == "")
+        displayedName = null;
+    if (url == "")
+        url = null;
     var isValid = true;
-    if (value.length === 0) {
+    if (fontName.length === 0) {
         isValid = false;
         infoLabel.innerText = "Cannot be empty!";
         return;
     }
-    if (displayedFonts.contains(value)) {
+    if (displayedFonts.contains(fontName)) {
         isValid = false;
         infoLabel.innerText = "Already in list!";
         return;
     }
     // TODO only allow inputs of letters and - and _, no commas and exclamation marks etc
     if (isValid) {
-        var font_2 = newInput.value;
         infoLabel.innerText = "";
-        storage.local.get({ customFonts: [] }, function (fromStorage) {
+        sync.get({ customFonts: [] }, function (fromStorage) {
             var customFonts = fromStorage.customFonts;
-            customFonts.push(font_2);
-            storage.local.set({ customFonts: customFonts }, function () {
+            var customFont = new CustomFont(fontName, displayedName, url);
+            customFonts.push(customFont);
+            sync.set({ customFonts: customFonts }, function () {
+                displayFont(customFont);
                 infoLabel.style.display = "none";
-                displayFont(newInput.value);
-                newInput.value = "";
+                fontNameInput.value = "";
+                displayedNameInput.value = "";
+                urlInput.value = "";
             });
         });
     }
 };
+// TODO when a new custom font is added or removed send a message to main.ts so that it can reinject CSS

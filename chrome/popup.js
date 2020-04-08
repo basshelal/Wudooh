@@ -30,15 +30,21 @@ var importButton = get("importButton");
 var importInput = get("importInput");
 function addCustomFonts() {
     // Add custom fonts to popup.html
-    storage.local.get({ customFonts: [] }, function (fromStorage) {
+    sync.get({ customFonts: [] }, function (fromStorage) {
         var customFonts = fromStorage.customFonts;
-        customFonts.forEach(function (font) {
-            fontsStyle.innerHTML = fontsStyle.innerHTML
-                .concat("@font-face { font-family: '" + font + "'; src: local('" + font + "'); }");
+        customFonts.forEach(function (customFont) {
+            var fontName = customFont.fontName;
+            var displayedName = customFont.displayedName;
+            var fontUrl = customFont.url;
+            var injectedCss = "@font-face { font-family: '" + fontName + "'; src: local('" + fontName + "')";
+            if (fontUrl)
+                injectedCss = injectedCss.concat(", url('" + fontUrl + "')");
+            injectedCss = injectedCss.concat("; }\n");
+            fontsStyle.innerHTML = fontsStyle.innerHTML.concat(injectedCss);
             var option = document.createElement("option");
-            option.style.fontFamily = font;
-            option.value = font;
-            option.innerHTML = font;
+            option.style.fontFamily = fontName;
+            option.value = fontName;
+            option.innerHTML = displayedName;
             option.style.color = "#ff00ff";
             fontSelect.add(option);
         });

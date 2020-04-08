@@ -38,17 +38,24 @@ let importInput = get<HTMLInputElement>("importInput");
 
 function addCustomFonts() {
     // Add custom fonts to popup.html
-    storage.local.get({customFonts: []}, (fromStorage) => {
-        let customFonts: Array<string> = fromStorage.customFonts as Array<string>;
+    sync.get({customFonts: []}, (fromStorage) => {
+        let customFonts: Array<CustomFont> = fromStorage.customFonts as Array<CustomFont>;
 
-        customFonts.forEach((font: string) => {
-            fontsStyle.innerHTML = fontsStyle.innerHTML
-                .concat(`@font-face { font-family: '${font}'; src: local('${font}'); }`);
+        customFonts.forEach((customFont: CustomFont) => {
+            const fontName: string = customFont.fontName;
+            const displayedName: string = customFont.displayedName;
+            const fontUrl: string = customFont.url;
+
+            let injectedCss = `@font-face { font-family: '${fontName}'; src: local('${fontName}')`;
+            if (fontUrl) injectedCss = injectedCss.concat(`, url('${fontUrl}')`);
+            injectedCss = injectedCss.concat(`; }\n`);
+
+            fontsStyle.innerHTML = fontsStyle.innerHTML.concat(injectedCss);
 
             let option: HTMLOptionElement = document.createElement("option");
-            option.style.fontFamily = font;
-            option.value = font;
-            option.innerHTML = font;
+            option.style.fontFamily = fontName;
+            option.value = fontName;
+            option.innerHTML = displayedName;
             option.style.color = "#ff00ff";
 
             fontSelect.add(option);

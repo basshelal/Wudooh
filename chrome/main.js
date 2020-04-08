@@ -186,6 +186,27 @@ function notify() {
     meta.setAttribute("wudooh", "true");
     document.head.appendChild(meta);
 }
+function injectCustomFonts(customFonts) {
+    var customFontsStyle = get("wudoohCustomFontsStyle");
+    if (customFontsStyle) {
+        customFontsStyle.innerHTML = "";
+        document.head.removeChild(customFontsStyle);
+        customFontsStyle = null;
+    }
+    // Inject custom fonts into this page
+    customFontsStyle = document.createElement("style");
+    customFontsStyle.id = "wudoohCustomFontsStyle";
+    customFonts.forEach(function (customFont) {
+        var fontName = customFont.fontName;
+        var fontUrl = customFont.url;
+        var injectedCss = "@font-face { font-family: '" + fontName + "'; src: local('" + fontName + "')";
+        if (fontUrl)
+            injectedCss = injectedCss.concat(", url('" + fontUrl + "')");
+        injectedCss = injectedCss.concat("; }\n");
+        customFontsStyle.innerHTML = customFontsStyle.innerHTML.concat(injectedCss);
+    });
+    document.head.append(customFontsStyle);
+}
 /**
  * Main execution:
  * Updates all existing text according to the options
@@ -199,11 +220,13 @@ sync.get(keys, function (fromStorage) {
     var font = fromStorage.font;
     var whitelisted = fromStorage.whitelisted;
     var customSettings = fromStorage.customSettings;
+    var customFonts = fromStorage.customFonts;
     var thisHostname = new URL(document.URL).hostname;
     var isWhitelisted = !!whitelisted.findFirst(function (it) { return it === thisHostname; });
     var customSite = customSettings.findFirst(function (custom) { return custom.url === thisHostname; });
     // Only do anything if the switch is on and this site is not whitelisted
     if (isOn && !isWhitelisted) {
+        injectCustomFonts(customFonts);
         // If it's a custom site then change the textSize, lineHeight and font
         if (customSite) {
             textSize = customSite.textSize;

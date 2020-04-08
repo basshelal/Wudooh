@@ -217,6 +217,29 @@ function notify() {
     document.head.appendChild(meta);
 }
 
+function injectCustomFonts(customFonts: Array<CustomFont>) {
+    let customFontsStyle = get("wudoohCustomFontsStyle");
+    if (customFontsStyle) {
+        customFontsStyle.innerHTML = "";
+        document.head.removeChild(customFontsStyle);
+        customFontsStyle = null;
+    }
+    // Inject custom fonts into this page
+    customFontsStyle = document.createElement("style");
+    customFontsStyle.id = "wudoohCustomFontsStyle";
+    customFonts.forEach((customFont: CustomFont) => {
+        const fontName: string = customFont.fontName;
+        const fontUrl: string = customFont.url;
+
+        let injectedCss = `@font-face { font-family: '${fontName}'; src: local('${fontName}')`;
+        if (fontUrl) injectedCss = injectedCss.concat(`, url('${fontUrl}')`);
+        injectedCss = injectedCss.concat(`; }\n`);
+
+        customFontsStyle.innerHTML = customFontsStyle.innerHTML.concat(injectedCss);
+    });
+    document.head.append(customFontsStyle);
+}
+
 /**
  * Main execution:
  * Updates all existing text according to the options
@@ -230,6 +253,7 @@ sync.get(keys, (fromStorage) => {
     let font: string = fromStorage.font;
     let whitelisted: Array<string> = fromStorage.whitelisted;
     let customSettings: Array<CustomSettings> = fromStorage.customSettings;
+    let customFonts: Array<CustomFont> = fromStorage.customFonts;
 
     let thisHostname: string = new URL(document.URL).hostname;
     let isWhitelisted: boolean = !!whitelisted.findFirst((it) => it === thisHostname);
@@ -238,6 +262,8 @@ sync.get(keys, (fromStorage) => {
 
     // Only do anything if the switch is on and this site is not whitelisted
     if (isOn && !isWhitelisted) {
+
+        injectCustomFonts(customFonts);
 
         // If it's a custom site then change the textSize, lineHeight and font
         if (customSite) {

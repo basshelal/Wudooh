@@ -39,7 +39,7 @@ const keyWhitelisted: string = "whitelisted";
 /** The array of {@linkcode CustomSettings} that represents the sites with custom settings */
 const keyCustomSettings: string = "customSettings";
 
-/** The array of Custom Fonts, this is used in {@linkcode chrome.storage.local} */
+/** The array of {@linkcode CustomFont}s, this is used in {@linkcode chrome.storage.local} */
 const keyCustomFonts: string = "customFonts";
 
 /** The keys of the {@linkcode chrome.storage.sync} */
@@ -49,7 +49,8 @@ const keys: Array<string> = [
     keyOnOff,
     keyFont,
     keyWhitelisted,
-    keyCustomSettings
+    keyCustomSettings,
+    keyCustomFonts
 ];
 
 // Defaults
@@ -112,7 +113,7 @@ class CustomFont {
     /** Optional URL if the font is located online */
     url?: string;
 
-    constructor(fontName: string, displayedName?: string, url?: string) {
+    constructor(fontName: string, displayedName: string, url: string) {
         this.fontName = fontName;
         if (displayedName) this.displayedName = displayedName;
         else this.displayedName = fontName;

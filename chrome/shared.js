@@ -23,7 +23,7 @@ var keyFont = "font";
 var keyWhitelisted = "whitelisted";
 /** The array of {@linkcode CustomSettings} that represents the sites with custom settings */
 var keyCustomSettings = "customSettings";
-/** The array of Custom Fonts, this is used in {@linkcode chrome.storage.local} */
+/** The array of {@linkcode CustomFont}s, this is used in {@linkcode chrome.storage.local} */
 var keyCustomFonts = "customFonts";
 /** The keys of the {@linkcode chrome.storage.sync} */
 var keys = [
@@ -32,7 +32,8 @@ var keys = [
     keyOnOff,
     keyFont,
     keyWhitelisted,
-    keyCustomSettings
+    keyCustomSettings,
+    keyCustomFonts
 ];
 // Defaults
 var defaultFont = "Droid Arabic Naskh";

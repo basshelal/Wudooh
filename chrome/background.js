@@ -32,6 +32,8 @@ runtime.onInstalled.addListener(function (details) {
             sync.set({ whitelisted: [] });
         if (!fromStorage.customSettings)
             sync.set({ customSettings: [] });
+        if (!fromStorage.customFonts)
+            sync.set({ customFonts: [] });
         // User has updated extension
         if (details.reason == "update") {
             var oldVersion = details.previousVersion; // string of previous version if we need it
@@ -44,9 +46,5 @@ runtime.onInstalled.addListener(function (details) {
             // TODO here we can create a new Tab with the details of the extension also probably the extension website
             //  basshelal.github.io/Wudooh
         }
-    });
-    storage.local.get("customFonts", function (fromStorage) {
-        if (!fromStorage.customFonts)
-            storage.local.set({ customFonts: [] });
     });
 });

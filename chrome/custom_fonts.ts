@@ -3,7 +3,9 @@
 
 const template = get<HTMLTemplateElement>("template");
 const fontsDiv = get<HTMLDivElement>("fontsDiv");
-const newInput = get<HTMLInputElement>("newInput");
+const fontNameInput = get<HTMLInputElement>("fontNameInput");
+const displayedNameInput = get<HTMLInputElement>("displayedNameInput");
+const urlInput = get<HTMLInputElement>("urlInput");
 const addButton = get<HTMLButtonElement>("addButton");
 const infoLabel = get<HTMLParagraphElement>("infoLabel");
 const templateDiv = template.content.querySelector("div");
@@ -12,24 +14,30 @@ const templateDiv = template.content.querySelector("div");
 let displayedFonts: Array<string> = [];
 
 
-function displayFont(font: string) {
+function displayFont(customFont: CustomFont) {
+    const fontName: string = customFont.fontName;
+    const displayedName: string = customFont.displayedName;
+    const fontUrl: string = customFont.url;
+
     let rootDiv = document.importNode(templateDiv, true);
     let inputs = rootDiv.getElementsByTagName("input");
-    const fontNameInput = inputs.namedItem("fontNameInput") as HTMLInputElement;
-    const displayedNameInput = inputs.namedItem("displayedNameInput") as HTMLInputElement;
-    const urlInput = inputs.namedItem("urlInput") as HTMLInputElement;
-    let deleteButton = rootDiv.children.namedItem("deleteButton") as HTMLButtonElement;
+    const fontNameInput = inputs.namedItem("templateFontNameInput") as HTMLInputElement;
+    const displayedNameInput = inputs.namedItem("templateDisplayedNameInput") as HTMLInputElement;
+    const urlInput = inputs.namedItem("templateUrlInput") as HTMLInputElement;
+    let deleteButton = rootDiv.children.namedItem("templateDeleteButton") as HTMLButtonElement;
 
-    fontNameInput.value = font;
+    fontNameInput.value = fontName;
+    displayedNameInput.value = displayedName;
+    urlInput.value = fontUrl;
 
-    rootDiv.id += `-${font}`;
-    fontNameInput.id += `-${font}`;
-    deleteButton.id += `-${font}`;
+    rootDiv.id += `-${customFont}`;
+    fontNameInput.id += `-${customFont}`;
+    deleteButton.id += `-${customFont}`;
 
     // Temporary variable so that we don't perform a save every time the user leaves the input
-    let savedValue: string = font;
+    let savedValue: string = customFont.fontName;
 
-    if (CustomFont.isFontInstalled(font)) {
+    if (CustomFont.isFontInstalled(customFont.fontName)) {
         fontNameInput.style.color = "green";
     } else {
         fontNameInput.style.color = "red";
@@ -56,11 +64,11 @@ function displayFont(font: string) {
     deleteButton.onclick = () => {
         if (confirm(`Are you sure you want to delete ${fontNameInput.value}\nThis cannot be undone`)) {
             let font = fontNameInput.value;
-            storage.local.get({customFonts: []}, (fromStorage) => {
-                let customFonts: Array<string> = fromStorage.customFonts as Array<string>;
-                customFonts = customFonts.filter((it: string) => it !== font);
-                storage.local.set({customFonts: customFonts}, () => {
-                    displayedFonts = customFonts;
+            sync.get({customFonts: []}, (fromStorage) => {
+                let customFonts: Array<CustomFont> = fromStorage.customFonts as Array<CustomFont>;
+                customFonts = customFonts.filter((it: CustomFont) => it.fontName !== font);
+                sync.set({customFonts: customFonts}, () => {
+                    displayedFonts = customFonts.map(it => it.fontName);
                     rootDiv.parentNode.removeChild(rootDiv);
                 });
             });
@@ -70,52 +78,62 @@ function displayFont(font: string) {
     fontsDiv.appendChild(rootDiv);
 }
 
-storage.local.get({customFonts: []}, (fromStorage) => {
-    let customFonts: Array<string> = fromStorage.customFonts as Array<string>;
-    customFonts.forEach((it: string) => {
+sync.get({customFonts: []}, (fromStorage) => {
+    let customFonts: Array<CustomFont> = fromStorage.customFonts as Array<CustomFont>;
+    customFonts.forEach((it: CustomFont) => {
         displayFont(it);
     });
-    displayedFonts = customFonts;
+    displayedFonts = customFonts.map(it => it.fontName);
 });
 
-newInput.oninput = () => {
-    if (CustomFont.isFontInstalled(newInput.value)) {
-        newInput.style.color = "green";
+fontNameInput.oninput = () => {
+    if (CustomFont.isFontInstalled(fontNameInput.value)) {
+        fontNameInput.style.color = "green";
     } else {
-        newInput.style.color = "red";
+        fontNameInput.style.color = "red";
     }
 };
 
-newInput.onkeypress = (event: KeyboardEvent) => {
+fontNameInput.onkeypress = (event: KeyboardEvent) => {
     if (event.code === "Enter") addButton.click();
 };
 
 addButton.onclick = () => {
-    let value = newInput.value;
+    let fontName = fontNameInput.value;
+    let displayedName = displayedNameInput.value;
+    let url = urlInput.value;
+
+    if (displayedName == "") displayedName = null;
+    if (url == "") url = null;
+
     let isValid = true;
 
-    if (value.length === 0) {
+    if (fontName.length === 0) {
         isValid = false;
         infoLabel.innerText = "Cannot be empty!";
         return;
     }
-    if (displayedFonts.contains(value)) {
+    if (displayedFonts.contains(fontName)) {
         isValid = false;
         infoLabel.innerText = "Already in list!";
         return;
     }
     // TODO only allow inputs of letters and - and _, no commas and exclamation marks etc
     if (isValid) {
-        let font = newInput.value;
         infoLabel.innerText = "";
-        storage.local.get({customFonts: []}, (fromStorage) => {
-            let customFonts: Array<string> = fromStorage.customFonts as Array<string>;
-            customFonts.push(font);
-            storage.local.set({customFonts: customFonts}, () => {
+        sync.get({customFonts: []}, (fromStorage) => {
+            let customFonts: Array<CustomFont> = fromStorage.customFonts as Array<CustomFont>;
+            let customFont = new CustomFont(fontName, displayedName, url);
+            customFonts.push(customFont);
+            sync.set({customFonts: customFonts}, () => {
+                displayFont(customFont);
                 infoLabel.style.display = "none";
-                displayFont(newInput.value);
-                newInput.value = "";
+                fontNameInput.value = "";
+                displayedNameInput.value = "";
+                urlInput.value = "";
             });
         });
     }
 };
+
+// TODO when a new custom font is added or removed send a message to main.ts so that it can reinject CSS
