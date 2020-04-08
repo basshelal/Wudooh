@@ -72,6 +72,50 @@ var CustomSettings = /** @class */ (function () {
     };
     return CustomSettings;
 }());
+var CustomFont = /** @class */ (function () {
+    function CustomFont(fontName, displayedName, url) {
+        this.fontName = fontName;
+        if (displayedName)
+            this.displayedName = displayedName;
+        else
+            this.displayedName = fontName;
+        this.url = url;
+    }
+    /**
+     * Trick to make sure that a font is available on the client's machine.
+     * I found this somewhere online and they claimed it works 99% of the time,
+     * it's worked perfectly for me so far
+     */
+    CustomFont.isFontInstalled = function (font) {
+        var container = document.createElement('span');
+        container.innerHTML = Array(100).join('wi');
+        container.style.cssText = [
+            'position:absolute',
+            'width:auto',
+            'font-size:128px',
+            'left:-99999px'
+        ].join(' !important;');
+        function getWidth(fontFamily) {
+            container.style.fontFamily = fontFamily;
+            document.body.appendChild(container);
+            var width = container.clientWidth;
+            document.body.removeChild(container);
+            return width;
+        }
+        // Pre compute the widths of monospace, serif & sans-serif
+        // to improve performance.
+        var monoWidth = getWidth('monospace');
+        var serifWidth = getWidth('serif');
+        var sansWidth = getWidth('sans-serif');
+        return monoWidth !== getWidth(font + ',monospace') ||
+            sansWidth !== getWidth(font + ',sans-serif') ||
+            serifWidth !== getWidth(font + ',serif');
+    };
+    CustomFont.prototype.isFontInstalled = function () {
+        return CustomFont.isFontInstalled(this.fontName);
+    };
+    return CustomFont;
+}());
 /**
  * Finds the first element that matches the given {@param predicate} else returns null
  * You can use this as a way to check if the array contains an element that matches the given {@param predicate}, it

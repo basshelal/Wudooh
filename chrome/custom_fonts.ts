@@ -12,40 +12,6 @@ let displayedFonts: Array<string> = [];
 
 let templateDiv = template.content.querySelector("div");
 
-/**
- * Trick to make sure that a font is available on the client's machine.
- * I found this somewhere online and they claimed it works 99% of the time,
- * it's worked perfectly for me so far
- */
-function isFontAvailable(font: string): boolean {
-    var container = document.createElement('span');
-    container.innerHTML = Array(100).join('wi');
-    container.style.cssText = [
-        'position:absolute',
-        'width:auto',
-        'font-size:128px',
-        'left:-99999px'
-    ].join(' !important;');
-
-    function getWidth(fontFamily: string) {
-        container.style.fontFamily = fontFamily;
-        document.body.appendChild(container);
-        let width = container.clientWidth;
-        document.body.removeChild(container);
-        return width;
-    }
-
-    // Pre compute the widths of monospace, serif & sans-serif
-    // to improve performance.
-    var monoWidth = getWidth('monospace');
-    var serifWidth = getWidth('serif');
-    var sansWidth = getWidth('sans-serif');
-
-    return monoWidth !== getWidth(font + ',monospace') ||
-        sansWidth !== getWidth(font + ',sans-serif') ||
-        serifWidth !== getWidth(font + ',serif');
-}
-
 function displayFont(font: string) {
     let rootDiv = document.importNode(templateDiv, true);
     let label = rootDiv.children.namedItem("label") as HTMLLabelElement;
@@ -65,7 +31,7 @@ function displayFont(font: string) {
     // Temporary variable so that we don't perform a save every time the user leaves the input
     let savedValue: string = font;
 
-    if (isFontAvailable(font)) {
+    if (CustomFont.isFontInstalled(font)) {
         label.style.color = "green";
         input.style.color = "green";
         label.style.fontFamily = font;
@@ -77,7 +43,7 @@ function displayFont(font: string) {
     input.oninput = () => {
         input.size = input.value.length;
         label.innerText = input.value;
-        if (isFontAvailable(input.value)) {
+        if (CustomFont.isFontInstalled(input.value)) {
             input.style.color = "green";
             label.style.color = "green";
         } else {
@@ -129,7 +95,7 @@ storage.local.get({customFonts: []}, (fromStorage) => {
 });
 
 newInput.oninput = () => {
-    if (isFontAvailable(newInput.value)) {
+    if (CustomFont.isFontInstalled(newInput.value)) {
         newInput.style.color = "green";
     } else {
         newInput.style.color = "red";

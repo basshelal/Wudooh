@@ -104,6 +104,60 @@ class CustomSettings {
     }
 }
 
+class CustomFont {
+    /** The actual name of the font as it is stored in the Operating System */
+    fontName: string;
+    /** The optional name to be displayed for this font, if not set it will equal the fontName */
+    displayedName: string;
+    /** Optional URL if the font is located online */
+    url?: string;
+
+    constructor(fontName: string, displayedName?: string, url?: string) {
+        this.fontName = fontName;
+        if (displayedName) this.displayedName = displayedName;
+        else this.displayedName = fontName;
+        this.url = url;
+    }
+
+    /**
+     * Trick to make sure that a font is available on the client's machine.
+     * I found this somewhere online and they claimed it works 99% of the time,
+     * it's worked perfectly for me so far
+     */
+    static isFontInstalled(font: string): boolean {
+        var container = document.createElement('span');
+        container.innerHTML = Array(100).join('wi');
+        container.style.cssText = [
+            'position:absolute',
+            'width:auto',
+            'font-size:128px',
+            'left:-99999px'
+        ].join(' !important;');
+
+        function getWidth(fontFamily: string) {
+            container.style.fontFamily = fontFamily;
+            document.body.appendChild(container);
+            let width = container.clientWidth;
+            document.body.removeChild(container);
+            return width;
+        }
+
+        // Pre compute the widths of monospace, serif & sans-serif
+        // to improve performance.
+        var monoWidth = getWidth('monospace');
+        var serifWidth = getWidth('serif');
+        var sansWidth = getWidth('sans-serif');
+
+        return monoWidth !== getWidth(font + ',monospace') ||
+            sansWidth !== getWidth(font + ',sans-serif') ||
+            serifWidth !== getWidth(font + ',serif');
+    }
+
+    isFontInstalled(): boolean {
+        return CustomFont.isFontInstalled(this.fontName);
+    }
+}
+
 // region Extensions
 
 interface Array<T> {

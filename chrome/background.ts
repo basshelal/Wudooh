@@ -43,3 +43,10 @@ runtime.onInstalled.addListener((details: InstalledDetails) => {
         if (!fromStorage.customFonts) storage.local.set({customFonts: []})
     });
 });
+
+/*
+fetch("https://fonts.gstatic.com/s/gotu/v1/o-0FIpksx3QOpHsBi7h6.woff2").then(r => {
+    r.text().then(i =>
+        console.log(i)
+    );
+});*/

@@ -36,12 +36,7 @@ let exportAnchor = get<HTMLAnchorElement>("exportAnchor");
 let importButton = get<HTMLButtonElement>("importButton");
 let importInput = get<HTMLInputElement>("importInput");
 
-/**
- * Gets options from the chrome's storage sync for the user with default values if they do not already exist,
- * this is only called when the document (popup.html) is loaded, it only initializes values and updates the UI
- * to match the settings
- */
-function initializeUI() {
+function addCustomFonts() {
     // Add custom fonts to popup.html
     storage.local.get({customFonts: []}, (fromStorage) => {
         let customFonts: Array<string> = fromStorage.customFonts as Array<string>;
@@ -59,7 +54,15 @@ function initializeUI() {
             fontSelect.add(option);
         });
     });
+}
 
+/**
+ * Gets options from the chrome's storage sync for the user with default values if they do not already exist,
+ * this is only called when the document (popup.html) is loaded, it only initializes values and updates the UI
+ * to match the settings
+ */
+function initializeUI() {
+    addCustomFonts();
     // Get all the options with default values if they're not found for some reason
     sync.get({
         textSize: defaultTextSize,

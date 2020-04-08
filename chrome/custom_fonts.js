@@ -8,36 +8,6 @@ var errorLabel = get("errorLabel");
 // Use this to reduce the number of requests made to chrome storage
 var displayedFonts = [];
 var templateDiv = template.content.querySelector("div");
-/**
- * Trick to make sure that a font is available on the client's machine.
- * I found this somewhere online and they claimed it works 99% of the time,
- * it's worked perfectly for me so far
- */
-function isFontAvailable(font) {
-    var container = document.createElement('span');
-    container.innerHTML = Array(100).join('wi');
-    container.style.cssText = [
-        'position:absolute',
-        'width:auto',
-        'font-size:128px',
-        'left:-99999px'
-    ].join(' !important;');
-    function getWidth(fontFamily) {
-        container.style.fontFamily = fontFamily;
-        document.body.appendChild(container);
-        var width = container.clientWidth;
-        document.body.removeChild(container);
-        return width;
-    }
-    // Pre compute the widths of monospace, serif & sans-serif
-    // to improve performance.
-    var monoWidth = getWidth('monospace');
-    var serifWidth = getWidth('serif');
-    var sansWidth = getWidth('sans-serif');
-    return monoWidth !== getWidth(font + ',monospace') ||
-        sansWidth !== getWidth(font + ',sans-serif') ||
-        serifWidth !== getWidth(font + ',serif');
-}
 function displayFont(font) {
     var rootDiv = document.importNode(templateDiv, true);
     var label = rootDiv.children.namedItem("label");
@@ -53,7 +23,7 @@ function displayFont(font) {
     deleteButton.id += "-" + font;
     // Temporary variable so that we don't perform a save every time the user leaves the input
     var savedValue = font;
-    if (isFontAvailable(font)) {
+    if (CustomFont.isFontInstalled(font)) {
         label.style.color = "green";
         input.style.color = "green";
         label.style.fontFamily = font;
@@ -65,7 +35,7 @@ function displayFont(font) {
     input.oninput = function () {
         input.size = input.value.length;
         label.innerText = input.value;
-        if (isFontAvailable(input.value)) {
+        if (CustomFont.isFontInstalled(input.value)) {
             input.style.color = "green";
             label.style.color = "green";
         }
@@ -111,7 +81,7 @@ storage.local.get({ customFonts: [] }, function (fromStorage) {
     displayedFonts = customFonts;
 });
 newInput.oninput = function () {
-    if (isFontAvailable(newInput.value)) {
+    if (CustomFont.isFontInstalled(newInput.value)) {
         newInput.style.color = "green";
     }
     else {
