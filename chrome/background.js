@@ -45,4 +45,8 @@ runtime.onInstalled.addListener(function (details) {
             //  basshelal.github.io/Wudooh
         }
     });
+    storage.local.get("customFonts", function (fromStorage) {
+        if (!fromStorage.customFonts)
+            storage.local.set({ customFonts: [] });
+    });
 });

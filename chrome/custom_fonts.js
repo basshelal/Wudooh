@@ -5,10 +5,14 @@ var fontsDiv = get("fontsDiv");
 var newInput = get("newInput");
 var addButton = get("addButton");
 var errorLabel = get("errorLabel");
-var fromStorage = ["Hi", "Hello", "Greetings", "Hola", "Hallo"];
 // Use this to reduce the number of requests made to chrome storage
 var displayedFonts = [];
 var templateDiv = template.content.querySelector("div");
+/**
+ * Trick to make sure that a font is available on the client's machine.
+ * I found this somewhere online and they claimed it works 99% of the time,
+ * it's worked perfectly for me so far
+ */
 function isFontAvailable(font) {
     var container = document.createElement('span');
     container.innerHTML = Array(100).join('wi');
@@ -34,7 +38,7 @@ function isFontAvailable(font) {
         sansWidth !== getWidth(font + ',sans-serif') ||
         serifWidth !== getWidth(font + ',serif');
 }
-function addFont(font) {
+function displayFont(font) {
     var rootDiv = document.importNode(templateDiv, true);
     var label = rootDiv.children.namedItem("label");
     var input = rootDiv.children.namedItem("input");
@@ -86,14 +90,26 @@ function addFont(font) {
     };
     deleteButton.onclick = function () {
         if (confirm("Are you sure you want to delete " + input.value + "\nThis cannot be undone")) {
-            displayedFonts.splice(displayedFonts.indexOf(input.value));
-            rootDiv.parentNode.removeChild(rootDiv);
+            var font_1 = input.value;
+            storage.local.get({ customFonts: [] }, function (fromStorage) {
+                var customFonts = fromStorage.customFonts;
+                customFonts = customFonts.filter(function (it) { return it !== font_1; });
+                storage.local.set({ customFonts: customFonts }, function () {
+                    displayedFonts = customFonts;
+                    rootDiv.parentNode.removeChild(rootDiv);
+                });
+            });
         }
     };
     fontsDiv.appendChild(rootDiv);
-    displayedFonts.push(font);
 }
-fromStorage.forEach(function (it) { return addFont(it); });
+storage.local.get({ customFonts: [] }, function (fromStorage) {
+    var customFonts = fromStorage.customFonts;
+    customFonts.forEach(function (it) {
+        displayFont(it);
+    });
+    displayedFonts = customFonts;
+});
 newInput.oninput = function () {
     if (isFontAvailable(newInput.value)) {
         newInput.style.color = "green";
@@ -123,8 +139,15 @@ addButton.onclick = function () {
     }
     // TODO only allow inputs of letters and - and _, no commas and exclamation marks etc
     if (isValid) {
-        errorLabel.style.display = "none";
-        addFont(newInput.value);
-        newInput.value = "";
+        var font_2 = newInput.value;
+        storage.local.get({ customFonts: [] }, function (fromStorage) {
+            var customFonts = fromStorage.customFonts;
+            customFonts.push(font_2);
+            storage.local.set({ customFonts: customFonts }, function () {
+                errorLabel.style.display = "none";
+                displayFont(newInput.value);
+                newInput.value = "";
+            });
+        });
     }
 };

@@ -7,13 +7,16 @@ let newInput = get<HTMLInputElement>("newInput");
 let addButton = get<HTMLButtonElement>("addButton");
 let errorLabel = get<HTMLLabelElement>("errorLabel");
 
-let fromStorage: Array<string> = ["Hi", "Hello", "Greetings", "Hola", "Hallo"];
-
 // Use this to reduce the number of requests made to chrome storage
 let displayedFonts: Array<string> = [];
 
 let templateDiv = template.content.querySelector("div");
 
+/**
+ * Trick to make sure that a font is available on the client's machine.
+ * I found this somewhere online and they claimed it works 99% of the time,
+ * it's worked perfectly for me so far
+ */
 function isFontAvailable(font: string): boolean {
     var container = document.createElement('span');
     container.innerHTML = Array(100).join('wi');
@@ -43,7 +46,7 @@ function isFontAvailable(font: string): boolean {
         serifWidth !== getWidth(font + ',serif');
 }
 
-function addFont(font: string) {
+function displayFont(font: string) {
     let rootDiv = document.importNode(templateDiv, true);
     let label = rootDiv.children.namedItem("label") as HTMLLabelElement;
     let input = rootDiv.children.namedItem("input") as HTMLInputElement;
@@ -102,17 +105,28 @@ function addFont(font: string) {
 
     deleteButton.onclick = () => {
         if (confirm(`Are you sure you want to delete ${input.value}\nThis cannot be undone`)) {
-            displayedFonts.splice(displayedFonts.indexOf(input.value));
-            rootDiv.parentNode.removeChild(rootDiv);
+            let font = input.value;
+            storage.local.get({customFonts: []}, (fromStorage) => {
+                let customFonts: Array<string> = fromStorage.customFonts as Array<string>;
+                customFonts = customFonts.filter((it: string) => it !== font);
+                storage.local.set({customFonts: customFonts}, () => {
+                    displayedFonts = customFonts;
+                    rootDiv.parentNode.removeChild(rootDiv);
+                });
+            });
         }
     };
 
     fontsDiv.appendChild(rootDiv);
-
-    displayedFonts.push(font);
 }
 
-fromStorage.forEach((it: string) => addFont(it));
+storage.local.get({customFonts: []}, (fromStorage) => {
+    let customFonts: Array<string> = fromStorage.customFonts as Array<string>;
+    customFonts.forEach((it: string) => {
+        displayFont(it);
+    });
+    displayedFonts = customFonts;
+});
 
 newInput.oninput = () => {
     if (isFontAvailable(newInput.value)) {
@@ -144,8 +158,15 @@ addButton.onclick = () => {
     }
     // TODO only allow inputs of letters and - and _, no commas and exclamation marks etc
     if (isValid) {
-        errorLabel.style.display = "none";
-        addFont(newInput.value);
-        newInput.value = "";
+        let font = newInput.value;
+        storage.local.get({customFonts: []}, (fromStorage) => {
+            let customFonts: Array<string> = fromStorage.customFonts as Array<string>;
+            customFonts.push(font);
+            storage.local.set({customFonts: customFonts}, () => {
+                errorLabel.style.display = "none";
+                displayFont(newInput.value);
+                newInput.value = "";
+            });
+        });
     }
 };

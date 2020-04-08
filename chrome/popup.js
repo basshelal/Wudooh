@@ -6,6 +6,8 @@
 ///<reference path="../../../.WebStorm2019.1/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
 ///<reference path="./shared.ts"/>
 var main = get("main");
+// Custom Fonts
+var fontsStyle = get("customFontsStyle");
 // Inputs
 var sizeSlider = get("size");
 var heightSlider = get("height");
@@ -26,6 +28,87 @@ var exportButton = get("exportButton");
 var exportAnchor = get("exportAnchor");
 var importButton = get("importButton");
 var importInput = get("importInput");
+/**
+ * Gets options from the chrome's storage sync for the user with default values if they do not already exist,
+ * this is only called when the document (popup.html) is loaded, it only initializes values and updates the UI
+ * to match the settings
+ */
+function initializeUI() {
+    // Add custom fonts to popup.html
+    storage.local.get({ customFonts: [] }, function (fromStorage) {
+        var customFonts = fromStorage.customFonts;
+        customFonts.forEach(function (font) {
+            fontsStyle.innerHTML = fontsStyle.innerHTML
+                .concat("@font-face { font-family: '" + font + "'; src: local('" + font + "'); }");
+            var option = document.createElement("option");
+            option.style.fontFamily = font;
+            option.value = font;
+            option.innerHTML = font;
+            option.style.color = "#ff00ff";
+            fontSelect.add(option);
+        });
+    });
+    // Get all the options with default values if they're not found for some reason
+    sync.get({
+        textSize: defaultTextSize,
+        lineHeight: defaultLineHeight,
+        onOff: true,
+        font: defaultFont,
+        whitelisted: [],
+        customSettings: []
+    }, function (fromStorage) {
+        tabs.query({ active: true, currentWindow: true }, function (tabs) {
+            // If the extension is off then hide the main div
+            onOffSwitch.checked = fromStorage.onOff;
+            if (fromStorage.onOff)
+                main.style.maxHeight = "100%";
+            else
+                main.style.maxHeight = "0";
+            var thisTab = tabs[0];
+            var thisURL = new URL(thisTab.url).hostname;
+            var customSettings = fromStorage.customSettings;
+            var whiteListed = fromStorage.whitelisted;
+            var textSize;
+            var lineHeight;
+            var font;
+            // The above will be different if thisURL is a custom one so we set them depending on this
+            var custom = customSettings.findFirst(function (custom) { return custom.url === thisURL; });
+            if (!!custom) {
+                textSize = custom.textSize;
+                lineHeight = custom.lineHeight;
+                font = custom.font;
+            }
+            else {
+                textSize = fromStorage.textSize;
+                lineHeight = fromStorage.lineHeight;
+                font = fromStorage.font;
+            }
+            // Initialize all the HTMLElements to the values from storage
+            sizeSlider.value = textSize.toString();
+            sizeValue.innerHTML = textSize.toString() + '%';
+            heightSlider.value = lineHeight.toString();
+            heightValue.innerHTML = lineHeight.toString() + '%';
+            fontSelect.value = font;
+            fontSelect.style.fontFamily = font;
+            websiteText.innerText = thisURL;
+            websiteIcon.src = "chrome://favicon/size/32/" + thisTab.url;
+            websiteIcon.title = thisURL;
+            websiteIcon.alt = thisURL;
+            var isWhitelisted = !!(whiteListed.findFirst(function (it) { return it === thisURL; }));
+            var isCustom = !!custom;
+            whiteListSwitch.checked = !isWhitelisted;
+            if (isWhitelisted)
+                whitelistedValue.innerText = "This site is whitelisted";
+            else
+                whitelistedValue.innerText = "Running on this site";
+            overrideSiteSwitch.checked = isCustom;
+            if (isCustom)
+                overrideSettingsValue.innerText = "Using site specific settings";
+            else
+                overrideSettingsValue.innerText = "Using global settings";
+        });
+    });
+}
 /**
  * Updates all Arabic text in all tabs to adhere to the new options. This is done by sending a message to all
  * tabs that main.ts will handle.
@@ -63,73 +146,6 @@ function updateAllText() {
             });
         });
     }
-}
-/**
- * Gets options from the chrome's storage sync for the user with default values if they do not already exist,
- * this is only called when the document (popup.html) is loaded, it only initializes values and updates the UI
- * to match the settings
- */
-function initializeUI() {
-    // Get all the options with default values if they're not found for some reason
-    sync.get({
-        textSize: defaultTextSize,
-        lineHeight: defaultLineHeight,
-        onOff: true,
-        font: defaultFont,
-        whitelisted: [],
-        customSettings: []
-    }, function (fromStorage) {
-        tabs.query({ active: true, currentWindow: true }, function (tabs) {
-            // If the extension is off then hide the main div
-            onOffSwitch.checked = fromStorage.onOff;
-            if (fromStorage.onOff)
-                main.style.maxHeight = "100%";
-            else
-                main.style.maxHeight = "0";
-            var thisTab = tabs[0];
-            var thisURL = new URL(thisTab.url).hostname;
-            var customSettings = fromStorage.customSettings;
-            var whiteListed = fromStorage.whitelisted;
-            var textSize;
-            var lineHeight;
-            var font;
-            // The above will be different if thisURL is a custom one so we set them depending on this
-            var custom = customSettings.findFirst(function (custom) { return custom.url === thisURL; });
-            if (custom) {
-                textSize = custom.textSize;
-                lineHeight = custom.lineHeight;
-                font = custom.font;
-            }
-            else {
-                textSize = fromStorage.textSize;
-                lineHeight = fromStorage.lineHeight;
-                font = fromStorage.font;
-            }
-            // Initialize all the HTMLElements to the values from storage
-            sizeSlider.value = textSize.toString();
-            sizeValue.innerHTML = textSize.toString() + '%';
-            heightSlider.value = lineHeight.toString();
-            heightValue.innerHTML = lineHeight.toString() + '%';
-            fontSelect.value = font;
-            fontSelect.style.fontFamily = font;
-            websiteText.innerText = thisURL;
-            websiteIcon.src = "chrome://favicon/size/32/" + thisTab.url;
-            websiteIcon.title = thisURL;
-            websiteIcon.alt = thisURL;
-            var isWhitelisted = !!(whiteListed.findFirst(function (it) { return it === thisURL; }));
-            var isCustom = !!custom;
-            whiteListSwitch.checked = !isWhitelisted;
-            if (isWhitelisted)
-                whitelistedValue.innerText = "This site is whitelisted";
-            else
-                whitelistedValue.innerText = "Running on this site";
-            overrideSiteSwitch.checked = isCustom;
-            if (isCustom)
-                overrideSettingsValue.innerText = "Using site specific settings";
-            else
-                overrideSettingsValue.innerText = "Using global settings";
-        });
-    });
 }
 /**
  * Toggles the on off switch and saves the "onOff" setting, this will update all text if the switch is turned on
@@ -178,7 +194,7 @@ function toggleOverrideSiteSettings() {
     tabs.query({ active: true, currentWindow: true }, function (tabs) {
         // Get the url we are currently on
         var thisURL = new URL(tabs[0].url).hostname;
-        sync.get({ "customSettings": [] }, function (fromStorage) {
+        sync.get({ customSettings: [] }, function (fromStorage) {
             // Get the array of all custom websites
             var customSettings = fromStorage.customSettings;
             // Override switch is on so use custom settings
@@ -211,7 +227,7 @@ function toggleWhitelist() {
     tabs.query({ active: true, currentWindow: true }, function (tabs) {
         // Get the url we are on right now
         var thisURL = new URL(tabs[0].url).hostname;
-        sync.get({ "whitelisted": [] }, function (fromStorage) {
+        sync.get({ whitelisted: [] }, function (fromStorage) {
             // Get the array of all whitelisted websites
             var whitelisted = fromStorage.whitelisted;
             // Allowed to run on this site
@@ -345,12 +361,12 @@ function importSettings() {
 function addListeners() {
     // Get options when the popup.html document is loaded
     document.addEventListener("DOMContentLoaded", initializeUI);
-    // Update size and height HTML when input is changed, changes no variables
+    // Update size and height HTML when input is changed, changes no variables so cheap
     sizeSlider.oninput = function () { return sizeValue.innerHTML = sizeSlider.value + '%'; };
     heightSlider.oninput = function () { return heightValue.innerHTML = heightSlider.value + '%'; };
-    // Update text and save options when mouse is released, not onChange because that will be too much
-    sizeSlider.onmouseup = function () { return updateSize(); };
-    heightSlider.onmouseup = function () { return updateHeight(); };
+    // Update text and save options when any change happens, including by using keys, mouse touch etc
+    sizeSlider.onchange = function () { return updateSize(); };
+    heightSlider.onchange = function () { return updateHeight(); };
     // Update switches when they're clicked
     onOffSwitch.onclick = function () { return toggleOnOff(); };
     whiteListSwitch.onclick = function () { return toggleWhitelist(); };
@@ -365,22 +381,3 @@ function addListeners() {
     importButton.onclick = function () { return importInput.click(); };
 }
 addListeners();
-// Custom font shit below
-var fontName = "Iranica";
-var fontName2 = "Source Code Pro";
-var fontName3 = "Roboto Mono";
-var customFonts = [fontName, fontName2, fontName3];
-// Example code below for when we use chrome.storage.local
-var fontsStyle = document.createElement("style");
-document.head.append(fontsStyle);
-customFonts.forEach(function (font) {
-    fontsStyle.innerHTML = fontsStyle.innerHTML.concat("\n@font-face {\n    font-family: '" + font + "';\n    font-style: normal;\n    font-weight: normal;\n    src: local('" + font + "');\n}");
-    var option = document.createElement("option");
-    option.style.fontFamily = font;
-    option.value = font;
-    option.innerHTML = font;
-    option.style.color = "#ff00ff";
-    fontSelect.add(option);
-});
-// @ts-ignore, this works in Chrome
-document.fonts.forEach(function (it) { return console.log(it); });

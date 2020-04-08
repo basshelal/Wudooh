@@ -18,7 +18,8 @@ import CreateProperties = chrome.tabs.CreateProperties;
 // Declare Browser APIs
 const tabs = chrome.tabs;
 const runtime = chrome.runtime;
-const sync = chrome.storage.sync;
+const storage = chrome.storage;
+const sync = storage.sync;
 
 /** The font size percent, between 100 and 300 */
 const keyTextSize: string = "textSize";
@@ -37,6 +38,9 @@ const keyWhitelisted: string = "whitelisted";
 
 /** The array of {@linkcode CustomSettings} that represents the sites with custom settings */
 const keyCustomSettings: string = "customSettings";
+
+/** The array of Custom Fonts, this is used in {@linkcode chrome.storage.local} */
+const keyCustomFonts: string = "customFonts";
 
 /** The keys of the {@linkcode chrome.storage.sync} */
 const keys: Array<string> = [

@@ -9,7 +9,8 @@
 // Declare Browser APIs
 var tabs = chrome.tabs;
 var runtime = chrome.runtime;
-var sync = chrome.storage.sync;
+var storage = chrome.storage;
+var sync = storage.sync;
 /** The font size percent, between 100 and 300 */
 var keyTextSize = "textSize";
 /** The line height percent, between 100 and 300 */
@@ -22,6 +23,8 @@ var keyFont = "font";
 var keyWhitelisted = "whitelisted";
 /** The array of {@linkcode CustomSettings} that represents the sites with custom settings */
 var keyCustomSettings = "customSettings";
+/** The array of Custom Fonts, this is used in {@linkcode chrome.storage.local} */
+var keyCustomFonts = "customFonts";
 /** The keys of the {@linkcode chrome.storage.sync} */
 var keys = [
     keyTextSize,
