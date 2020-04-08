@@ -31,7 +31,7 @@
 * [All Fonts](#all-fonts)
 * [Thanks](#thanks)
 
-![User Testimonial](https://github.com/basshelal/Wudooh/blob/master/pictures/Testimonial.png)
+![User Testimonial](https://github.com/basshelal/Wudooh/blob/master/pics/Testimonial.png)
 
 Wudooh [(clarity in Arabic and Persian)](https://en.wiktionary.org/wiki/%D9%88%D8%B6%D9%88%D8%AD)
  is a simple browser extension that makes reading Arabic script text clearer and more pleasant.
@@ -43,11 +43,11 @@ This project is based on and is the successor to
 
 Without Wudooh:
 
-![](https://github.com/basshelal/Wudooh/blob/master/pictures/Without.PNG)
+![](https://github.com/basshelal/Wudooh/blob/master/pics/Without.PNG)
 
 With Wudooh:
 
-![](https://github.com/basshelal/Wudooh/blob/master/pictures/With.PNG)
+![](https://github.com/basshelal/Wudooh/blob/master/pics/With.PNG)
 
 ## Current Features
 
@@ -63,7 +63,7 @@ for Persian, Urdu and any other
 
 Wudooh popup:
 
-![](https://github.com/basshelal/Wudooh/blob/master/pictures/Wudooh.PNG)
+![](https://github.com/basshelal/Wudooh/blob/master/pics/Wudooh.PNG)
 
 ### On Off Switch
 
@@ -81,11 +81,11 @@ A list of all currently supported fonts can be found [here](#all-fonts).
 
 Without Wudooh:
 
-![](https://github.com/basshelal/Wudooh/blob/master/pictures/ImranKhanBefore.PNG)
+![](https://github.com/basshelal/Wudooh/blob/master/pics/ImranKhanBefore.PNG)
 
 With Wudooh:
 
-![](https://github.com/basshelal/Wudooh/blob/master/pictures/ImranKhanAfter.PNG)
+![](https://github.com/basshelal/Wudooh/blob/master/pics/ImranKhanAfter.PNG)
 
 ### Change Font Size
 
@@ -107,7 +107,7 @@ Quran.com or websites with already clear Arabic text.
 
 Quran.com whitelisted:
 
-![](https://github.com/basshelal/Wudooh/blob/master/pictures/Whitelisted.PNG)
+![](https://github.com/basshelal/Wudooh/blob/master/pics/Whitelisted.PNG)
 
 ### Live Updates
 
@@ -121,7 +121,7 @@ however, as some empty spacing may be different.
 
 YouTube comments clarified by Wudooh, using Noto Sans Arabic font:
 
-![](https://github.com/basshelal/Wudooh/blob/master/pictures/YoutubeComments.gif)
+![](https://github.com/basshelal/Wudooh/blob/master/pics/YoutubeComments.gif)
 
 ### Safe Editables
 
@@ -130,7 +130,7 @@ This was a major problem in Huruf that has been solved in Wudooh.
 
 Wudooh safely ignores editable fields:
 
-![](https://github.com/basshelal/Wudooh/blob/master/pictures/Editables.PNG)
+![](https://github.com/basshelal/Wudooh/blob/master/pics/Editables.PNG)
 
 ## Future Features
 
@@ -146,11 +146,11 @@ Wudooh safely ignores editable fields:
  
 Quran.com with Wudooh:
 
-![](https://github.com/basshelal/Wudooh/blob/master/pictures/Quran.PNG)
+![](https://github.com/basshelal/Wudooh/blob/master/pics/Quran.PNG)
 
 Quran.com whitelisted:
 
-![](https://github.com/basshelal/Wudooh/blob/master/pictures/Whitelisted.PNG)
+![](https://github.com/basshelal/Wudooh/blob/master/pics/Whitelisted.PNG)
  
 ### YouTube
 
@@ -161,16 +161,16 @@ A page refresh will always fix this issue.
 
 Initial page in Arabic:
 
-![](https://github.com/basshelal/Wudooh/blob/master/pictures/Youtube1.PNG)
+![](https://github.com/basshelal/Wudooh/blob/master/pics/Youtube1.PNG)
 
 After visiting another playlist that contains no Arabic:
 
-![](https://github.com/basshelal/Wudooh/blob/master/pictures/Youtube2.PNG)
+![](https://github.com/basshelal/Wudooh/blob/master/pics/Youtube2.PNG)
 
 After playing Arabic videos after another, the text circled in red is the correct title of the video,
 note it is not clarified, the clarified text on the right is from the previous video:
 
-![](https://github.com/basshelal/Wudooh/blob/master/pictures/Youtube3.PNG)
+![](https://github.com/basshelal/Wudooh/blob/master/pics/Youtube3.PNG)
 
 All of these problems can be fixed by a page refresh.
 
@@ -186,7 +186,7 @@ My general rule of thumb is to be verbose to give as much detail as possible
 You are also welcome to fork this and use the same code to modify any other scripts such as 
 [CJK](https://en.wikipedia.org/wiki/CJK_characters).
 Few modifications would need to be made, only the `arabicRegEx` `const` in 
-[`main.ts`](https://github.com/basshelal/Wudooh/blob/master/main.ts)
+[`main.ts`](https://github.com/basshelal/Wudooh/blob/master/chrome/main.ts)
  would need to change within the TypeScript code (don't forget to compile to JavaScript). 
 [`popup.html`](https://github.com/basshelal/Wudooh/blob/master/chrome/popup.html), 
 [`styles.css`](https://github.com/basshelal/Wudooh/blob/master/chrome/styles.css) and 
