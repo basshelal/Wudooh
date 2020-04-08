@@ -134,6 +134,19 @@ a:hover, a:active {
     cursor: pointer;
 }
 
+#websiteIcon {
+    display: inline;
+}
+
+#website {
+    display: inline;
+    position: relative;
+    margin-left: 8px;
+    bottom: 8px;
+    font-weight: bolder;
+    font-size: 18px;
+}
+
 #importButton, #exportButton {
     cursor: pointer;
 }

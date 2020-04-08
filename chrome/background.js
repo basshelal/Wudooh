@@ -6,9 +6,7 @@
 ///<reference path="../../../.WebStorm2019.1/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
 ///<reference path="./shared.ts"/>
 function launchSite(path) {
-    if (path === void 0) {
-        path = "";
-    }
+    if (path === void 0) { path = ""; }
     tabs.create(new /** @class */ (function () {
         function class_1() {
             this.url = homePage + path;
@@ -23,17 +21,17 @@ function launchSite(path) {
 runtime.onInstalled.addListener(function (details) {
     sync.get(keys, function (fromStorage) {
         if (!fromStorage.textSize)
-            sync.set({textSize: defaultTextSize});
+            sync.set({ textSize: defaultTextSize });
         if (!fromStorage.lineHeight)
-            sync.set({lineHeight: defaultLineHeight});
+            sync.set({ lineHeight: defaultLineHeight });
         if (!fromStorage.onOff)
-            sync.set({onOff: true,});
+            sync.set({ onOff: true, });
         if (!fromStorage.font)
-            sync.set({font: defaultFont});
+            sync.set({ font: defaultFont });
         if (!fromStorage.whitelisted)
-            sync.set({whitelisted: []});
+            sync.set({ whitelisted: [] });
         if (!fromStorage.customSettings)
-            sync.set({customSettings: []});
+            sync.set({ customSettings: [] });
         // User has updated extension
         if (details.reason == "update") {
             var oldVersion = details.previousVersion; // string of previous version if we need it

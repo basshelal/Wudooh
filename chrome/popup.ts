@@ -129,6 +129,8 @@ function initializeUI() {
             fontSelect.style.fontFamily = font;
             websiteText.innerText = thisURL;
             websiteIcon.src = "chrome://favicon/size/32/" + thisTab.url;
+            websiteIcon.title = thisURL;
+            websiteIcon.alt = thisURL;
 
             let isWhitelisted: boolean = !!(whiteListed.findFirst((it: string) => it === thisURL));
             let isCustom: boolean = !!custom;
