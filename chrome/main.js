@@ -1,7 +1,7 @@
 /**
  * This is the main script that reads the document and updates any Arabic script text
  */
-///<reference path="../../../.WebStorm2019.1/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
+///<reference path="../../../.WebStorm2019.3/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
 ///<reference path="./shared.ts"/>
 /**
  * @deprecated use {@link newArabicRegex} instead
@@ -213,7 +213,7 @@ function injectCustomFonts(customFonts) {
  * Then starts an observer with those same options to update any new text that will come
  * This only happens if the on off switch is on and the site is not whitelisted
  */
-wudoohStorage.get(keys).then(function (storage) {
+sync.get(keys).then(function (storage) {
     var textSize = storage.textSize;
     var lineHeight = storage.lineHeight;
     var isOn = storage.onOff;

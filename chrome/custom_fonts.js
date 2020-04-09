@@ -1,4 +1,4 @@
-///<reference path="../../../.WebStorm2019.1/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
+///<reference path="../../../.WebStorm2019.3/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
 ///<reference path="./shared.ts"/>
 var template = get("template");
 var fontsDiv = get("fontsDiv");
@@ -11,13 +11,13 @@ var templateDiv = template.content.querySelector("div");
 // Use this to reduce the number of requests made to chrome storage
 var displayedFonts = [];
 function notifyCustomFontsChanged(customFonts) {
-    tabs.query({}, function (allTabs) {
+    tabs.queryAllTabs().then(function (allTabs) {
         allTabs.forEach(function (tab) {
             var message = {
                 reason: reasonInjectCustomFonts,
                 customFonts: customFonts
             };
-            tabs.sendMessage(tab.id, message);
+            chromeTabs.sendMessage(tab.id, message);
         });
     });
 }
@@ -64,10 +64,10 @@ function displayFont(customFont) {
     deleteButton.onclick = function () {
         if (confirm("Are you sure you want to delete " + fontNameInput.value + "\nThis cannot be undone")) {
             var font_1 = fontNameInput.value;
-            sync.get({ customFonts: [] }, function (fromStorage) {
+            chromeSync.get({ customFonts: [] }, function (fromStorage) {
                 var customFonts = fromStorage.customFonts;
                 customFonts = customFonts.filter(function (it) { return it.fontName !== font_1; });
-                sync.set({ customFonts: customFonts }, function () {
+                chromeSync.set({ customFonts: customFonts }, function () {
                     notifyCustomFontsChanged(customFonts);
                     displayedFonts = customFonts.map(function (it) { return it.fontName; });
                     rootDiv.parentNode.removeChild(rootDiv);
@@ -83,7 +83,7 @@ function displayFont(customFont) {
     var fontsStyle = get("customFontsStyle");
     fontsStyle.innerHTML = fontsStyle.innerHTML.concat(injectedCss);
 }
-sync.get({ customFonts: [] }, function (fromStorage) {
+chromeSync.get({ customFonts: [] }, function (fromStorage) {
     var customFonts = fromStorage.customFonts;
     customFonts.forEach(function (it) { return displayFont(it); });
     displayedFonts = customFonts.map(function (it) { return it.fontName; });
@@ -125,11 +125,11 @@ addButton.onclick = function () {
     // TODO only allow inputs of letters and - and _, no commas and exclamation marks etc
     if (isValid) {
         infoLabel.innerText = "";
-        sync.get({ customFonts: [] }, function (fromStorage) {
+        chromeSync.get({ customFonts: [] }, function (fromStorage) {
             var customFonts = fromStorage.customFonts;
             var customFont = new CustomFont(fontName, displayedName, url);
             customFonts.push(customFont);
-            sync.set({ customFonts: customFonts }, function () {
+            chromeSync.set({ customFonts: customFonts }, function () {
                 displayFont(customFont);
                 notifyCustomFontsChanged(customFonts);
                 infoLabel.style.display = "none";

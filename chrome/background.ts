@@ -4,13 +4,11 @@
  * Here we only run code that will execute when the extension is installed or updated.
  */
 
-///<reference path="../../../.WebStorm2019.1/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
+///<reference path="../../../.WebStorm2019.3/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
 ///<reference path="./shared.ts"/>
 
 function launchSite(path: string = "") {
-    tabs.create(new class implements CreateProperties {
-        url: string = homePage + path;
-    });
+    tabs.create(homePage + path);
 }
 
 /**
@@ -18,14 +16,14 @@ function launchSite(path: string = "") {
  * If some key has not been initialized then it will create it and set it to its default value
  */
 runtime.onInstalled.addListener((details: InstalledDetails) => {
-    wudoohStorage.get(keys).then((storage: WudoohStorage) => {
-        if (!storage.textSize) wudoohStorage.set({textSize: defaultTextSize});
-        if (!storage.lineHeight) wudoohStorage.set({lineHeight: defaultLineHeight});
-        if (!storage.onOff) wudoohStorage.set({onOff: true,});
-        if (!storage.font) wudoohStorage.set({font: defaultFont});
-        if (!storage.whitelisted) wudoohStorage.set({whitelisted: []});
-        if (!storage.customSettings) wudoohStorage.set({customSettings: []});
-        if (!storage.customFonts) wudoohStorage.set({customFonts: []});
+    sync.get(keys).then((storage: WudoohStorage) => {
+        if (!storage.textSize) storage.set({textSize: defaultTextSize});
+        if (!storage.lineHeight) storage.set({lineHeight: defaultLineHeight});
+        if (!storage.onOff) storage.set({onOff: true,});
+        if (!storage.font) storage.set({font: defaultFont});
+        if (!storage.whitelisted) storage.set({whitelisted: []});
+        if (!storage.customSettings) storage.set({customSettings: []});
+        if (!storage.customFonts) storage.set({customFonts: []});
 
         // User has updated extension
         if (details.reason == "update") {

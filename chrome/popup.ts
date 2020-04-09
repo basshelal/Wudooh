@@ -4,7 +4,7 @@
  * Currently there are 6 options, textSize, lineHeight, onOff, font, whitelisted and customSettings
  */
 
-///<reference path="../../../.WebStorm2019.1/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
+///<reference path="../../../.WebStorm2019.3/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
 ///<reference path="./shared.ts"/>
 
 const main = get<HTMLDivElement>("main");
@@ -38,7 +38,7 @@ let importInput = get<HTMLInputElement>("importInput");
 
 function addCustomFonts() {
     // Add custom fonts to popup.html
-    sync.get({customFonts: []}, (fromStorage) => {
+    chromeSync.get({customFonts: []}, (fromStorage) => {
         let customFonts: Array<CustomFont> = fromStorage.customFonts as Array<CustomFont>;
 
         customFonts.forEach((customFont: CustomFont) => {
@@ -71,7 +71,7 @@ function addCustomFonts() {
 function initializeUI() {
     addCustomFonts();
     // Get all the options with default values if they're not found for some reason
-    sync.get({
+    chromeSync.get({
         textSize: defaultTextSize,
         lineHeight: defaultLineHeight,
         onOff: true,
@@ -79,7 +79,7 @@ function initializeUI() {
         whitelisted: [],
         customSettings: []
     }, (fromStorage) => {
-        tabs.query({active: true, currentWindow: true}, (tabs: Array<Tab>) => {
+        chromeTabs.query({active: true, currentWindow: true}, (tabs: Array<Tab>) => {
             // If the extension is off then hide the main div
             onOffSwitch.checked = fromStorage.onOff;
             if (fromStorage.onOff) main.style.maxHeight = "100%";
@@ -141,36 +141,37 @@ function initializeUI() {
 function updateAllText() {
     // Only update text if this site is checked and is not whitelisted
     if (onOffSwitch.checked && whiteListSwitch.checked) {
-
-        sync.get(["textSize", "lineHeight", "font", "customSettings"], (fromStorage) => {
+        let oldSize: number;
+        let oldHeight: number;
+        let font: string;
+        let customSettings: Array<CustomSettings>;
+        sync.get(["textSize", "lineHeight", "font", "customSettings"]).then((storage: WudoohStorage) => {
             // We need the old values to know how much we should change the options in main.ts
-            let oldSize: number = fromStorage.textSize;
-            let oldHeight: number = fromStorage.lineHeight;
-            let font: string = fromStorage.font;
-            let customSettings: Array<CustomSettings> = fromStorage.customSettings as Array<CustomSettings>;
+            oldSize = storage.textSize;
+            oldHeight = storage.lineHeight;
+            font = storage.font;
+            customSettings = storage.customSettings;
 
-            // Send a message to all tabs
-            tabs.query({}, (allTabs: Array<Tab>) => {
-                allTabs.forEach((tab: Tab) => {
-                    let thisURL: string = new URL(tab.url).hostname;
-                    let custom = customSettings.findFirst((custom: CustomSettings) => custom.url === thisURL);
-                    if (custom) {
-                        oldSize = custom.textSize;
-                        oldHeight = custom.lineHeight;
-                        font = custom.font;
-                    }
-                    let message = {
-                        reason: reasonUpdateAllText,
-                        oldSize: oldSize,
-                        oldHeight: oldHeight,
-                        newSize: parseInt(sizeSlider.value),
-                        newHeight: parseInt(heightSlider.value),
-                        font: font
-                    };
-                    tabs.sendMessage(tab.id, message);
-                });
-            });
-        });
+            // Query All Tabs
+            return tabs.queryAllTabs();
+        }).then((allTabs: Array<Tab>) => allTabs.forEach((tab: Tab) => {
+            let thisURL: string = new URL(tab.url).hostname;
+            let custom = customSettings.findFirst((custom: CustomSettings) => custom.url === thisURL);
+            if (custom) {
+                oldSize = custom.textSize;
+                oldHeight = custom.lineHeight;
+                font = custom.font;
+            }
+            let message = {
+                reason: reasonUpdateAllText,
+                oldSize: oldSize,
+                oldHeight: oldHeight,
+                newSize: parseInt(sizeSlider.value),
+                newHeight: parseInt(heightSlider.value),
+                font: font
+            };
+            chromeTabs.sendMessage(tab.id, message);
+        }));
     }
 }
 
@@ -178,7 +179,7 @@ function updateAllText() {
  * Toggles the on off switch and saves the "onOff" setting, this will update all text if the switch is turned on
  */
 function toggleOnOff() {
-    sync.set({onOff: onOffSwitch.checked}, () => {
+    chromeSync.set({onOff: onOffSwitch.checked}, () => {
         if (onOffSwitch.checked) {
             updateAllText();
             main.style.maxHeight = "100%";
@@ -194,7 +195,7 @@ function toggleOnOff() {
 function updateSize() {
     // Update before saving because we need the old value in the update function before saving
     updateAllText();
-    sync.set({textSize: parseInt(sizeSlider.value)});
+    chromeSync.set({textSize: parseInt(sizeSlider.value)});
 }
 
 /**
@@ -203,7 +204,7 @@ function updateSize() {
 function updateHeight() {
     // Update before saving because we need the old value in the update function before saving
     updateAllText();
-    sync.set({lineHeight: parseInt(heightSlider.value)});
+    chromeSync.set({lineHeight: parseInt(heightSlider.value)});
 }
 
 /**
@@ -211,7 +212,7 @@ function updateHeight() {
  */
 function changeFont() {
     fontSelect.style.fontFamily = fontSelect.value;
-    sync.set({font: fontSelect.value,}, () => {
+    chromeSync.set({font: fontSelect.value,}, () => {
         updateAllText();
     });
 }
@@ -221,11 +222,11 @@ function changeFont() {
  */
 function toggleOverrideSiteSettings() {
     // This only requires this current tab
-    tabs.query({active: true, currentWindow: true}, (tabs: Array<Tab>) => {
+    chromeTabs.query({active: true, currentWindow: true}, (tabs: Array<Tab>) => {
         // Get the url we are currently on
         let thisURL = new URL(tabs[0].url).hostname;
 
-        sync.get({customSettings: []}, (fromStorage) => {
+        chromeSync.get({customSettings: []}, (fromStorage) => {
             // Get the array of all custom websites
             let customSettings: Array<CustomSettings> = fromStorage.customSettings as Array<CustomSettings>;
 
@@ -242,7 +243,7 @@ function toggleOverrideSiteSettings() {
             }
 
             // Set the array of all whitelisted websites in storage
-            sync.set({customSettings: customSettings});
+            chromeSync.set({customSettings: customSettings});
         });
     });
 }
@@ -258,11 +259,11 @@ function toggleOverrideSiteSettings() {
 function toggleWhitelist() {
 
     // This only requires this current tab
-    tabs.query({active: true, currentWindow: true}, (tabs: Array<Tab>) => {
+    chromeTabs.query({active: true, currentWindow: true}, (tabs: Array<Tab>) => {
         // Get the url we are on right now
         let thisURL = new URL(tabs[0].url).hostname;
 
-        sync.get({whitelisted: []}, (fromStorage) => {
+        chromeSync.get({whitelisted: []}, (fromStorage) => {
             // Get the array of all whitelisted websites
             let whitelisted: Array<string> = fromStorage.whitelisted;
 
@@ -278,7 +279,7 @@ function toggleWhitelist() {
             }
 
             // Set the array of all whitelisted websites in storage
-            sync.set({whitelisted: whitelisted});
+            chromeSync.set({whitelisted: whitelisted});
         });
     });
 }
@@ -287,7 +288,7 @@ function toggleWhitelist() {
  * Exports all settings saved in chrome sync storage to a pretty json file called "settings.wudooh.json"
  */
 function exportSettings() {
-    sync.get(keys, (fromStorage) => {
+    chromeSync.get(keys, (fromStorage) => {
         let json: string = JSON.stringify(fromStorage, null, 4);
         exportAnchor.href = "data:application/octet-stream," + encodeURIComponent(json);
         exportAnchor.download = "settings.wudooh.json";
@@ -382,7 +383,7 @@ function importSettings() {
         }
 
         // If we've reached here the JSON was valid, save all new settings!
-        sync.set({
+        chromeSync.set({
             textSize: textSize,
             lineHeight: lineHeight,
             onOff: onOff,

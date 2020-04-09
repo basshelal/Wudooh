@@ -12,13 +12,11 @@
 import Tab = chrome.tabs.Tab;
 // noinspection ES6UnusedImports
 import InstalledDetails = chrome.runtime.InstalledDetails;
-// noinspection ES6UnusedImports
-import CreateProperties = chrome.tabs.CreateProperties;
 
 // Declare Browser APIs
-const tabs = chrome.tabs;
+const chromeTabs = chrome.tabs;
 const runtime = chrome.runtime;
-const sync = chrome.storage.sync;
+const chromeSync = chrome.storage.sync;
 
 /** The font size percent, between 100 and 300 */
 const keyTextSize: string = "textSize";
@@ -229,16 +227,35 @@ interface WudoohStorage {
 /**
  * An abstraction and simplification of the storage.sync API to make it use Promises
  */
-var wudoohStorage = {
+var sync = {
     get(keys: Array<string> = null): Promise<WudoohStorage> {
-        return new Promise((resolve, reject) => {
-            sync.get(keys, (fromStorage) =>
-                resolve(fromStorage as WudoohStorage));
+        return new Promise<WudoohStorage>(resolve => {
+            chrome.storage.sync.get(keys, storage => resolve(storage as WudoohStorage));
         });
     },
     set(wudoohStorage: WudoohStorage): Promise<void> {
-        return new Promise((resolve, reject) =>
-            sync.set(wudoohStorage, () => resolve())
+        return new Promise<void>(resolve => chrome.storage.sync.set(wudoohStorage, () => resolve()));
+    }
+};
+
+var tabs = {
+    create(url: string): Promise<Tab> {
+        return new Promise<Tab>(resolve =>
+            chrome.tabs.create({url: url}, tab => resolve(tab)));
+    },
+    queryAllTabs(): Promise<Array<Tab>> {
+        return new Promise<Array<Tab>>(resolve =>
+            chrome.tabs.query({}, (tabs: Array<Tab>) => resolve(tabs))
+        );
+    },
+    queryCurrentTab(): Promise<Array<Tab>> {
+        return new Promise<Array<Tab>>(resolve =>
+            chrome.tabs.query({active: true, currentWindow: true},
+                (tabs: Array<Tab>) => resolve(tabs)));
+    },
+    sendMessage(tabId: number, message: any): Promise<any> {
+        return new Promise<any>(resolve =>
+            chrome.tabs.sendMessage(tabId, message, ((response: any) => resolve(response)))
         );
     }
 };

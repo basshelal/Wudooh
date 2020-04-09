@@ -1,4 +1,4 @@
-///<reference path="../../../.WebStorm2019.1/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
+///<reference path="../../../.WebStorm2019.3/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
 ///<reference path="./shared.ts"/>
 
 const template = get<HTMLTemplateElement>("template");
@@ -14,13 +14,13 @@ const templateDiv = template.content.querySelector("div");
 let displayedFonts: Array<string> = [];
 
 function notifyCustomFontsChanged(customFonts: Array<CustomFont>) {
-    tabs.query({}, (allTabs: Array<Tab>) => {
+    tabs.queryAllTabs().then((allTabs: Array<Tab>) => {
         allTabs.forEach((tab: Tab) => {
             let message = {
                 reason: reasonInjectCustomFonts,
                 customFonts: customFonts
             };
-            tabs.sendMessage(tab.id, message);
+            chromeTabs.sendMessage(tab.id, message);
         });
     });
 }
@@ -75,10 +75,10 @@ function displayFont(customFont: CustomFont) {
     deleteButton.onclick = () => {
         if (confirm(`Are you sure you want to delete ${fontNameInput.value}\nThis cannot be undone`)) {
             let font = fontNameInput.value;
-            sync.get({customFonts: []}, (fromStorage) => {
+            chromeSync.get({customFonts: []}, (fromStorage) => {
                 let customFonts: Array<CustomFont> = fromStorage.customFonts as Array<CustomFont>;
                 customFonts = customFonts.filter((it: CustomFont) => it.fontName !== font);
-                sync.set({customFonts: customFonts}, () => {
+                chromeSync.set({customFonts: customFonts}, () => {
                     notifyCustomFontsChanged(customFonts);
                     displayedFonts = customFonts.map(it => it.fontName);
                     rootDiv.parentNode.removeChild(rootDiv);
@@ -98,7 +98,7 @@ function displayFont(customFont: CustomFont) {
 
 }
 
-sync.get({customFonts: []}, (fromStorage) => {
+chromeSync.get({customFonts: []}, (fromStorage) => {
     let customFonts: Array<CustomFont> = fromStorage.customFonts as Array<CustomFont>;
     customFonts.forEach((it: CustomFont) => displayFont(it));
     displayedFonts = customFonts.map(it => it.fontName);
@@ -143,11 +143,11 @@ addButton.onclick = () => {
     // TODO only allow inputs of letters and - and _, no commas and exclamation marks etc
     if (isValid) {
         infoLabel.innerText = "";
-        sync.get({customFonts: []}, (fromStorage) => {
+        chromeSync.get({customFonts: []}, (fromStorage) => {
             let customFonts: Array<CustomFont> = fromStorage.customFonts as Array<CustomFont>;
             let customFont = new CustomFont(fontName, displayedName, url);
             customFonts.push(customFont);
-            sync.set({customFonts: customFonts}, () => {
+            chromeSync.set({customFonts: customFonts}, () => {
                 displayFont(customFont);
                 notifyCustomFontsChanged(customFonts);
                 infoLabel.style.display = "none";

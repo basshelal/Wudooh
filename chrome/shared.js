@@ -7,9 +7,9 @@
  * ///<reference path="./shared.ts"/>
  */
 // Declare Browser APIs
-var tabs = chrome.tabs;
+var chromeTabs = chrome.tabs;
 var runtime = chrome.runtime;
-var sync = chrome.storage.sync;
+var chromeSync = chrome.storage.sync;
 /** The font size percent, between 100 and 300 */
 var keyTextSize = "textSize";
 /** The line height percent, between 100 and 300 */
@@ -160,18 +160,36 @@ function get(elementId) {
 /**
  * An abstraction and simplification of the storage.sync API to make it use Promises
  */
-var wudoohStorage = {
+var sync = {
     get: function (keys) {
         if (keys === void 0) { keys = null; }
-        return new Promise(function (resolve, reject) {
-            sync.get(keys, function (fromStorage) {
-                return resolve(fromStorage);
-            });
+        return new Promise(function (resolve) {
+            chrome.storage.sync.get(keys, function (storage) { return resolve(storage); });
         });
     },
     set: function (wudoohStorage) {
-        return new Promise(function (resolve, reject) {
-            return sync.set(wudoohStorage, function () { return resolve(); });
+        return new Promise(function (resolve) { return chrome.storage.sync.set(wudoohStorage, function () { return resolve(); }); });
+    }
+};
+var tabs = {
+    create: function (url) {
+        return new Promise(function (resolve) {
+            return chrome.tabs.create({ url: url }, function (tab) { return resolve(tab); });
+        });
+    },
+    queryAllTabs: function () {
+        return new Promise(function (resolve) {
+            return chrome.tabs.query({}, function (tabs) { return resolve(tabs); });
+        });
+    },
+    queryCurrentTab: function () {
+        return new Promise(function (resolve) {
+            return chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) { return resolve(tabs); });
+        });
+    },
+    sendMessage: function (tabId, message) {
+        return new Promise(function (resolve) {
+            return chrome.tabs.sendMessage(tabId, message, (function (response) { return resolve(response); }));
         });
     }
 };
