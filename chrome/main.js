@@ -246,13 +246,21 @@ sync.get(keys, function (fromStorage) {
  * sender's sendMessage call
  */
 runtime.onMessage.addListener(function (message) {
-    var newSize = 100 * (message.newSize / message.oldSize);
-    var newHeight = 100 * (message.newHeight / message.oldHeight);
-    updateAll(newSize, newHeight, message.font);
-    // If observer was existing then disconnect it and delete it
-    if (!!observer) {
-        observer.disconnect();
-        observer = null;
+    if (!message.reason)
+        return;
+    if (message.reason === reasonUpdateAllText) {
+        var newSize = 100 * (message.newSize / message.oldSize);
+        var newHeight = 100 * (message.newHeight / message.oldHeight);
+        updateAll(newSize, newHeight, message.font);
+        // If observer was existing then disconnect it and delete it
+        if (!!observer) {
+            observer.disconnect();
+            observer = null;
+        }
+        startObserver(newSize, newHeight, message.font);
     }
-    startObserver(newSize, newHeight, message.font);
+    if (message.reason === reasonInjectCustomFonts) {
+        var customFonts = message.customFonts;
+        injectCustomFonts(customFonts);
+    }
 });

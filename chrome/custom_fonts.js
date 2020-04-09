@@ -10,6 +10,17 @@ var infoLabel = get("infoLabel");
 var templateDiv = template.content.querySelector("div");
 // Use this to reduce the number of requests made to chrome storage
 var displayedFonts = [];
+function notifyCustomFontsChanged(customFonts) {
+    tabs.query({}, function (allTabs) {
+        allTabs.forEach(function (tab) {
+            var message = {
+                reason: reasonInjectCustomFonts,
+                customFonts: customFonts
+            };
+            tabs.sendMessage(tab.id, message);
+        });
+    });
+}
 function displayFont(customFont) {
     var fontName = customFont.fontName;
     var displayedName = customFont.displayedName;
@@ -57,6 +68,7 @@ function displayFont(customFont) {
                 var customFonts = fromStorage.customFonts;
                 customFonts = customFonts.filter(function (it) { return it.fontName !== font_1; });
                 sync.set({ customFonts: customFonts }, function () {
+                    notifyCustomFontsChanged(customFonts);
                     displayedFonts = customFonts.map(function (it) { return it.fontName; });
                     rootDiv.parentNode.removeChild(rootDiv);
                 });
@@ -64,12 +76,16 @@ function displayFont(customFont) {
         }
     };
     fontsDiv.appendChild(rootDiv);
+    var injectedCss = "@font-face { font-family: '" + fontName + "'; src: local('" + fontName + "')";
+    if (fontUrl)
+        injectedCss = injectedCss.concat(", url('" + fontUrl + "')");
+    injectedCss = injectedCss.concat("; }\n");
+    var fontsStyle = get("customFontsStyle");
+    fontsStyle.innerHTML = fontsStyle.innerHTML.concat(injectedCss);
 }
 sync.get({ customFonts: [] }, function (fromStorage) {
     var customFonts = fromStorage.customFonts;
-    customFonts.forEach(function (it) {
-        displayFont(it);
-    });
+    customFonts.forEach(function (it) { return displayFont(it); });
     displayedFonts = customFonts.map(function (it) { return it.fontName; });
 });
 fontNameInput.oninput = function () {
@@ -80,10 +96,13 @@ fontNameInput.oninput = function () {
         fontNameInput.style.color = "red";
     }
 };
-fontNameInput.onkeypress = function (event) {
+function pressedEnter(event) {
     if (event.code === "Enter")
         addButton.click();
-};
+}
+fontNameInput.onkeypress = pressedEnter;
+displayedNameInput.onkeypress = pressedEnter;
+urlInput.onkeypress = pressedEnter;
 addButton.onclick = function () {
     var fontName = fontNameInput.value;
     var displayedName = displayedNameInput.value;
@@ -112,6 +131,7 @@ addButton.onclick = function () {
             customFonts.push(customFont);
             sync.set({ customFonts: customFonts }, function () {
                 displayFont(customFont);
+                notifyCustomFontsChanged(customFonts);
                 infoLabel.style.display = "none";
                 fontNameInput.value = "";
                 displayedNameInput.value = "";
@@ -120,4 +140,3 @@ addButton.onclick = function () {
         });
     }
 };
-// TODO when a new custom font is added or removed send a message to main.ts so that it can reinject CSS

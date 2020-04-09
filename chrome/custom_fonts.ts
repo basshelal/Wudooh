@@ -13,6 +13,17 @@ const templateDiv = template.content.querySelector("div");
 // Use this to reduce the number of requests made to chrome storage
 let displayedFonts: Array<string> = [];
 
+function notifyCustomFontsChanged(customFonts: Array<CustomFont>) {
+    tabs.query({}, (allTabs: Array<Tab>) => {
+        allTabs.forEach((tab: Tab) => {
+            let message = {
+                reason: reasonInjectCustomFonts,
+                customFonts: customFonts
+            };
+            tabs.sendMessage(tab.id, message);
+        });
+    });
+}
 
 function displayFont(customFont: CustomFont) {
     const fontName: string = customFont.fontName;
@@ -68,6 +79,7 @@ function displayFont(customFont: CustomFont) {
                 let customFonts: Array<CustomFont> = fromStorage.customFonts as Array<CustomFont>;
                 customFonts = customFonts.filter((it: CustomFont) => it.fontName !== font);
                 sync.set({customFonts: customFonts}, () => {
+                    notifyCustomFontsChanged(customFonts);
                     displayedFonts = customFonts.map(it => it.fontName);
                     rootDiv.parentNode.removeChild(rootDiv);
                 });
@@ -76,13 +88,19 @@ function displayFont(customFont: CustomFont) {
     };
 
     fontsDiv.appendChild(rootDiv);
+
+    let injectedCss = `@font-face { font-family: '${fontName}'; src: local('${fontName}')`;
+    if (fontUrl) injectedCss = injectedCss.concat(`, url('${fontUrl}')`);
+    injectedCss = injectedCss.concat(`; }\n`);
+
+    let fontsStyle = get("customFontsStyle");
+    fontsStyle.innerHTML = fontsStyle.innerHTML.concat(injectedCss);
+
 }
 
 sync.get({customFonts: []}, (fromStorage) => {
     let customFonts: Array<CustomFont> = fromStorage.customFonts as Array<CustomFont>;
-    customFonts.forEach((it: CustomFont) => {
-        displayFont(it);
-    });
+    customFonts.forEach((it: CustomFont) => displayFont(it));
     displayedFonts = customFonts.map(it => it.fontName);
 });
 
@@ -94,9 +112,13 @@ fontNameInput.oninput = () => {
     }
 };
 
-fontNameInput.onkeypress = (event: KeyboardEvent) => {
+function pressedEnter(event: KeyboardEvent) {
     if (event.code === "Enter") addButton.click();
-};
+}
+
+fontNameInput.onkeypress = pressedEnter;
+displayedNameInput.onkeypress = pressedEnter;
+urlInput.onkeypress = pressedEnter;
 
 addButton.onclick = () => {
     let fontName = fontNameInput.value;
@@ -127,6 +149,7 @@ addButton.onclick = () => {
             customFonts.push(customFont);
             sync.set({customFonts: customFonts}, () => {
                 displayFont(customFont);
+                notifyCustomFontsChanged(customFonts);
                 infoLabel.style.display = "none";
                 fontNameInput.value = "";
                 displayedNameInput.value = "";
@@ -135,5 +158,3 @@ addButton.onclick = () => {
         });
     }
 };
-
-// TODO when a new custom font is added or removed send a message to main.ts so that it can reinject CSS

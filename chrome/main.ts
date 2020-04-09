@@ -285,14 +285,21 @@ sync.get(keys, (fromStorage) => {
  * sender's sendMessage call
  */
 runtime.onMessage.addListener((message) => {
-    let newSize: number = 100 * (message.newSize / message.oldSize);
-    let newHeight: number = 100 * (message.newHeight / message.oldHeight);
-    updateAll(newSize, newHeight, message.font);
+    if (!message.reason) return;
+    if (message.reason === reasonUpdateAllText) {
+        let newSize: number = 100 * (message.newSize / message.oldSize);
+        let newHeight: number = 100 * (message.newHeight / message.oldHeight);
+        updateAll(newSize, newHeight, message.font);
 
-    // If observer was existing then disconnect it and delete it
-    if (!!observer) {
-        observer.disconnect();
-        observer = null;
+        // If observer was existing then disconnect it and delete it
+        if (!!observer) {
+            observer.disconnect();
+            observer = null;
+        }
+        startObserver(newSize, newHeight, message.font);
     }
-    startObserver(newSize, newHeight, message.font);
+    if (message.reason === reasonInjectCustomFonts) {
+        let customFonts: Array<CustomFont> = message.customFonts;
+        injectCustomFonts(customFonts);
+    }
 });

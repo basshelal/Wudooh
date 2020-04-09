@@ -160,6 +160,7 @@ function updateAllText() {
                         font = custom.font;
                     }
                     let message = {
+                        reason: reasonUpdateAllText,
                         oldSize: oldSize,
                         oldHeight: oldHeight,
                         newSize: parseInt(sizeSlider.value),

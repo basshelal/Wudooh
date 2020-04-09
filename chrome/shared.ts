@@ -60,6 +60,10 @@ const defaultLineHeight: number = 125;
 const defaultColor: string = "#880E4F";
 const homePage: string = "http://basshelal.github.io/Wudooh";
 
+// Message Reasons
+const reasonUpdateAllText = "updateAllText";
+const reasonInjectCustomFonts = "injectCustomFonts";
+
 /**
  * Represents a site that uses different settings from the global settings
  * The settings themselves may be the same as the global but they will change independently
@@ -119,6 +123,11 @@ class CustomFont {
         else this.displayedName = fontName;
         this.url = url;
     }
+
+    // TODO fonts will send errors if they're invalid ONLY WHEN THEY ARE REQUESTED TO BE USED
+    //  this means they will silently exist if they've been injected as CSS even if they're invalid
+    //  so to check validity we need to force use them and see if they display or at least don't throw
+    //  errors
 
     /**
      * Trick to make sure that a font is installed on the client's machine.

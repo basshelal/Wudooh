@@ -144,6 +144,7 @@ function updateAllText() {
                         font = custom.font;
                     }
                     var message = {
+                        reason: reasonUpdateAllText,
                         oldSize: oldSize,
                         oldHeight: oldHeight,
                         newSize: parseInt(sizeSlider.value),
