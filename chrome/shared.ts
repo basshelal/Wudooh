@@ -14,9 +14,7 @@ import Tab = chrome.tabs.Tab;
 import InstalledDetails = chrome.runtime.InstalledDetails;
 
 // Declare Browser APIs
-const chromeTabs = chrome.tabs;
 const runtime = chrome.runtime;
-const chromeSync = chrome.storage.sync;
 
 /** The font size percent, between 100 and 300 */
 const keyTextSize: string = "textSize";
@@ -200,6 +198,8 @@ Array.prototype.contains = function <T>(element: T): boolean {
 };
 
 // endregion Extensions
+
+let htmlEditables = ["textarea", "input", "text", "email", "number", "search", "tel", "url", "password"];
 
 /**
  * Shorthand for {@linkcode document.getElementById}, automatically casts to T, a HTMLElement

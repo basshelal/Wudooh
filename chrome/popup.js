@@ -5,7 +5,7 @@
  */
 ///<reference path="../../../.WebStorm2019.3/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
 ///<reference path="./shared.ts"/>
-var main = get("main");
+var mainDiv = get("main");
 // Custom Fonts
 var fontsStyle = get("customFontsStyle");
 // Inputs
@@ -30,8 +30,8 @@ var importButton = get("importButton");
 var importInput = get("importInput");
 function addCustomFonts() {
     // Add custom fonts to popup.html
-    chromeSync.get({ customFonts: [] }, function (fromStorage) {
-        var customFonts = fromStorage.customFonts;
+    sync.get([keyCustomFonts]).then(function (storage) {
+        var customFonts = storage.customFonts;
         customFonts.forEach(function (customFont) {
             var fontName = customFont.fontName;
             var displayedName = customFont.displayedName;
@@ -58,64 +58,59 @@ function addCustomFonts() {
 function initializeUI() {
     addCustomFonts();
     // Get all the options with default values if they're not found for some reason
-    chromeSync.get({
-        textSize: defaultTextSize,
-        lineHeight: defaultLineHeight,
-        onOff: true,
-        font: defaultFont,
-        whitelisted: [],
-        customSettings: []
-    }, function (fromStorage) {
-        chromeTabs.query({ active: true, currentWindow: true }, function (tabs) {
-            // If the extension is off then hide the main div
-            onOffSwitch.checked = fromStorage.onOff;
-            if (fromStorage.onOff)
-                main.style.maxHeight = "100%";
-            else
-                main.style.maxHeight = "0";
-            var thisTab = tabs[0];
-            var thisURL = new URL(thisTab.url).hostname;
-            var customSettings = fromStorage.customSettings;
-            var whiteListed = fromStorage.whitelisted;
-            var textSize;
-            var lineHeight;
-            var font;
-            // The above will be different if thisURL is a custom one so we set them depending on this
-            var custom = customSettings.findFirst(function (custom) { return custom.url === thisURL; });
-            if (!!custom) {
-                textSize = custom.textSize;
-                lineHeight = custom.lineHeight;
-                font = custom.font;
-            }
-            else {
-                textSize = fromStorage.textSize;
-                lineHeight = fromStorage.lineHeight;
-                font = fromStorage.font;
-            }
-            // Initialize all the HTMLElements to the values from storage
-            sizeSlider.value = textSize.toString();
-            sizeValue.innerHTML = textSize.toString() + '%';
-            heightSlider.value = lineHeight.toString();
-            heightValue.innerHTML = lineHeight.toString() + '%';
-            fontSelect.value = font;
-            fontSelect.style.fontFamily = font;
-            websiteText.innerText = thisURL;
-            websiteIcon.src = "chrome://favicon/size/32/" + thisTab.url;
-            websiteIcon.title = thisURL;
-            websiteIcon.alt = thisURL;
-            var isWhitelisted = !!(whiteListed.findFirst(function (it) { return it === thisURL; }));
-            var isCustom = !!custom;
-            whiteListSwitch.checked = !isWhitelisted;
-            if (isWhitelisted)
-                whitelistedValue.innerText = "This site is whitelisted";
-            else
-                whitelistedValue.innerText = "Running on this site";
-            overrideSiteSwitch.checked = isCustom;
-            if (isCustom)
-                overrideSettingsValue.innerText = "Using site specific settings";
-            else
-                overrideSettingsValue.innerText = "Using global settings";
-        });
+    var storage;
+    sync.get(keys).then(function (_storage) {
+        storage = _storage;
+        return tabs.queryCurrentTab();
+    }).then(function (tabs) {
+        // If the extension is off then hide the main div
+        onOffSwitch.checked = storage.onOff;
+        if (storage.onOff)
+            mainDiv.style.maxHeight = "100%";
+        else
+            mainDiv.style.maxHeight = "0";
+        var thisTab = tabs[0];
+        var thisURL = new URL(thisTab.url).hostname;
+        var customSettings = storage.customSettings;
+        var whiteListed = storage.whitelisted;
+        var textSize;
+        var lineHeight;
+        var font;
+        // The above will be different if thisURL is a custom one so we set them depending on this
+        var custom = customSettings.findFirst(function (custom) { return custom.url === thisURL; });
+        if (!!custom) {
+            textSize = custom.textSize;
+            lineHeight = custom.lineHeight;
+            font = custom.font;
+        }
+        else {
+            textSize = storage.textSize;
+            lineHeight = storage.lineHeight;
+            font = storage.font;
+        }
+        // Initialize all the HTMLElements to the values from storage
+        sizeSlider.value = textSize.toString();
+        sizeValue.innerHTML = textSize.toString() + '%';
+        heightSlider.value = lineHeight.toString();
+        heightValue.innerHTML = lineHeight.toString() + '%';
+        fontSelect.value = font;
+        fontSelect.style.fontFamily = font;
+        websiteText.innerText = thisURL;
+        websiteIcon.src = "chrome://favicon/size/32/" + thisTab.url;
+        websiteIcon.title = thisURL;
+        websiteIcon.alt = thisURL;
+        var isWhitelisted = !!(whiteListed.findFirst(function (it) { return it === thisURL; }));
+        var isCustom = !!custom;
+        whiteListSwitch.checked = !isWhitelisted;
+        if (isWhitelisted)
+            whitelistedValue.innerText = "This site is whitelisted";
+        else
+            whitelistedValue.innerText = "Running on this site";
+        overrideSiteSwitch.checked = isCustom;
+        if (isCustom)
+            overrideSettingsValue.innerText = "Using site specific settings";
+        else
+            overrideSettingsValue.innerText = "Using global settings";
     });
 }
 /**
@@ -131,7 +126,7 @@ function updateAllText() {
         var oldHeight_1;
         var font_1;
         var customSettings_1;
-        sync.get(["textSize", "lineHeight", "font", "customSettings"]).then(function (storage) {
+        sync.get([keyTextSize, keyLineHeight, keyFont, keyCustomSettings]).then(function (storage) {
             // We need the old values to know how much we should change the options in main.ts
             oldSize_1 = storage.textSize;
             oldHeight_1 = storage.lineHeight;
@@ -155,7 +150,7 @@ function updateAllText() {
                 newHeight: parseInt(heightSlider.value),
                 font: font_1
             };
-            chromeTabs.sendMessage(tab.id, message);
+            tabs.sendMessage(tab.id, message);
         }); });
     }
 }
@@ -163,13 +158,13 @@ function updateAllText() {
  * Toggles the on off switch and saves the "onOff" setting, this will update all text if the switch is turned on
  */
 function toggleOnOff() {
-    chromeSync.set({ onOff: onOffSwitch.checked }, function () {
+    sync.set({ onOff: onOffSwitch.checked }).then(function () {
         if (onOffSwitch.checked) {
             updateAllText();
-            main.style.maxHeight = "100%";
+            mainDiv.style.maxHeight = "100%";
         }
         else {
-            main.style.maxHeight = "0";
+            mainDiv.style.maxHeight = "0";
         }
     });
 }
@@ -179,7 +174,7 @@ function toggleOnOff() {
 function updateSize() {
     // Update before saving because we need the old value in the update function before saving
     updateAllText();
-    chromeSync.set({ textSize: parseInt(sizeSlider.value) });
+    sync.set({ textSize: parseInt(sizeSlider.value) });
 }
 /**
  * Update line height by updating all text and then saving the setting
@@ -187,14 +182,14 @@ function updateSize() {
 function updateHeight() {
     // Update before saving because we need the old value in the update function before saving
     updateAllText();
-    chromeSync.set({ lineHeight: parseInt(heightSlider.value) });
+    sync.set({ lineHeight: parseInt(heightSlider.value) });
 }
 /**
  * Changes the font and saves the "font" setting, this will update all text
  */
 function changeFont() {
     fontSelect.style.fontFamily = fontSelect.value;
-    chromeSync.set({ font: fontSelect.value, }, function () {
+    sync.set({ font: fontSelect.value, }).then(function () {
         updateAllText();
     });
 }
@@ -202,28 +197,29 @@ function changeFont() {
  * Toggles the override site settings switch and saves the setting
  */
 function toggleOverrideSiteSettings() {
+    var thisURL;
     // This only requires this current tab
-    chromeTabs.query({ active: true, currentWindow: true }, function (tabs) {
+    tabs.queryCurrentTab().then(function (tabs) {
         // Get the url we are currently on
-        var thisURL = new URL(tabs[0].url).hostname;
-        chromeSync.get({ customSettings: [] }, function (fromStorage) {
-            // Get the array of all custom websites
-            var customSettings = fromStorage.customSettings;
-            // Override switch is on so use custom settings
-            if (overrideSiteSwitch.checked) {
-                var custom = new CustomSettings(thisURL, parseInt(sizeSlider.value), parseInt(heightSlider.value), fontSelect.value);
-                customSettings.push(custom);
-                overrideSettingsValue.innerText = "Using site specific settings";
-            }
-            else {
-                // Using global settings
-                // Remove all occurrences of this url from customSettings, just in case
-                customSettings = customSettings.filter(function (it) { return it.url !== thisURL; });
-                overrideSettingsValue.innerText = "Using global settings";
-            }
-            // Set the array of all whitelisted websites in storage
-            chromeSync.set({ customSettings: customSettings });
-        });
+        thisURL = new URL(tabs[0].url).hostname;
+        return sync.get([keyCustomSettings]);
+    }).then(function (storage) {
+        // Get the array of all custom websites
+        var customSettings = storage.customSettings;
+        // Override switch is on so use custom settings
+        if (overrideSiteSwitch.checked) {
+            var custom = new CustomSettings(thisURL, parseInt(sizeSlider.value), parseInt(heightSlider.value), fontSelect.value);
+            customSettings.push(custom);
+            overrideSettingsValue.innerText = "Using site specific settings";
+        }
+        else {
+            // Using global settings
+            // Remove all occurrences of this url from customSettings, just in case
+            customSettings = customSettings.filter(function (it) { return it.url !== thisURL; });
+            overrideSettingsValue.innerText = "Using global settings";
+        }
+        // Set the array of all whitelisted websites in storage
+        sync.set({ customSettings: customSettings });
     });
 }
 /**
@@ -235,35 +231,36 @@ function toggleOverrideSiteSettings() {
  * is not preserved
  */
 function toggleWhitelist() {
+    var thisURL;
     // This only requires this current tab
-    chromeTabs.query({ active: true, currentWindow: true }, function (tabs) {
+    tabs.queryCurrentTab().then(function (tabs) {
         // Get the url we are on right now
-        var thisURL = new URL(tabs[0].url).hostname;
-        chromeSync.get({ whitelisted: [] }, function (fromStorage) {
-            // Get the array of all whitelisted websites
-            var whitelisted = fromStorage.whitelisted;
-            // Allowed to run on this site
-            if (whiteListSwitch.checked) {
-                // Remove all occurrences of this url from that array, just in case
-                whitelisted = whitelisted.filter(function (it) { return it != thisURL; });
-                whitelistedValue.innerText = "Running on this site, reload to see changes";
-            }
-            else {
-                // Whitelisted, add this url to the whitelisted array
-                whitelisted.push(thisURL);
-                whitelistedValue.innerText = "This site is whitelisted, reload to see changes";
-            }
-            // Set the array of all whitelisted websites in storage
-            chromeSync.set({ whitelisted: whitelisted });
-        });
+        thisURL = new URL(tabs[0].url).hostname;
+        return sync.get([keyWhitelisted]);
+    }).then(function (storage) {
+        // Get the array of all whitelisted websites
+        var whitelisted = storage.whitelisted;
+        // Allowed to run on this site
+        if (whiteListSwitch.checked) {
+            // Remove all occurrences of this url from that array, just in case
+            whitelisted = whitelisted.filter(function (it) { return it != thisURL; });
+            whitelistedValue.innerText = "Running on this site, reload to see changes";
+        }
+        else {
+            // Whitelisted, add this url to the whitelisted array
+            whitelisted.push(thisURL);
+            whitelistedValue.innerText = "This site is whitelisted, reload to see changes";
+        }
+        // Set the array of all whitelisted websites in storage
+        sync.set({ whitelisted: whitelisted });
     });
 }
 /**
  * Exports all settings saved in chrome sync storage to a pretty json file called "settings.wudooh.json"
  */
 function exportSettings() {
-    chromeSync.get(keys, function (fromStorage) {
-        var json = JSON.stringify(fromStorage, null, 4);
+    sync.get(keys).then(function (storage) {
+        var json = JSON.stringify(storage, null, 4);
         exportAnchor.href = "data:application/octet-stream," + encodeURIComponent(json);
         exportAnchor.download = "settings.wudooh.json";
         exportAnchor.click();
@@ -352,7 +349,7 @@ function importSettings() {
             return;
         }
         // If we've reached here the JSON was valid, save all new settings!
-        chromeSync.set({
+        sync.set({
             textSize: textSize,
             lineHeight: lineHeight,
             onOff: onOff,

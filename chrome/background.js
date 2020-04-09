@@ -16,19 +16,19 @@ function launchSite(path) {
 runtime.onInstalled.addListener(function (details) {
     sync.get(keys).then(function (storage) {
         if (!storage.textSize)
-            storage.set({ textSize: defaultTextSize });
+            sync.set({ textSize: defaultTextSize });
         if (!storage.lineHeight)
-            storage.set({ lineHeight: defaultLineHeight });
+            sync.set({ lineHeight: defaultLineHeight });
         if (!storage.onOff)
-            storage.set({ onOff: true, });
+            sync.set({ onOff: true, });
         if (!storage.font)
-            storage.set({ font: defaultFont });
+            sync.set({ font: defaultFont });
         if (!storage.whitelisted)
-            storage.set({ whitelisted: [] });
+            sync.set({ whitelisted: [] });
         if (!storage.customSettings)
-            storage.set({ customSettings: [] });
+            sync.set({ customSettings: [] });
         if (!storage.customFonts)
-            storage.set({ customFonts: [] });
+            sync.set({ customFonts: [] });
         // User has updated extension
         if (details.reason == "update") {
             var oldVersion = details.previousVersion; // string of previous version if we need it

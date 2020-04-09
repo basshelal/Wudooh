@@ -20,7 +20,7 @@ function notifyCustomFontsChanged(customFonts: Array<CustomFont>) {
                 reason: reasonInjectCustomFonts,
                 customFonts: customFonts
             };
-            chromeTabs.sendMessage(tab.id, message);
+            tabs.sendMessage(tab.id, message);
         });
     });
 }
@@ -75,14 +75,14 @@ function displayFont(customFont: CustomFont) {
     deleteButton.onclick = () => {
         if (confirm(`Are you sure you want to delete ${fontNameInput.value}\nThis cannot be undone`)) {
             let font = fontNameInput.value;
-            chromeSync.get({customFonts: []}, (fromStorage) => {
-                let customFonts: Array<CustomFont> = fromStorage.customFonts as Array<CustomFont>;
-                customFonts = customFonts.filter((it: CustomFont) => it.fontName !== font);
-                chromeSync.set({customFonts: customFonts}, () => {
-                    notifyCustomFontsChanged(customFonts);
-                    displayedFonts = customFonts.map(it => it.fontName);
-                    rootDiv.parentNode.removeChild(rootDiv);
-                });
+            let customFonts: Array<CustomFont>;
+            sync.get([keyCustomFonts]).then((storage: WudoohStorage) => {
+                customFonts = storage.customFonts.filter((it: CustomFont) => it.fontName !== font);
+                return sync.set({customFonts: customFonts});
+            }).then(() => {
+                notifyCustomFontsChanged(customFonts);
+                displayedFonts = customFonts.map(it => it.fontName);
+                rootDiv.parentNode.removeChild(rootDiv);
             });
         }
     };
@@ -98,10 +98,13 @@ function displayFont(customFont: CustomFont) {
 
 }
 
-chromeSync.get({customFonts: []}, (fromStorage) => {
-    let customFonts: Array<CustomFont> = fromStorage.customFonts as Array<CustomFont>;
-    customFonts.forEach((it: CustomFont) => displayFont(it));
-    displayedFonts = customFonts.map(it => it.fontName);
+sync.get([keyCustomFonts]).then((storage: WudoohStorage) => {
+    let customFonts: Array<CustomFont> = storage.customFonts;
+    displayedFonts = [];
+    customFonts.forEach((it: CustomFont) => {
+        displayFont(it);
+        displayedFonts.push(it.fontName)
+    });
 });
 
 fontNameInput.oninput = () => {
@@ -132,29 +135,34 @@ addButton.onclick = () => {
 
     if (fontName.length === 0) {
         isValid = false;
+        infoLabel.style.display = "block";
         infoLabel.innerText = "Cannot be empty!";
         return;
     }
     if (displayedFonts.contains(fontName)) {
         isValid = false;
+        infoLabel.style.display = "block";
         infoLabel.innerText = "Already in list!";
         return;
     }
     // TODO only allow inputs of letters and - and _, no commas and exclamation marks etc
     if (isValid) {
         infoLabel.innerText = "";
-        chromeSync.get({customFonts: []}, (fromStorage) => {
-            let customFonts: Array<CustomFont> = fromStorage.customFonts as Array<CustomFont>;
-            let customFont = new CustomFont(fontName, displayedName, url);
+        let customFonts: Array<CustomFont>;
+        let customFont: CustomFont;
+        sync.get([keyCustomFonts]).then((storage: WudoohStorage) => {
+            customFonts = storage.customFonts;
+            customFont = new CustomFont(fontName, displayedName, url);
             customFonts.push(customFont);
-            chromeSync.set({customFonts: customFonts}, () => {
-                displayFont(customFont);
-                notifyCustomFontsChanged(customFonts);
-                infoLabel.style.display = "none";
-                fontNameInput.value = "";
-                displayedNameInput.value = "";
-                urlInput.value = "";
-            });
+            return sync.set({customFonts: customFonts});
+        }).then(() => {
+            displayFont(customFont);
+            displayedFonts.push(customFont.fontName);
+            notifyCustomFontsChanged(customFonts);
+            infoLabel.style.display = "none";
+            fontNameInput.value = "";
+            displayedNameInput.value = "";
+            urlInput.value = "";
         });
     }
 };

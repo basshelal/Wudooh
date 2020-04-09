@@ -17,13 +17,13 @@ function launchSite(path: string = "") {
  */
 runtime.onInstalled.addListener((details: InstalledDetails) => {
     sync.get(keys).then((storage: WudoohStorage) => {
-        if (!storage.textSize) storage.set({textSize: defaultTextSize});
-        if (!storage.lineHeight) storage.set({lineHeight: defaultLineHeight});
-        if (!storage.onOff) storage.set({onOff: true,});
-        if (!storage.font) storage.set({font: defaultFont});
-        if (!storage.whitelisted) storage.set({whitelisted: []});
-        if (!storage.customSettings) storage.set({customSettings: []});
-        if (!storage.customFonts) storage.set({customFonts: []});
+        if (!storage.textSize) sync.set({textSize: defaultTextSize});
+        if (!storage.lineHeight) sync.set({lineHeight: defaultLineHeight});
+        if (!storage.onOff) sync.set({onOff: true,});
+        if (!storage.font) sync.set({font: defaultFont});
+        if (!storage.whitelisted) sync.set({whitelisted: []});
+        if (!storage.customSettings) sync.set({customSettings: []});
+        if (!storage.customFonts) sync.set({customFonts: []});
 
         // User has updated extension
         if (details.reason == "update") {

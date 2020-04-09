@@ -36,20 +36,16 @@ function hasArabicScript(node: Node): boolean {
  * root node
  */
 function getArabicTextNodesIn(rootNode: Node): Array<Node> {
-
     let walker: TreeWalker = document.createTreeWalker(
         rootNode,
         NodeFilter.SHOW_ALL
     );
-
-    let node: Node;
+    let node: Node = walker.nextNode();
     let arabicTextNodes: Array<Node> = [];
 
-    // noinspection JSAssignmentUsedAsCondition
-    while (node = walker.nextNode()) {
-        if (hasArabicScript(node)) {
-            arabicTextNodes.push(node);
-        }
+    while (!!node) {
+        if (hasArabicScript(node)) arabicTextNodes.push(node);
+        node = walker.nextNode();
     }
     return arabicTextNodes;
 }
@@ -93,9 +89,7 @@ function isEditable(node: Node): boolean {
     let element: HTMLElement = node as HTMLElement;
     let nodeName: string = element.nodeName.toLowerCase();
 
-    let editables: Array<string> = ["textarea", "input", "text", "email", "number", "search", "tel", "url", "password"];
-
-    return (element.isContentEditable || (element.nodeType === Node.ELEMENT_NODE && !!editables.findFirst((it) => it === nodeName)));
+    return (element.isContentEditable || (element.nodeType === Node.ELEMENT_NODE && htmlEditables.contains(nodeName)));
 }
 
 /**
@@ -109,7 +103,7 @@ function isEditable(node: Node): boolean {
  * @param font the name of the font to update the text to
  */
 function updateNode(node: Node, textSize: number, lineHeight: number, font: string = defaultFont) {
-    if (node.nodeValue) {
+    if (!!node.nodeValue) {
         let newSize: number = textSize / 100;
         let newHeight: number = lineHeight / 100;
 
@@ -155,52 +149,51 @@ function updateAll(textSize: number, lineHeight: number, font: string = defaultF
  * @param font the name of the font to update the text to
  */
 function startObserver(textSize: number, lineHeight: number, font: string = defaultFont) {
+    // Only do anything if observer is null
+    if (!observer) {
+        let config: MutationObserverInit = {
+            attributes: false, // we don't care about attribute changes
+            attributeOldValue: false, // we don't care about attribute changes
+            characterData: true, // we get notified of any changes to character data
+            characterDataOldValue: true, // we keep the old value
+            childList: true, // we get notified about changes to a node's children
+            subtree: true, // we get notified about any changes to any of a node's descendants
+        };
 
-    let config: MutationObserverInit = {
-        attributes: false, // we don't care about attribute changes
-        attributeOldValue: false, // we don't care about attribute changes
-        characterData: true, // we get notified of any changes to character data
-        characterDataOldValue: true, // we keep the old value
-        childList: true, // we get notified about changes to a node's children
-        subtree: true, // we get notified about any changes to any of a node's descendants
-    };
+        let callback: MutationCallback = (mutationsList: MutationRecord[]) => {
+            mutationsList.forEach((record: MutationRecord) => {
+                // If something has been added
+                if (record.addedNodes.length > 0) {
 
-    let callback: MutationCallback = (mutationsList: MutationRecord[]) => {
-        mutationsList.forEach((record: MutationRecord) => {
-            // If something has been added
-            if (record.addedNodes.length > 0) {
+                    //  For each added node
+                    record.addedNodes.forEach((addedNode: Node) => {
 
-                //  For each added node
-                record.addedNodes.forEach((addedNode: Node) => {
+                        // For each node with Arabic script in addedNode
+                        getArabicTextNodesIn(addedNode).forEach((arabicNode: Node) => {
 
-                    // For each node with Arabic script in addedNode
-                    getArabicTextNodesIn(addedNode).forEach((arabicNode: Node) => {
+                            // Update arabicNode only if it hasn't been updated
+                            if (arabicNode.parentElement && arabicNode.parentElement.getAttribute("wudooh") !== "true") {
+                                updateNode(arabicNode, textSize, lineHeight, font);
+                            }
+                        });
+                    });
+                }
+
+                // If the value has changed
+                if (record.target.nodeValue !== record.oldValue && record.target.parentNode instanceof Node) {
+
+                    // If the node now has Arabic text when it didn't, this is rare and only occurs on YouTube
+                    getArabicTextNodesIn(record.target.parentNode).forEach((arabicNode: Node) => {
 
                         // Update arabicNode only if it hasn't been updated
                         if (arabicNode.parentElement && arabicNode.parentElement.getAttribute("wudooh") != "true") {
                             updateNode(arabicNode, textSize, lineHeight, font);
                         }
                     });
-                });
-            }
+                }
+            });
+        };
 
-            // If the value has changed
-            if (record.target.nodeValue !== record.oldValue && record.target.parentNode instanceof Node) {
-
-                // If the node now has Arabic text when it didn't, this is rare and only occurs on YouTube
-                getArabicTextNodesIn(record.target.parentNode).forEach((arabicNode: Node) => {
-
-                    // Update arabicNode only if it hasn't been updated
-                    if (arabicNode.parentElement && arabicNode.parentElement.getAttribute("wudooh") != "true") {
-                        updateNode(arabicNode, textSize, lineHeight, font);
-                    }
-                });
-            }
-        });
-    };
-
-    // If observer is null then make a new one and start observing
-    if (!observer) {
         observer = new MutationObserver(callback);
         observer.observe(document.body, config);
     }
@@ -211,12 +204,16 @@ function startObserver(textSize: number, lineHeight: number, font: string = defa
  * This has no use currently but may be useful later for sites to know if Wudooh is changing their content and for
  * testing
  */
-function notify() {
+function notifyDocument() {
     let meta = document.createElement("meta");
     meta.setAttribute("wudooh", "true");
     document.head.appendChild(meta);
 }
 
+/**
+ * Injects the passed in {@linkcode CustomFont}s into this document's head into a new style element
+ * @param customFonts the Array of CustomFonts to inject into this document
+ */
 function injectCustomFonts(customFonts: Array<CustomFont>) {
     let customFontsStyle = get("wudoohCustomFontsStyle");
     if (customFontsStyle) {
@@ -241,65 +238,72 @@ function injectCustomFonts(customFonts: Array<CustomFont>) {
 }
 
 /**
- * Main execution:
- * Updates all existing text according to the options
- * Then starts an observer with those same options to update any new text that will come
- * This only happens if the on off switch is on and the site is not whitelisted
- */
-sync.get(keys).then((storage: WudoohStorage) => {
-    let textSize: number = storage.textSize;
-    let lineHeight: number = storage.lineHeight;
-    let isOn: boolean = storage.onOff;
-    let font: string = storage.font;
-    let whitelisted: Array<string> = storage.whitelisted;
-    let customSettings: Array<CustomSettings> = storage.customSettings;
-    let customFonts: Array<CustomFont> = storage.customFonts;
-
-    let thisHostname: string = new URL(document.URL).hostname;
-    let isWhitelisted: boolean = !!whitelisted.findFirst((it) => it === thisHostname);
-
-    let customSite: CustomSettings = customSettings.findFirst((custom: CustomSettings) => custom.url === thisHostname);
-
-    // Only do anything if the switch is on and this site is not whitelisted
-    if (isOn && !isWhitelisted) {
-
-        injectCustomFonts(customFonts);
-
-        // If it's a custom site then change the textSize, lineHeight and font
-        if (customSite) {
-            textSize = customSite.textSize;
-            lineHeight = customSite.lineHeight;
-            font = customSite.font;
-        }
-        updateAll(textSize, lineHeight, font);
-        startObserver(textSize, lineHeight, font);
-        notify();
-    }
-});
-
-/**
  * Listener to update text if options are modified, the options being text size, line height and font
  * Since the original font is not saved, reverting the text to it's original form is not possible
  * This will disconnect the previous observer and start a new one its place with the new options
  * The check whether the switch is on or if this site is whitelisted is not done here but at the
  * sender's sendMessage call
  */
-runtime.onMessage.addListener((message) => {
-    if (!message.reason) return;
-    if (message.reason === reasonUpdateAllText) {
-        let newSize: number = 100 * (message.newSize / message.oldSize);
-        let newHeight: number = 100 * (message.newHeight / message.oldHeight);
-        updateAll(newSize, newHeight, message.font);
+function addMessageListener() {
+    runtime.onMessage.addListener((message) => {
+        if (!message.reason) return;
+        if (message.reason === reasonUpdateAllText) {
+            let newSize: number = 100 * (message.newSize / message.oldSize);
+            let newHeight: number = 100 * (message.newHeight / message.oldHeight);
+            updateAll(newSize, newHeight, message.font);
 
-        // If observer was existing then disconnect it and delete it
-        if (!!observer) {
-            observer.disconnect();
-            observer = null;
+            // If observer was existing then disconnect it and delete it
+            if (!!observer) {
+                observer.disconnect();
+                observer = null;
+            }
+            startObserver(newSize, newHeight, message.font);
         }
-        startObserver(newSize, newHeight, message.font);
-    }
-    if (message.reason === reasonInjectCustomFonts) {
-        let customFonts: Array<CustomFont> = message.customFonts;
-        injectCustomFonts(customFonts);
-    }
-});
+        if (message.reason === reasonInjectCustomFonts) {
+            let customFonts: Array<CustomFont> = message.customFonts;
+            injectCustomFonts(customFonts);
+        }
+    });
+}
+
+/**
+ * Main execution:
+ * Updates all existing text according to the options
+ * Then starts an observer with those same options to update any new text that will come
+ * This only happens if the on off switch is on and the site is not whitelisted
+ */
+function main() {
+    sync.get(keys).then((storage: WudoohStorage) => {
+        let textSize: number = storage.textSize;
+        let lineHeight: number = storage.lineHeight;
+        let isOn: boolean = storage.onOff;
+        let font: string = storage.font;
+        let whitelisted: Array<string> = storage.whitelisted;
+        let customSettings: Array<CustomSettings> = storage.customSettings;
+        let customFonts: Array<CustomFont> = storage.customFonts;
+
+        let thisHostname: string = new URL(document.URL).hostname;
+        let isWhitelisted: boolean = !!whitelisted.findFirst((it) => it === thisHostname);
+
+        let customSite: CustomSettings = customSettings.findFirst((custom: CustomSettings) => custom.url === thisHostname);
+
+        // Only do anything if the switch is on and this site is not whitelisted
+        if (isOn && !isWhitelisted) {
+
+            injectCustomFonts(customFonts);
+
+            // If it's a custom site then change the textSize, lineHeight and font
+            if (customSite) {
+                textSize = customSite.textSize;
+                lineHeight = customSite.lineHeight;
+                font = customSite.font;
+            }
+            updateAll(textSize, lineHeight, font);
+            startObserver(textSize, lineHeight, font);
+            notifyDocument();
+        }
+    });
+}
+
+main();
+addMessageListener();

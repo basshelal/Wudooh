@@ -17,7 +17,7 @@ function notifyCustomFontsChanged(customFonts) {
                 reason: reasonInjectCustomFonts,
                 customFonts: customFonts
             };
-            chromeTabs.sendMessage(tab.id, message);
+            tabs.sendMessage(tab.id, message);
         });
     });
 }
@@ -64,14 +64,14 @@ function displayFont(customFont) {
     deleteButton.onclick = function () {
         if (confirm("Are you sure you want to delete " + fontNameInput.value + "\nThis cannot be undone")) {
             var font_1 = fontNameInput.value;
-            chromeSync.get({ customFonts: [] }, function (fromStorage) {
-                var customFonts = fromStorage.customFonts;
-                customFonts = customFonts.filter(function (it) { return it.fontName !== font_1; });
-                chromeSync.set({ customFonts: customFonts }, function () {
-                    notifyCustomFontsChanged(customFonts);
-                    displayedFonts = customFonts.map(function (it) { return it.fontName; });
-                    rootDiv.parentNode.removeChild(rootDiv);
-                });
+            var customFonts_1;
+            sync.get([keyCustomFonts]).then(function (storage) {
+                customFonts_1 = storage.customFonts.filter(function (it) { return it.fontName !== font_1; });
+                return sync.set({ customFonts: customFonts_1 });
+            }).then(function () {
+                notifyCustomFontsChanged(customFonts_1);
+                displayedFonts = customFonts_1.map(function (it) { return it.fontName; });
+                rootDiv.parentNode.removeChild(rootDiv);
             });
         }
     };
@@ -83,10 +83,13 @@ function displayFont(customFont) {
     var fontsStyle = get("customFontsStyle");
     fontsStyle.innerHTML = fontsStyle.innerHTML.concat(injectedCss);
 }
-chromeSync.get({ customFonts: [] }, function (fromStorage) {
-    var customFonts = fromStorage.customFonts;
-    customFonts.forEach(function (it) { return displayFont(it); });
-    displayedFonts = customFonts.map(function (it) { return it.fontName; });
+sync.get([keyCustomFonts]).then(function (storage) {
+    var customFonts = storage.customFonts;
+    displayedFonts = [];
+    customFonts.forEach(function (it) {
+        displayFont(it);
+        displayedFonts.push(it.fontName);
+    });
 });
 fontNameInput.oninput = function () {
     if (CustomFont.isFontInstalled(fontNameInput.value)) {
@@ -114,29 +117,34 @@ addButton.onclick = function () {
     var isValid = true;
     if (fontName.length === 0) {
         isValid = false;
+        infoLabel.style.display = "block";
         infoLabel.innerText = "Cannot be empty!";
         return;
     }
     if (displayedFonts.contains(fontName)) {
         isValid = false;
+        infoLabel.style.display = "block";
         infoLabel.innerText = "Already in list!";
         return;
     }
     // TODO only allow inputs of letters and - and _, no commas and exclamation marks etc
     if (isValid) {
         infoLabel.innerText = "";
-        chromeSync.get({ customFonts: [] }, function (fromStorage) {
-            var customFonts = fromStorage.customFonts;
-            var customFont = new CustomFont(fontName, displayedName, url);
-            customFonts.push(customFont);
-            chromeSync.set({ customFonts: customFonts }, function () {
-                displayFont(customFont);
-                notifyCustomFontsChanged(customFonts);
-                infoLabel.style.display = "none";
-                fontNameInput.value = "";
-                displayedNameInput.value = "";
-                urlInput.value = "";
-            });
+        var customFonts_2;
+        var customFont_1;
+        sync.get([keyCustomFonts]).then(function (storage) {
+            customFonts_2 = storage.customFonts;
+            customFont_1 = new CustomFont(fontName, displayedName, url);
+            customFonts_2.push(customFont_1);
+            return sync.set({ customFonts: customFonts_2 });
+        }).then(function () {
+            displayFont(customFont_1);
+            displayedFonts.push(customFont_1.fontName);
+            notifyCustomFontsChanged(customFonts_2);
+            infoLabel.style.display = "none";
+            fontNameInput.value = "";
+            displayedNameInput.value = "";
+            urlInput.value = "";
         });
     }
 };

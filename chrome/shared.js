@@ -7,9 +7,7 @@
  * ///<reference path="./shared.ts"/>
  */
 // Declare Browser APIs
-var chromeTabs = chrome.tabs;
 var runtime = chrome.runtime;
-var chromeSync = chrome.storage.sync;
 /** The font size percent, between 100 and 300 */
 var keyTextSize = "textSize";
 /** The line height percent, between 100 and 300 */
@@ -149,6 +147,7 @@ Array.prototype.contains = function (element) {
     return !!this.findFirst(function (it) { return it === element; });
 };
 // endregion Extensions
+var htmlEditables = ["textarea", "input", "text", "email", "number", "search", "tel", "url", "password"];
 /**
  * Shorthand for {@linkcode document.getElementById}, automatically casts to T, a HTMLElement
  *
