@@ -19,21 +19,21 @@ function launchSite(path) {
  * If some key has not been initialized then it will create it and set it to its default value
  */
 runtime.onInstalled.addListener(function (details) {
-    sync.get(keys, function (fromStorage) {
-        if (!fromStorage.textSize)
-            sync.set({ textSize: defaultTextSize });
-        if (!fromStorage.lineHeight)
-            sync.set({ lineHeight: defaultLineHeight });
-        if (!fromStorage.onOff)
-            sync.set({ onOff: true, });
-        if (!fromStorage.font)
-            sync.set({ font: defaultFont });
-        if (!fromStorage.whitelisted)
-            sync.set({ whitelisted: [] });
-        if (!fromStorage.customSettings)
-            sync.set({ customSettings: [] });
-        if (!fromStorage.customFonts)
-            sync.set({ customFonts: [] });
+    wudoohStorage.get(keys).then(function (storage) {
+        if (!storage.textSize)
+            wudoohStorage.set({ textSize: defaultTextSize });
+        if (!storage.lineHeight)
+            wudoohStorage.set({ lineHeight: defaultLineHeight });
+        if (!storage.onOff)
+            wudoohStorage.set({ onOff: true, });
+        if (!storage.font)
+            wudoohStorage.set({ font: defaultFont });
+        if (!storage.whitelisted)
+            wudoohStorage.set({ whitelisted: [] });
+        if (!storage.customSettings)
+            wudoohStorage.set({ customSettings: [] });
+        if (!storage.customFonts)
+            wudoohStorage.set({ customFonts: [] });
         // User has updated extension
         if (details.reason == "update") {
             var oldVersion = details.previousVersion; // string of previous version if we need it

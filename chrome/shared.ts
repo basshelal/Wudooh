@@ -18,8 +18,7 @@ import CreateProperties = chrome.tabs.CreateProperties;
 // Declare Browser APIs
 const tabs = chrome.tabs;
 const runtime = chrome.runtime;
-const storage = chrome.storage;
-const sync = storage.sync;
+const sync = chrome.storage.sync;
 
 /** The font size percent, between 100 and 300 */
 const keyTextSize: string = "textSize";
@@ -212,3 +211,34 @@ Array.prototype.contains = function <T>(element: T): boolean {
 function get<T extends HTMLElement>(elementId: string): T | null {
     return document.getElementById(elementId) as T
 }
+
+/**
+ * Represents the storage that Wudooh uses.
+ * This adds type and key safety to any storage modifications.
+ */
+interface WudoohStorage {
+    readonly textSize?: number;
+    readonly lineHeight?: number;
+    readonly onOff?: boolean;
+    readonly font?: string;
+    readonly whitelisted?: Array<string>;
+    readonly customSettings?: Array<CustomSettings>;
+    readonly customFonts?: Array<CustomFont>;
+}
+
+/**
+ * An abstraction and simplification of the storage.sync API to make it use Promises
+ */
+var wudoohStorage = {
+    get(keys: Array<string> = null): Promise<WudoohStorage> {
+        return new Promise((resolve, reject) => {
+            sync.get(keys, (fromStorage) =>
+                resolve(fromStorage as WudoohStorage));
+        });
+    },
+    set(wudoohStorage: WudoohStorage): Promise<void> {
+        return new Promise((resolve, reject) =>
+            sync.set(wudoohStorage, () => resolve())
+        );
+    }
+};

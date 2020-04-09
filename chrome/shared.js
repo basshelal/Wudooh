@@ -9,8 +9,7 @@
 // Declare Browser APIs
 var tabs = chrome.tabs;
 var runtime = chrome.runtime;
-var storage = chrome.storage;
-var sync = storage.sync;
+var sync = chrome.storage.sync;
 /** The font size percent, between 100 and 300 */
 var keyTextSize = "textSize";
 /** The line height percent, between 100 and 300 */
@@ -158,3 +157,21 @@ Array.prototype.contains = function (element) {
 function get(elementId) {
     return document.getElementById(elementId);
 }
+/**
+ * An abstraction and simplification of the storage.sync API to make it use Promises
+ */
+var wudoohStorage = {
+    get: function (keys) {
+        if (keys === void 0) { keys = null; }
+        return new Promise(function (resolve, reject) {
+            sync.get(keys, function (fromStorage) {
+                return resolve(fromStorage);
+            });
+        });
+    },
+    set: function (wudoohStorage) {
+        return new Promise(function (resolve, reject) {
+            return sync.set(wudoohStorage, function () { return resolve(); });
+        });
+    }
+};

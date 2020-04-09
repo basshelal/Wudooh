@@ -246,14 +246,14 @@ function injectCustomFonts(customFonts: Array<CustomFont>) {
  * Then starts an observer with those same options to update any new text that will come
  * This only happens if the on off switch is on and the site is not whitelisted
  */
-sync.get(keys, (fromStorage) => {
-    let textSize: number = fromStorage.textSize;
-    let lineHeight: number = fromStorage.lineHeight;
-    let isOn: boolean = fromStorage.onOff;
-    let font: string = fromStorage.font;
-    let whitelisted: Array<string> = fromStorage.whitelisted;
-    let customSettings: Array<CustomSettings> = fromStorage.customSettings;
-    let customFonts: Array<CustomFont> = fromStorage.customFonts;
+wudoohStorage.get(keys).then((storage: WudoohStorage) => {
+    let textSize: number = storage.textSize;
+    let lineHeight: number = storage.lineHeight;
+    let isOn: boolean = storage.onOff;
+    let font: string = storage.font;
+    let whitelisted: Array<string> = storage.whitelisted;
+    let customSettings: Array<CustomSettings> = storage.customSettings;
+    let customFonts: Array<CustomFont> = storage.customFonts;
 
     let thisHostname: string = new URL(document.URL).hostname;
     let isWhitelisted: boolean = !!whitelisted.findFirst((it) => it === thisHostname);
