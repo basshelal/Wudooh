@@ -253,9 +253,7 @@ var tabs = {
             chrome.tabs.query({active: true, currentWindow: true},
                 (tabs: Array<Tab>) => resolve(tabs)));
     },
-    sendMessage(tabId: number, message: any): Promise<any> {
-        return new Promise<any>(resolve =>
-            chrome.tabs.sendMessage(tabId, message, ((response: any) => resolve(response)))
-        );
+    sendMessage(tabId: number, message: any) {
+        chrome.tabs.sendMessage(tabId, message);
     }
 };

@@ -187,8 +187,6 @@ var tabs = {
         });
     },
     sendMessage: function (tabId, message) {
-        return new Promise(function (resolve) {
-            return chrome.tabs.sendMessage(tabId, message, (function (response) { return resolve(response); }));
-        });
+        chrome.tabs.sendMessage(tabId, message);
     }
 };

@@ -3,25 +3,24 @@
  */
 ///<reference path="../../../.WebStorm2019.3/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
 ///<reference path="./shared.ts"/>
-/**
- * @deprecated use {@link newArabicRegex} instead
- */
-var arabicRegEx = new RegExp("([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF]+(" +
-    " [\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\W\d]+)*)", "g");
+var has = Reflect.has;
 /**
  * This Arabic regex allows and accepts any non Arabic symbols next to Arabic symbols,
  * this means that it accepts anything as long as it has some Arabic symbol in it
  */
-var newArabicRegex = new RegExp("[\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF]+", "g");
+var arabicRegex = new RegExp("([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\]+([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\\W\\d]+)*)", "g");
 /** The observer used in {@linkcode startObserver} to dynamically update any newly added Nodes */
 var observer;
+function hasBeenUpdated(node) {
+    return node.parentElement && node.parentElement.getAttribute("wudooh") === "true";
+}
 /**
  * Returns whether the given node has any Arabic script or not, this is any script that matches arabicRegEx
  * @param node the node to check
  * @return true if the node contains any arabic script, false otherwise
  */
 function hasArabicScript(node) {
-    return !!(node.nodeValue && (node.nodeValue.trim() != "") && (node.nodeValue.match(newArabicRegex)));
+    return !!node.nodeValue && !!(node.nodeValue.match(arabicRegex));
 }
 /**
  * Gets all nodes within the passed in node that have any Arabic text
@@ -30,13 +29,13 @@ function hasArabicScript(node) {
  * root node
  */
 function getArabicTextNodesIn(rootNode) {
-    var walker = document.createTreeWalker(rootNode, NodeFilter.SHOW_ALL);
-    var node = walker.nextNode();
+    var treeWalker = document.createTreeWalker(rootNode, NodeFilter.SHOW_TEXT);
     var arabicTextNodes = [];
+    var node = treeWalker.nextNode();
     while (!!node) {
         if (hasArabicScript(node))
             arabicTextNodes.push(node);
-        node = walker.nextNode();
+        node = treeWalker.nextNode();
     }
     return arabicTextNodes;
 }
@@ -89,10 +88,13 @@ function isEditable(node) {
  */
 function updateNode(node, textSize, lineHeight, font) {
     if (font === void 0) { font = defaultFont; }
+    var newSize = textSize / 100;
+    var newHeight = lineHeight / 100;
     if (!!node.nodeValue) {
-        var newSize = textSize / 100;
-        var newHeight = lineHeight / 100;
-        updateByAdding(node, newSize, newHeight, font);
+        if (hasBeenUpdated(node))
+            updateByChanging(node, newSize, newHeight, font);
+        else if (!hasBeenUpdated(node))
+            updateByAdding(node, newSize, newHeight, font);
     }
 }
 function updateByAdding(node, textSize, lineHeight, font) {
@@ -110,8 +112,16 @@ function updateByAdding(node, textSize, lineHeight, font) {
             "font-family:" + "\"" + font + "\";" +
             "'>$&</span>";
     }
-    var text = node.nodeValue.replace(newArabicRegex, newHTML);
+    var text = node.nodeValue.replace(arabicRegex, newHTML);
     setNodeHtml(node, text);
+}
+function updateByChanging(node, textSize, lineHeight, font) {
+    node.parentElement.style.fontSize = textSize + "em";
+    node.parentElement.style.lineHeight = lineHeight + "em";
+    if (font === "Original")
+        node.parentElement.style.fontFamily = "";
+    else
+        node.parentElement.style.fontFamily = font;
 }
 /**
  * Updates all Arabic script nodes in this document's body by calling updateNode() on each node in this document
@@ -151,10 +161,7 @@ function startObserver(textSize, lineHeight, font) {
                     record.addedNodes.forEach(function (addedNode) {
                         // For each node with Arabic script in addedNode
                         getArabicTextNodesIn(addedNode).forEach(function (arabicNode) {
-                            // Update arabicNode only if it hasn't been updated
-                            if (arabicNode.parentElement && arabicNode.parentElement.getAttribute("wudooh") !== "true") {
-                                updateNode(arabicNode, textSize, lineHeight, font);
-                            }
+                            updateNode(arabicNode, textSize, lineHeight, font);
                         });
                     });
                 }
@@ -162,10 +169,7 @@ function startObserver(textSize, lineHeight, font) {
                 if (record.target.nodeValue !== record.oldValue && record.target.parentNode instanceof Node) {
                     // If the node now has Arabic text when it didn't, this is rare and only occurs on YouTube
                     getArabicTextNodesIn(record.target.parentNode).forEach(function (arabicNode) {
-                        // Update arabicNode only if it hasn't been updated
-                        if (arabicNode.parentElement && arabicNode.parentElement.getAttribute("wudooh") != "true") {
-                            updateNode(arabicNode, textSize, lineHeight, font);
-                        }
+                        updateNode(arabicNode, textSize, lineHeight, font);
                     });
                 }
             });
@@ -221,8 +225,8 @@ function addMessageListener() {
         if (!message.reason)
             return;
         if (message.reason === reasonUpdateAllText) {
-            var newSize = 100 * (message.newSize / message.oldSize);
-            var newHeight = 100 * (message.newHeight / message.oldHeight);
+            var newSize = message.newSize;
+            var newHeight = message.newHeight;
             updateAll(newSize, newHeight, message.font);
             // If observer was existing then disconnect it and delete it
             if (!!observer) {
@@ -264,11 +268,14 @@ function main() {
                 lineHeight = customSite.lineHeight;
                 font = customSite.font;
             }
+            var startTime = Date.now();
             updateAll(textSize, lineHeight, font);
+            var finishTime = Date.now();
+            console.log("Update All took " + (finishTime - startTime));
             startObserver(textSize, lineHeight, font);
             notifyDocument();
         }
     });
+    addMessageListener();
 }
 main();
-addMessageListener();
