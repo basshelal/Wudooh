@@ -3,7 +3,6 @@
  */
 ///<reference path="../../../.WebStorm2019.3/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
 ///<reference path="./shared.ts"/>
-var has = Reflect.has;
 /**
  * This Arabic regex allows and accepts any non Arabic symbols next to Arabic symbols,
  * this means that it accepts anything as long as it has some Arabic symbol in it
@@ -143,6 +142,11 @@ function updateAll(textSize, lineHeight, font) {
  */
 function startObserver(textSize, lineHeight, font) {
     if (font === void 0) { font = defaultFont; }
+    // If observer was existing then disconnect it and delete it
+    if (!!observer) {
+        observer.disconnect();
+        observer = null;
+    }
     // Only do anything if observer is null
     if (!observer) {
         var config = {
@@ -228,11 +232,6 @@ function addMessageListener() {
             var newSize = message.newSize;
             var newHeight = message.newHeight;
             updateAll(newSize, newHeight, message.font);
-            // If observer was existing then disconnect it and delete it
-            if (!!observer) {
-                observer.disconnect();
-                observer = null;
-            }
             startObserver(newSize, newHeight, message.font);
         }
         if (message.reason === reasonInjectCustomFonts) {
@@ -268,10 +267,7 @@ function main() {
                 lineHeight = customSite.lineHeight;
                 font = customSite.font;
             }
-            var startTime = Date.now();
             updateAll(textSize, lineHeight, font);
-            var finishTime = Date.now();
-            console.log("Update All took " + (finishTime - startTime));
             startObserver(textSize, lineHeight, font);
             notifyDocument();
         }

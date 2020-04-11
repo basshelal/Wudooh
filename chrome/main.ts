@@ -156,6 +156,11 @@ function updateAll(textSize: number, lineHeight: number, font: string = defaultF
  * @param font the name of the font to update the text to
  */
 function startObserver(textSize: number, lineHeight: number, font: string = defaultFont) {
+    // If observer was existing then disconnect it and delete it
+    if (!!observer) {
+        observer.disconnect();
+        observer = null;
+    }
     // Only do anything if observer is null
     if (!observer) {
         let config: MutationObserverInit = {
@@ -250,12 +255,6 @@ function addMessageListener() {
             let newSize: number = message.newSize;
             let newHeight: number = message.newHeight;
             updateAll(newSize, newHeight, message.font);
-
-            // If observer was existing then disconnect it and delete it
-            if (!!observer) {
-                observer.disconnect();
-                observer = null;
-            }
             startObserver(newSize, newHeight, message.font);
         }
         if (message.reason === reasonInjectCustomFonts) {
@@ -288,19 +287,14 @@ function main() {
 
         // Only do anything if the switch is on and this site is not whitelisted
         if (isOn && !isWhitelisted) {
-
             injectCustomFonts(customFonts);
-
             // If it's a custom site then change the textSize, lineHeight and font
             if (customSite) {
                 textSize = customSite.textSize;
                 lineHeight = customSite.lineHeight;
                 font = customSite.font;
             }
-            let startTime = Date.now();
             updateAll(textSize, lineHeight, font);
-            let finishTime = Date.now();
-            console.log("Update All took " + (finishTime - startTime));
             startObserver(textSize, lineHeight, font);
             notifyDocument();
         }
