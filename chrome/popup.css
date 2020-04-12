@@ -120,3 +120,17 @@ a:hover, a:active {
     position: absolute;
     z-index: -1;
 }
+
+#lang-select {
+    font-size: 14px;
+    font-family: "Roboto Light", sans-serif;
+    width: 95%;
+    text-align-last: center;
+    text-align: center;
+    text-align-all: center;
+    cursor: pointer;
+}
+
+#lang-select > option {
+    font-size: 20px;
+}

@@ -42,6 +42,7 @@ var homePage = "http://basshelal.github.io/Wudooh";
 var reasonUpdateAllText = "updateAllText";
 var reasonInjectCustomFonts = "injectCustomFonts";
 var reasonToggleOnOff = "toggleOnOff";
+var htmlEditables = ["textarea", "input", "text", "email", "number", "search", "tel", "url", "password"];
 var allWudoohFonts = [
     "Droid Arabic Naskh",
     "Noto Naskh Arabic",
@@ -154,21 +155,6 @@ var CustomFont = /** @class */ (function () {
     CustomFont.isFontUrlValid = function (fontUrl) {
         return fetch(fontUrl).then(function (response) { return response.ok; });
     };
-    CustomFont.isFontUrlInstalled = function (fontUrl) {
-        var tempFontStyle = document.createElement("style");
-        var fontName = "temporaryWudoohFont";
-        var injectedCss = "@font-face { font-family: '" + fontName + "'; src: url('" + fontUrl + "'); }\n";
-        tempFontStyle.innerHTML = tempFontStyle.innerHTML.concat(injectedCss);
-        document.head.append(tempFontStyle);
-        document.getElementById("fontTest").style.fontFamily = fontName;
-        // Don't delete this! The checker always fails once before succeeding for some reason!
-        CustomFont.isFontInstalled(fontName);
-        return fetch(fontUrl).then(function (response) {
-            console.log(CustomFont.isFontInstalled(fontName));
-            return response.ok && CustomFont.isFontInstalled(fontName);
-        });
-        //  document.head.removeChild(tempFontStyle);
-    };
     CustomFont.prototype.isFontInstalled = function () {
         return CustomFont.isFontInstalled(this.fontName);
     };
@@ -180,36 +166,6 @@ var CustomFont = /** @class */ (function () {
     };
     return CustomFont;
 }());
-Array.prototype.contains = function (element) {
-    return this.indexOf(element) !== -1;
-};
-String.prototype.contains = function (string) {
-    return this.indexOf(string) !== -1;
-};
-Element.prototype.postDelayed = function (millis, func) {
-    var _this = this;
-    var localTask = wait(millis, function () {
-        if (localTask === _this.currentTask)
-            func.call(_this);
-    });
-    this.currentTask = localTask;
-};
-// endregion Extensions
-var htmlEditables = ["textarea", "input", "text", "email", "number", "search", "tel", "url", "password"];
-/**
- * Shorthand for {@linkcode document.getElementById}, automatically casts to T, a HTMLElement
- *
- * @param elementId the id of the element to get
- */
-function get(elementId) {
-    return document.getElementById(elementId);
-}
-function wait(millis, func) {
-    return setTimeout(func, millis);
-}
-function now() {
-    return Date.now();
-}
 /**
  * An abstraction and simplification of the storage.sync API to make it use Promises
  */
@@ -224,6 +180,9 @@ var sync = {
         return new Promise(function (resolve) { return chrome.storage.sync.set(wudoohStorage, function () { return resolve(); }); });
     }
 };
+/**
+ * An abstraction and simplification of the tabs API to make it use Promises
+ */
 var tabs = {
     create: function (url) {
         return new Promise(function (resolve) {
@@ -244,3 +203,29 @@ var tabs = {
         chrome.tabs.sendMessage(tabId, message);
     }
 };
+/**
+ * Shorthand for {@linkcode document.getElementById}, automatically casts to T, a HTMLElement
+ *
+ * @param elementId the id of the element to get
+ */
+function get(elementId) {
+    return document.getElementById(elementId);
+}
+function wait(millis, func) {
+    return setTimeout(func, millis);
+}
+Array.prototype.contains = function (element) {
+    return this.indexOf(element) !== -1;
+};
+String.prototype.contains = function (string) {
+    return this.indexOf(string) !== -1;
+};
+Element.prototype.postDelayed = function (millis, func) {
+    var _this = this;
+    var localTask = wait(millis, function () {
+        if (localTask === _this.currentTask)
+            func.call(_this);
+    });
+    this.currentTask = localTask;
+};
+// endregion Extensions

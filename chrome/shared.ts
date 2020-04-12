@@ -60,6 +60,8 @@ const reasonUpdateAllText = "updateAllText";
 const reasonInjectCustomFonts = "injectCustomFonts";
 const reasonToggleOnOff = "toggleOnOff";
 
+let htmlEditables = ["textarea", "input", "text", "email", "number", "search", "tel", "url", "password"];
+
 const allWudoohFonts: Array<string> = [
     "Droid Arabic Naskh",
     "Noto Naskh Arabic",
@@ -199,32 +201,6 @@ class CustomFont {
         return fetch(fontUrl).then(response => response.ok);
     }
 
-    static isFontUrlInstalled(fontUrl: string): Promise<boolean> {
-        let tempFontStyle: HTMLStyleElement = document.createElement("style");
-
-        const fontName: string = "temporaryWudoohFont";
-
-        let injectedCss = `@font-face { font-family: '${fontName}'; src: url('${fontUrl}'); }\n`;
-
-        tempFontStyle.innerHTML = tempFontStyle.innerHTML.concat(injectedCss);
-
-        document.head.append(tempFontStyle);
-
-        document.getElementById("fontTest").style.fontFamily = fontName;
-
-        // Don't delete this! The checker always fails once before succeeding for some reason!
-        CustomFont.isFontInstalled(fontName);
-
-        return fetch(fontUrl).then(response => {
-                console.log(CustomFont.isFontInstalled(fontName));
-
-                return response.ok && CustomFont.isFontInstalled(fontName);
-            }
-        );
-
-        //  document.head.removeChild(tempFontStyle);
-    }
-
     isFontInstalled(): boolean {
         return CustomFont.isFontInstalled(this.fontName);
     }
@@ -233,6 +209,70 @@ class CustomFont {
         if (!this.url) return Promise.resolve(false);
         if (this.url) return CustomFont.isFontUrlValid(this.url);
     }
+}
+
+/**
+ * Represents the storage that Wudooh uses.
+ * This adds type and key safety to any storage modifications.
+ */
+interface WudoohStorage {
+    readonly textSize?: number;
+    readonly lineHeight?: number;
+    readonly onOff?: boolean;
+    readonly font?: string;
+    readonly whitelisted?: Array<string>;
+    readonly customSettings?: Array<CustomSettings>;
+    readonly customFonts?: Array<CustomFont>;
+}
+
+/**
+ * An abstraction and simplification of the storage.sync API to make it use Promises
+ */
+var sync = {
+    get(keys: Array<string> = null): Promise<WudoohStorage> {
+        return new Promise<WudoohStorage>(resolve => {
+            chrome.storage.sync.get(keys, storage => resolve(storage as WudoohStorage));
+        });
+    },
+    set(wudoohStorage: WudoohStorage): Promise<void> {
+        return new Promise<void>(resolve => chrome.storage.sync.set(wudoohStorage, () => resolve()));
+    }
+};
+
+/**
+ * An abstraction and simplification of the tabs API to make it use Promises
+ */
+var tabs = {
+    create(url: string): Promise<Tab> {
+        return new Promise<Tab>(resolve =>
+            chrome.tabs.create({url: url}, tab => resolve(tab)));
+    },
+    queryAllTabs(): Promise<Array<Tab>> {
+        return new Promise<Array<Tab>>(resolve =>
+            chrome.tabs.query({}, (tabs: Array<Tab>) => resolve(tabs))
+        );
+    },
+    queryCurrentTab(): Promise<Array<Tab>> {
+        return new Promise<Array<Tab>>(resolve =>
+            chrome.tabs.query({active: true, currentWindow: true},
+                (tabs: Array<Tab>) => resolve(tabs)));
+    },
+    sendMessage(tabId: number, message: any) {
+        chrome.tabs.sendMessage(tabId, message);
+    }
+};
+
+/**
+ * Shorthand for {@linkcode document.getElementById}, automatically casts to T, a HTMLElement
+ *
+ * @param elementId the id of the element to get
+ */
+function get<T extends HTMLElement>(elementId: string): T | null {
+    return document.getElementById(elementId) as T
+}
+
+function wait(millis: number, func: Function): number {
+    return setTimeout(func, millis);
 }
 
 // region Extensions
@@ -267,70 +307,3 @@ Element.prototype.postDelayed = function (millis: number, func: Function) {
 };
 
 // endregion Extensions
-
-let htmlEditables = ["textarea", "input", "text", "email", "number", "search", "tel", "url", "password"];
-
-/**
- * Shorthand for {@linkcode document.getElementById}, automatically casts to T, a HTMLElement
- *
- * @param elementId the id of the element to get
- */
-function get<T extends HTMLElement>(elementId: string): T | null {
-    return document.getElementById(elementId) as T
-}
-
-function wait(millis: number, func: Function): number {
-    return setTimeout(func, millis);
-}
-
-function now() {
-    return Date.now();
-}
-
-/**
- * Represents the storage that Wudooh uses.
- * This adds type and key safety to any storage modifications.
- */
-interface WudoohStorage {
-    readonly textSize?: number;
-    readonly lineHeight?: number;
-    readonly onOff?: boolean;
-    readonly font?: string;
-    readonly whitelisted?: Array<string>;
-    readonly customSettings?: Array<CustomSettings>;
-    readonly customFonts?: Array<CustomFont>;
-}
-
-/**
- * An abstraction and simplification of the storage.sync API to make it use Promises
- */
-var sync = {
-    get(keys: Array<string> = null): Promise<WudoohStorage> {
-        return new Promise<WudoohStorage>(resolve => {
-            chrome.storage.sync.get(keys, storage => resolve(storage as WudoohStorage));
-        });
-    },
-    set(wudoohStorage: WudoohStorage): Promise<void> {
-        return new Promise<void>(resolve => chrome.storage.sync.set(wudoohStorage, () => resolve()));
-    }
-};
-
-var tabs = {
-    create(url: string): Promise<Tab> {
-        return new Promise<Tab>(resolve =>
-            chrome.tabs.create({url: url}, tab => resolve(tab)));
-    },
-    queryAllTabs(): Promise<Array<Tab>> {
-        return new Promise<Array<Tab>>(resolve =>
-            chrome.tabs.query({}, (tabs: Array<Tab>) => resolve(tabs))
-        );
-    },
-    queryCurrentTab(): Promise<Array<Tab>> {
-        return new Promise<Array<Tab>>(resolve =>
-            chrome.tabs.query({active: true, currentWindow: true},
-                (tabs: Array<Tab>) => resolve(tabs)));
-    },
-    sendMessage(tabId: number, message: any) {
-        chrome.tabs.sendMessage(tabId, message);
-    }
-};

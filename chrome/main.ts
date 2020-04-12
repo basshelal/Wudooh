@@ -12,6 +12,8 @@
  */
 const arabicRegex = new RegExp("([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\]+([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\\W\\d]+)*)", "g");
 
+const arabicNumbersRegex = new RegExp("([\u0660-\u0669\u06F0-\u06F9]+)", "g");
+
 /** The observer used in {@linkcode startObserver} to dynamically update any newly added Nodes */
 let observer: MutationObserver;
 
@@ -28,6 +30,36 @@ function hasBeenUpdated(node: Node): boolean {
  */
 function hasArabicScript(node: Node): boolean {
     return !!node.nodeValue && !!(node.nodeValue.match(arabicRegex));
+}
+
+/**
+ * Checks whether the passed in node is editable or not.
+ * An editable node is one that returns true to isContentEditable or has a tag name as
+ * any one of the following:
+ * "textarea", "input", "text", "email", "number", "search", "tel", "url", "password"
+ *
+ * @param node the node to check
+ * @return true if the node is editable and false otherwise
+ */
+function isEditable(node: Node): boolean {
+    let element: HTMLElement = node as HTMLElement;
+    let nodeName: string = element.nodeName.toLowerCase();
+
+    return (element.isContentEditable || (element.nodeType === Node.ELEMENT_NODE && htmlEditables.contains(nodeName)));
+}
+
+function remapNumber(numberCharacter: string): string {
+    const char = numberCharacter.charAt(0);
+    if (char === "٠" || char === "۰") return "0";
+    if (char === "١" || char === "۱") return "1";
+    if (char === "٢" || char === "۲") return "2";
+    if (char === "٣" || char === "۳") return "3";
+    if (char === "٤" || char === "۴") return "4";
+    if (char === "٥" || char === "۵") return "5";
+    if (char === "٦" || char === "۶") return "6";
+    if (char === "٧" || char === "۷") return "7";
+    if (char === "٨" || char === "۸") return "8";
+    if (char === "٩" || char === "۹") return "9";
 }
 
 /**
@@ -75,22 +107,6 @@ function setNodeHtml(node: Node, html: string) {
         parent.insertBefore(newElement.firstChild, nextSibling);
     }
     parent.removeChild(node);
-}
-
-/**
- * Checks whether the passed in node is editable or not.
- * An editable node is one that returns true to isContentEditable or has a tag name as
- * any one of the following:
- * "textarea", "input", "text", "email", "number", "search", "tel", "url", "password"
- *
- * @param node the node to check
- * @return true if the node is editable and false otherwise
- */
-function isEditable(node: Node): boolean {
-    let element: HTMLElement = node as HTMLElement;
-    let nodeName: string = element.nodeName.toLowerCase();
-
-    return (element.isContentEditable || (element.nodeType === Node.ELEMENT_NODE && htmlEditables.contains(nodeName)));
 }
 
 /**

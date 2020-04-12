@@ -8,6 +8,7 @@
  * this means that it accepts anything as long as it has some Arabic symbol in it
  */
 var arabicRegex = new RegExp("([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\]+([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\\W\\d]+)*)", "g");
+var arabicNumbersRegex = new RegExp("([\u0660-\u0669\u06F0-\u06F9]+)", "g");
 /** The observer used in {@linkcode startObserver} to dynamically update any newly added Nodes */
 var observer;
 /**
@@ -22,6 +23,43 @@ function hasBeenUpdated(node) {
  */
 function hasArabicScript(node) {
     return !!node.nodeValue && !!(node.nodeValue.match(arabicRegex));
+}
+/**
+ * Checks whether the passed in node is editable or not.
+ * An editable node is one that returns true to isContentEditable or has a tag name as
+ * any one of the following:
+ * "textarea", "input", "text", "email", "number", "search", "tel", "url", "password"
+ *
+ * @param node the node to check
+ * @return true if the node is editable and false otherwise
+ */
+function isEditable(node) {
+    var element = node;
+    var nodeName = element.nodeName.toLowerCase();
+    return (element.isContentEditable || (element.nodeType === Node.ELEMENT_NODE && htmlEditables.contains(nodeName)));
+}
+function remapNumber(numberCharacter) {
+    var char = numberCharacter.charAt(0);
+    if (char === "٠" || char === "۰")
+        return "0";
+    if (char === "١" || char === "۱")
+        return "1";
+    if (char === "٢" || char === "۲")
+        return "2";
+    if (char === "٣" || char === "۳")
+        return "3";
+    if (char === "٤" || char === "۴")
+        return "4";
+    if (char === "٥" || char === "۵")
+        return "5";
+    if (char === "٦" || char === "۶")
+        return "6";
+    if (char === "٧" || char === "۷")
+        return "7";
+    if (char === "٨" || char === "۸")
+        return "8";
+    if (char === "٩" || char === "۹")
+        return "9";
 }
 /**
  * Gets all nodes within the passed in node that have any Arabic text
@@ -62,20 +100,6 @@ function setNodeHtml(node, html) {
         parent.insertBefore(newElement.firstChild, nextSibling);
     }
     parent.removeChild(node);
-}
-/**
- * Checks whether the passed in node is editable or not.
- * An editable node is one that returns true to isContentEditable or has a tag name as
- * any one of the following:
- * "textarea", "input", "text", "email", "number", "search", "tel", "url", "password"
- *
- * @param node the node to check
- * @return true if the node is editable and false otherwise
- */
-function isEditable(node) {
-    var element = node;
-    var nodeName = element.nodeName.toLowerCase();
-    return (element.isContentEditable || (element.nodeType === Node.ELEMENT_NODE && htmlEditables.contains(nodeName)));
 }
 /**
  * Updates the passed in node's html to have the properties of a modified Arabic text node, this will
