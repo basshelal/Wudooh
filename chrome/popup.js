@@ -148,20 +148,71 @@ function toggleOnOff() {
  * Update font size by updating all text and then saving the setting
  */
 function updateSize() {
-    sync.set({ textSize: parseInt(sizeSlider.value) }).then(function () { return updateAllText(); });
+    var newSize = parseInt(sizeSlider.value);
+    var thisURL;
+    tabs.queryCurrentTab().then(function (tabs) {
+        thisURL = new URL(tabs[0].url).hostname;
+        return sync.get([keyCustomSettings]);
+    }).then(function (storage) {
+        var customSettings = storage.customSettings;
+        var custom = customSettings.find(function (custom) { return custom.url === thisURL; });
+        if (custom) {
+            var index = customSettings.indexOf(custom);
+            custom.textSize = newSize;
+            customSettings[index] = custom;
+            return sync.set({ customSettings: customSettings });
+        }
+        else {
+            return sync.set({ textSize: newSize });
+        }
+    }).then(function () { return updateAllText(); });
 }
 /**
  * Update line height by updating all text and then saving the setting
  */
 function updateHeight() {
-    sync.set({ lineHeight: parseInt(heightSlider.value) }).then(function () { return updateAllText(); });
+    var newHeight = parseInt(heightSlider.value);
+    var thisURL;
+    tabs.queryCurrentTab().then(function (tabs) {
+        thisURL = new URL(tabs[0].url).hostname;
+        return sync.get([keyCustomSettings]);
+    }).then(function (storage) {
+        var customSettings = storage.customSettings;
+        var custom = customSettings.find(function (custom) { return custom.url === thisURL; });
+        if (custom) {
+            var index = customSettings.indexOf(custom);
+            custom.lineHeight = newHeight;
+            customSettings[index] = custom;
+            return sync.set({ customSettings: customSettings });
+        }
+        else {
+            return sync.set({ lineHeight: newHeight });
+        }
+    }).then(function () { return updateAllText(); });
 }
 /**
  * Changes the font and saves the "font" setting, this will update all text
  */
 function changeFont() {
-    fontSelect.style.fontFamily = fontSelect.value;
-    sync.set({ font: fontSelect.value, }).then(function () { return updateAllText(); });
+    var newFont = fontSelect.value;
+    var thisURL;
+    fontSelect.style.fontFamily = newFont;
+    tabs.queryCurrentTab().then(function (tabs) {
+        thisURL = new URL(tabs[0].url).hostname;
+        return sync.get([keyCustomSettings]);
+    }).then(function (storage) {
+        var customSettings = storage.customSettings;
+        var custom = customSettings.find(function (custom) { return custom.url === thisURL; });
+        if (custom) {
+            var index = customSettings.indexOf(custom);
+            custom.font = newFont;
+            customSettings[index] = custom;
+            return sync.set({ customSettings: customSettings });
+        }
+        else {
+            return sync.set({ font: newFont });
+        }
+    }).then(function () { return updateAllText(); });
 }
 function changeLang() {
     var font;
@@ -200,7 +251,32 @@ function toggleOverrideSiteSettings() {
         }
         // Set the array of all whitelisted websites in storage
         return sync.set({ customSettings: customSettings });
-    }).then(function () { return updateAllText(); });
+    }).then(function () { return sync.get([keyTextSize, keyLineHeight, keyFont, keyCustomSettings]); })
+        .then(function (storage) {
+        var customSettings = storage.customSettings;
+        var textSize;
+        var lineHeight;
+        var font;
+        // The above will be different if thisURL is a custom one so we set them depending on this
+        var custom = customSettings.find(function (custom) { return custom.url === thisURL; });
+        if (!!custom) {
+            textSize = custom.textSize;
+            lineHeight = custom.lineHeight;
+            font = custom.font;
+        }
+        else {
+            textSize = storage.textSize;
+            lineHeight = storage.lineHeight;
+            font = storage.font;
+        }
+        sizeSlider.value = textSize.toString();
+        sizeValue.innerHTML = textSize.toString() + '%';
+        heightSlider.value = lineHeight.toString();
+        heightValue.innerHTML = lineHeight.toString() + '%';
+        fontSelect.value = font;
+        fontSelect.style.fontFamily = font;
+    })
+        .then(function () { return updateAllText(); });
 }
 /**
  * Toggles this site's whitelist status, this is only done to the active tab's site.

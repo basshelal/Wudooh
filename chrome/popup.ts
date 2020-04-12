@@ -161,22 +161,73 @@ function toggleOnOff() {
  * Update font size by updating all text and then saving the setting
  */
 function updateSize() {
-    sync.set({textSize: parseInt(sizeSlider.value)}).then(() => updateAllText());
+    const newSize: number = parseInt(sizeSlider.value);
+    let thisURL: string;
+    tabs.queryCurrentTab().then((tabs: Array<Tab>) => {
+        thisURL = new URL(tabs[0].url).hostname;
+        return sync.get([keyCustomSettings]);
+    }).then((storage: WudoohStorage) => {
+        let customSettings: Array<CustomSettings> = storage.customSettings;
+        let custom = customSettings.find((custom: CustomSettings) => custom.url === thisURL);
+
+        if (custom) {
+            let index: number = customSettings.indexOf(custom);
+            custom.textSize = newSize;
+            customSettings[index] = custom;
+            return sync.set({customSettings: customSettings});
+        } else {
+            return sync.set({textSize: newSize})
+        }
+    }).then(() => updateAllText());
 }
 
 /**
  * Update line height by updating all text and then saving the setting
  */
 function updateHeight() {
-    sync.set({lineHeight: parseInt(heightSlider.value)}).then(() => updateAllText());
+    const newHeight: number = parseInt(heightSlider.value);
+    let thisURL: string;
+    tabs.queryCurrentTab().then((tabs: Array<Tab>) => {
+        thisURL = new URL(tabs[0].url).hostname;
+        return sync.get([keyCustomSettings]);
+    }).then((storage: WudoohStorage) => {
+        let customSettings: Array<CustomSettings> = storage.customSettings;
+        let custom = customSettings.find((custom: CustomSettings) => custom.url === thisURL);
+
+        if (custom) {
+            let index: number = customSettings.indexOf(custom);
+            custom.lineHeight = newHeight;
+            customSettings[index] = custom;
+            return sync.set({customSettings: customSettings});
+        } else {
+            return sync.set({lineHeight: newHeight})
+        }
+    }).then(() => updateAllText());
 }
 
 /**
  * Changes the font and saves the "font" setting, this will update all text
  */
 function changeFont() {
-    fontSelect.style.fontFamily = fontSelect.value;
-    sync.set({font: fontSelect.value,}).then(() => updateAllText());
+    const newFont: string = fontSelect.value;
+    let thisURL: string;
+    fontSelect.style.fontFamily = newFont;
+    tabs.queryCurrentTab().then((tabs: Array<Tab>) => {
+        thisURL = new URL(tabs[0].url).hostname;
+        return sync.get([keyCustomSettings]);
+    }).then((storage: WudoohStorage) => {
+        let customSettings: Array<CustomSettings> = storage.customSettings;
+        let custom = customSettings.find((custom: CustomSettings) => custom.url === thisURL);
+
+        if (custom) {
+            let index: number = customSettings.indexOf(custom);
+            custom.font = newFont;
+            customSettings[index] = custom;
+            return sync.set({customSettings: customSettings});
+        } else {
+            return sync.set({font: newFont})
+        }
+    }).then(() => updateAllText());
 }
 
 function changeLang() {
@@ -216,7 +267,33 @@ function toggleOverrideSiteSettings() {
 
         // Set the array of all whitelisted websites in storage
         return sync.set({customSettings: customSettings});
-    }).then(() => updateAllText());
+    }).then(() => sync.get([keyTextSize, keyLineHeight, keyFont, keyCustomSettings]))
+        .then((storage: WudoohStorage) => {
+            let customSettings: Array<CustomSettings> = storage.customSettings as Array<CustomSettings>;
+
+            let textSize: number;
+            let lineHeight: number;
+            let font: string;
+            // The above will be different if thisURL is a custom one so we set them depending on this
+            let custom = customSettings.find((custom: CustomSettings) => custom.url === thisURL);
+            if (!!custom) {
+                textSize = custom.textSize;
+                lineHeight = custom.lineHeight;
+                font = custom.font;
+            } else {
+                textSize = storage.textSize;
+                lineHeight = storage.lineHeight;
+                font = storage.font;
+            }
+
+            sizeSlider.value = textSize.toString();
+            sizeValue.innerHTML = textSize.toString() + '%';
+            heightSlider.value = lineHeight.toString();
+            heightValue.innerHTML = lineHeight.toString() + '%';
+            fontSelect.value = font;
+            fontSelect.style.fontFamily = font;
+        })
+        .then(() => updateAllText());
 }
 
 /**
