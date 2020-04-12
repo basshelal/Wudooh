@@ -25,6 +25,14 @@ function hasBeenUpdated(node: Node): boolean {
 }
 
 /**
+ * Returns true if this document has already been updated by Wudooh before,
+ * this is done in {@linkcode notifyDocument()}
+ */
+function hasDocumentBeenUpdated(): boolean {
+    return document.getElementById("wudoohMetaElement") !== null;
+}
+
+/**
  * Returns whether the given node has any Arabic script or not, this is any script that matches arabicRegEx.
  * True if it does and false otherwise
  */
@@ -84,32 +92,6 @@ function getArabicTextNodesIn(rootNode: Node): Array<Node> {
 }
 
 /**
- * Sets the node's html content to the passed in html string
- * @param node the node to change the html of
- * @param html the html string that will be the passed in node's html
- */
-function setNodeHtml(node: Node, html: string) {
-    let parent: Node = node.parentNode;
-
-    // return if parent or node are null
-    if (!parent || !node) return;
-    // don't change anything if this node or its parent are editable
-    if (isEditable(parent) || isEditable(node)) return;
-
-    let nextSibling: ChildNode = node.nextSibling;
-
-    // the div is temporary and doesn't show up in the html
-    let newElement: HTMLDivElement = document.createElement("div");
-    newElement.innerHTML = html;
-
-    while (newElement.firstChild) {
-        // we only insert the passed in html, the div is not inserted
-        parent.insertBefore(newElement.firstChild, nextSibling);
-    }
-    parent.removeChild(node);
-}
-
-/**
  * Updates the passed in node's html to have the properties of a modified Arabic text node, this will
  * replace any text that matches arabicRegEx to be a span with the font size and line height specified by
  * the user's options, the span will have a class='ar', this can be used to check if the text has been
@@ -130,6 +112,12 @@ function updateNode(node: Node, textSize: number, lineHeight: number, font: stri
 }
 
 function updateByAdding(node: Node, textSize: number, lineHeight: number, font: string) {
+    const parent: Node = node.parentNode;
+    // return if parent or node are null
+    if (!parent || !node) return;
+    // don't do anything if this node or its parent are editable
+    if (isEditable(parent) || isEditable(node)) return;
+
     let newHTML: string;
     if (font === "Original") {
         newHTML = "<span wudooh='true' style='" +
@@ -145,7 +133,18 @@ function updateByAdding(node: Node, textSize: number, lineHeight: number, font: 
     }
 
     let text: string = node.nodeValue.replace(arabicRegex, newHTML);
-    setNodeHtml(node, text);
+
+    let nextSibling: ChildNode = node.nextSibling;
+
+    // the div is temporary and doesn't show up in the html
+    let newElement: HTMLDivElement = document.createElement("div");
+    newElement.innerHTML = text;
+
+    while (newElement.firstChild) {
+        // we only insert the passed in html, the div is not inserted
+        parent.insertBefore(newElement.firstChild, nextSibling);
+    }
+    parent.removeChild(node);
 }
 
 function updateByChanging(node: Node, textSize: number, lineHeight: number, font: string) {
@@ -194,10 +193,8 @@ function startObserver(textSize: number, lineHeight: number, font: string = defa
             mutationsList.forEach((record: MutationRecord) => {
                 // If something has been added
                 if (record.addedNodes.length > 0) {
-
                     //  For each added node
                     record.addedNodes.forEach((addedNode: Node) => {
-
                         // For each node with Arabic script in addedNode
                         getArabicTextNodesIn(addedNode).forEach((arabicNode: Node) => {
                             updateNode(arabicNode, textSize, lineHeight, font);
@@ -207,7 +204,6 @@ function startObserver(textSize: number, lineHeight: number, font: string = defa
 
                 // If the value has changed
                 if (record.target.nodeValue !== record.oldValue && record.target.parentNode instanceof Node) {
-
                     // If the node now has Arabic text when it didn't, this is rare and only occurs on YouTube
                     getArabicTextNodesIn(record.target.parentNode).forEach((arabicNode: Node) => {
                         updateNode(arabicNode, textSize, lineHeight, font);
@@ -227,7 +223,7 @@ function startObserver(textSize: number, lineHeight: number, font: string = defa
  * testing
  */
 function notifyDocument() {
-    if (!document.getElementById("wudoohMetaElement")) {
+    if (!hasDocumentBeenUpdated()) {
         let meta = document.createElement("meta");
         meta.id = "wudoohMetaElement";
         meta.setAttribute("wudooh", "true");
@@ -329,8 +325,12 @@ function main() {
             startObserver(textSize, lineHeight, font);
             notifyDocument();
         }
+        // We've been updated and now we've become whitelisted
+        if (hasDocumentBeenUpdated() && isWhitelisted) {
+            toggleOff();
+        }
     });
-    addMessageListener();
 }
 
 main();
+addMessageListener();

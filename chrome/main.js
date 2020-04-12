@@ -18,6 +18,13 @@ function hasBeenUpdated(node) {
     return node.parentElement && node.parentElement.getAttribute("wudooh") === "true";
 }
 /**
+ * Returns true if this document has already been updated by Wudooh before,
+ * this is done in {@linkcode notifyDocument()}
+ */
+function hasDocumentBeenUpdated() {
+    return document.getElementById("wudoohMetaElement") !== null;
+}
+/**
  * Returns whether the given node has any Arabic script or not, this is any script that matches arabicRegEx.
  * True if it does and false otherwise
  */
@@ -79,29 +86,6 @@ function getArabicTextNodesIn(rootNode) {
     return arabicTextNodes;
 }
 /**
- * Sets the node's html content to the passed in html string
- * @param node the node to change the html of
- * @param html the html string that will be the passed in node's html
- */
-function setNodeHtml(node, html) {
-    var parent = node.parentNode;
-    // return if parent or node are null
-    if (!parent || !node)
-        return;
-    // don't change anything if this node or its parent are editable
-    if (isEditable(parent) || isEditable(node))
-        return;
-    var nextSibling = node.nextSibling;
-    // the div is temporary and doesn't show up in the html
-    var newElement = document.createElement("div");
-    newElement.innerHTML = html;
-    while (newElement.firstChild) {
-        // we only insert the passed in html, the div is not inserted
-        parent.insertBefore(newElement.firstChild, nextSibling);
-    }
-    parent.removeChild(node);
-}
-/**
  * Updates the passed in node's html to have the properties of a modified Arabic text node, this will
  * replace any text that matches arabicRegEx to be a span with the font size and line height specified by
  * the user's options, the span will have a class='ar', this can be used to check if the text has been
@@ -123,6 +107,13 @@ function updateNode(node, textSize, lineHeight, font) {
     }
 }
 function updateByAdding(node, textSize, lineHeight, font) {
+    var parent = node.parentNode;
+    // return if parent or node are null
+    if (!parent || !node)
+        return;
+    // don't do anything if this node or its parent are editable
+    if (isEditable(parent) || isEditable(node))
+        return;
     var newHTML;
     if (font === "Original") {
         newHTML = "<span wudooh='true' style='" +
@@ -138,7 +129,15 @@ function updateByAdding(node, textSize, lineHeight, font) {
             "'>$&</span>";
     }
     var text = node.nodeValue.replace(arabicRegex, newHTML);
-    setNodeHtml(node, text);
+    var nextSibling = node.nextSibling;
+    // the div is temporary and doesn't show up in the html
+    var newElement = document.createElement("div");
+    newElement.innerHTML = text;
+    while (newElement.firstChild) {
+        // we only insert the passed in html, the div is not inserted
+        parent.insertBefore(newElement.firstChild, nextSibling);
+    }
+    parent.removeChild(node);
 }
 function updateByChanging(node, textSize, lineHeight, font) {
     node.parentElement.style.fontSize = textSize + "em";
@@ -214,7 +213,7 @@ function startObserver(textSize, lineHeight, font) {
  * testing
  */
 function notifyDocument() {
-    if (!document.getElementById("wudoohMetaElement")) {
+    if (!hasDocumentBeenUpdated()) {
         var meta = document.createElement("meta");
         meta.id = "wudoohMetaElement";
         meta.setAttribute("wudooh", "true");
@@ -309,7 +308,11 @@ function main() {
             startObserver(textSize, lineHeight, font);
             notifyDocument();
         }
+        // We've been updated and now we've become whitelisted
+        if (hasDocumentBeenUpdated() && isWhitelisted) {
+            toggleOff();
+        }
     });
-    addMessageListener();
 }
 main();
+addMessageListener();

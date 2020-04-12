@@ -28,10 +28,8 @@ var exportButton = get("exportButton");
 var exportAnchor = get("exportAnchor");
 var importButton = get("importButton");
 var importInput = get("importInput");
-function addCustomFonts() {
-    // Add custom fonts to popup.html
-    sync.get([keyCustomFonts]).then(function (storage) {
-        var customFonts = storage.customFonts;
+function addCustomFonts(customFonts) {
+    return new Promise(function () {
         customFonts.forEach(function (customFont) {
             var fontName = customFont.fontName;
             var fontUrl = customFont.url;
@@ -54,13 +52,12 @@ function addCustomFonts() {
  * to match the settings
  */
 function initializeUI() {
-    addCustomFonts();
-    // Get all the options with default values if they're not found for some reason
     var storage;
     sync.get(keys).then(function (_storage) {
         storage = _storage;
         return tabs.queryCurrentTab();
     }).then(function (tabs) {
+        addCustomFonts(storage.customFonts);
         // If the extension is off then hide the main div
         onOffSwitch.checked = storage.onOff;
         if (storage.onOff)
@@ -187,8 +184,8 @@ function toggleOverrideSiteSettings() {
             overrideSettingsValue.innerText = "Using global settings";
         }
         // Set the array of all whitelisted websites in storage
-        sync.set({ customSettings: customSettings });
-    });
+        return sync.set({ customSettings: customSettings });
+    }).then(function () { return updateAllText(); });
 }
 /**
  * Toggles this site's whitelist status, this is only done to the active tab's site.
@@ -212,16 +209,16 @@ function toggleWhitelist() {
         if (whiteListSwitch.checked) {
             // Remove all occurrences of this url from that array, just in case
             whitelisted = whitelisted.filter(function (it) { return it != thisURL; });
-            whitelistedValue.innerText = "Running on this site, reload to see changes";
+            whitelistedValue.innerText = "Running on this site";
         }
         else {
             // Whitelisted, add this url to the whitelisted array
             whitelisted.push(thisURL);
-            whitelistedValue.innerText = "This site is whitelisted, reload to see changes";
+            whitelistedValue.innerText = "This site is whitelisted";
         }
         // Set the array of all whitelisted websites in storage
-        sync.set({ whitelisted: whitelisted });
-    });
+        return sync.set({ whitelisted: whitelisted });
+    }).then(function () { return updateAllText(); });
 }
 /**
  * Exports all settings saved in chrome sync storage to a pretty json file called "settings.wudooh.json"

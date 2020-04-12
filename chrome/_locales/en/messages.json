@@ -1,0 +1,39 @@
+{
+  "example": {
+    "message": "Message text, with optional placeholders.",
+    "description": "Translator-aimed description of the message."
+  },
+  "fontSize": {
+    "message": "Font size: "
+  },
+  "lineHeight": {
+    "message": "Line Height: "
+  },
+  "globalSettings": {
+    "message": ""
+  },
+  "siteSpecificSettings": {
+    "message": ""
+  },
+  "runningOnSite": {
+    "message": ""
+  },
+  "siteWhitelisted": {
+    "message": ""
+  },
+  "exportSettings": {
+    "message": ""
+  },
+  "importSettings": {
+    "message": ""
+  },
+  "customFonts": {
+    "message": ""
+  },
+  "help": {
+    "message": ""
+  },
+  "byBassamHelal": {
+    "message": ""
+  }
+}

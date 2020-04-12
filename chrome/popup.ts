@@ -36,11 +36,8 @@ let exportAnchor = get<HTMLAnchorElement>("exportAnchor");
 let importButton = get<HTMLButtonElement>("importButton");
 let importInput = get<HTMLInputElement>("importInput");
 
-function addCustomFonts() {
-    // Add custom fonts to popup.html
-    sync.get([keyCustomFonts]).then((storage: WudoohStorage) => {
-        let customFonts: Array<CustomFont> = storage.customFonts;
-
+function addCustomFonts(customFonts: Array<CustomFont>): Promise<void> {
+    return new Promise(() => {
         customFonts.forEach((customFont: CustomFont) => {
             const fontName: string = customFont.fontName;
             const fontUrl: string = customFont.url;
@@ -67,13 +64,12 @@ function addCustomFonts() {
  * to match the settings
  */
 function initializeUI() {
-    addCustomFonts();
-    // Get all the options with default values if they're not found for some reason
     let storage: WudoohStorage;
     sync.get(keys).then((_storage: WudoohStorage) => {
         storage = _storage;
         return tabs.queryCurrentTab();
     }).then((tabs: Array<Tab>) => {
+        addCustomFonts(storage.customFonts);
         // If the extension is off then hide the main div
         onOffSwitch.checked = storage.onOff;
         if (storage.onOff) mainDiv.style.maxHeight = "100%";
@@ -207,8 +203,8 @@ function toggleOverrideSiteSettings() {
         }
 
         // Set the array of all whitelisted websites in storage
-        sync.set({customSettings: customSettings});
-    });
+        return sync.set({customSettings: customSettings});
+    }).then(() => updateAllText());
 }
 
 /**
@@ -235,16 +231,16 @@ function toggleWhitelist() {
         if (whiteListSwitch.checked) {
             // Remove all occurrences of this url from that array, just in case
             whitelisted = whitelisted.filter((it: string) => it != thisURL);
-            whitelistedValue.innerText = "Running on this site, reload to see changes";
+            whitelistedValue.innerText = "Running on this site";
         } else {
             // Whitelisted, add this url to the whitelisted array
             whitelisted.push(thisURL);
-            whitelistedValue.innerText = "This site is whitelisted, reload to see changes";
+            whitelistedValue.innerText = "This site is whitelisted";
         }
 
         // Set the array of all whitelisted websites in storage
-        sync.set({whitelisted: whitelisted});
-    });
+        return sync.set({whitelisted: whitelisted});
+    }).then(() => updateAllText());
 }
 
 /**

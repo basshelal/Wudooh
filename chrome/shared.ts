@@ -50,8 +50,8 @@ const keys: Array<string> = [
 
 // Defaults
 const defaultFont: string = "Droid Arabic Naskh";
-const defaultTextSize: number = 115;
-const defaultLineHeight: number = 125;
+const defaultTextSize: number = 125;
+const defaultLineHeight: number = 145;
 const defaultColor: string = "#880E4F";
 const homePage: string = "http://basshelal.github.io/Wudooh";
 

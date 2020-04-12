@@ -34,8 +34,8 @@ var keys = [
 ];
 // Defaults
 var defaultFont = "Droid Arabic Naskh";
-var defaultTextSize = 115;
-var defaultLineHeight = 125;
+var defaultTextSize = 125;
+var defaultLineHeight = 145;
 var defaultColor = "#880E4F";
 var homePage = "http://basshelal.github.io/Wudooh";
 // Message Reasons
