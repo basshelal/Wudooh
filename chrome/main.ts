@@ -283,10 +283,8 @@ function addMessageListener() {
         if (message.reason === reasonInjectCustomFonts) {
             injectCustomFonts(message.customFonts);
         }
-        if (message.reason === reasonToggleOnOff) {
-            if (!message.onOff) {
-                toggleOff();
-            }
+        if (message.reason === reasonToggleOff) {
+            toggleOff();
         }
     });
 }

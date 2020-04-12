@@ -30,6 +30,7 @@ var importButton = get("importButton");
 var importInput = get("importInput");
 var langSelect = get("lang-select");
 function addCustomFonts(customFonts) {
+    fontsStyle.innerHTML = "";
     return new Promise(function () {
         customFonts.forEach(function (customFont) {
             var fontName = customFont.fontName;
@@ -118,10 +119,11 @@ function initializeUI() {
  * tabs that main.ts will handle.
  */
 function updateAllText() {
-    tabs.queryAllTabs().then(function (allTabs) { return allTabs.forEach(function (tab) {
-        var message = { reason: reasonUpdateAllText };
-        tabs.sendMessage(tab.id, message);
-    }); });
+    tabs.queryAllTabs().then(function (allTabs) {
+        return allTabs.forEach(function (tab) {
+            return tabs.sendMessage(tab.id, { reason: reasonUpdateAllText });
+        });
+    });
 }
 /**
  * Toggles the on off switch and saves the "onOff" setting, this will update all text if the switch is turned on
@@ -135,11 +137,7 @@ function toggleOnOff() {
         else {
             mainDiv.style.maxHeight = "0";
             tabs.queryAllTabs().then(function (allTabs) { return allTabs.forEach(function (tab) {
-                var message = {
-                    reason: reasonToggleOnOff,
-                    onOff: false
-                };
-                tabs.sendMessage(tab.id, message);
+                return tabs.sendMessage(tab.id, { reason: reasonToggleOff });
             }); });
         }
     });

@@ -39,6 +39,7 @@ let importInput = get<HTMLInputElement>("importInput");
 let langSelect = get<HTMLSelectElement>("lang-select");
 
 function addCustomFonts(customFonts: Array<CustomFont>): Promise<void> {
+    fontsStyle.innerHTML = "";
     return new Promise(() => {
         customFonts.forEach((customFont: CustomFont) => {
             const fontName: string = customFont.fontName;
@@ -130,10 +131,10 @@ function initializeUI() {
  * tabs that main.ts will handle.
  */
 function updateAllText() {
-    tabs.queryAllTabs().then((allTabs: Array<Tab>) => allTabs.forEach((tab: Tab) => {
-        let message = {reason: reasonUpdateAllText};
-        tabs.sendMessage(tab.id, message);
-    }));
+    tabs.queryAllTabs().then((allTabs: Array<Tab>) =>
+        allTabs.forEach((tab: Tab) =>
+            tabs.sendMessage(tab.id, {reason: reasonUpdateAllText}))
+    );
 }
 
 /**
@@ -146,13 +147,9 @@ function toggleOnOff() {
             updateAllText();
         } else {
             mainDiv.style.maxHeight = "0";
-            tabs.queryAllTabs().then((allTabs: Array<Tab>) => allTabs.forEach((tab: Tab) => {
-                let message = {
-                    reason: reasonToggleOnOff,
-                    onOff: false
-                };
-                tabs.sendMessage(tab.id, message);
-            }));
+            tabs.queryAllTabs().then((allTabs: Array<Tab>) => allTabs.forEach((tab: Tab) =>
+                tabs.sendMessage(tab.id, {reason: reasonToggleOff}))
+            );
         }
     });
 }

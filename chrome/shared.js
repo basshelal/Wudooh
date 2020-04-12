@@ -41,7 +41,7 @@ var homePage = "http://basshelal.github.io/Wudooh";
 // Message Reasons
 var reasonUpdateAllText = "updateAllText";
 var reasonInjectCustomFonts = "injectCustomFonts";
-var reasonToggleOnOff = "toggleOnOff";
+var reasonToggleOff = "toggleOff";
 var htmlEditables = ["textarea", "input", "text", "email", "number", "search", "tel", "url", "password"];
 var allWudoohFonts = [
     "Droid Arabic Naskh",

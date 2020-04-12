@@ -58,7 +58,7 @@ const homePage: string = "http://basshelal.github.io/Wudooh";
 // Message Reasons
 const reasonUpdateAllText = "updateAllText";
 const reasonInjectCustomFonts = "injectCustomFonts";
-const reasonToggleOnOff = "toggleOnOff";
+const reasonToggleOff = "toggleOff";
 
 let htmlEditables = ["textarea", "input", "text", "email", "number", "search", "tel", "url", "password"];
 
