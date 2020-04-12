@@ -14,7 +14,7 @@ var observer;
 /**
  * Returns true if the passed in Node has been updated by Wudooh and false otherwise
  */
-function hasBeenUpdated(node) {
+function hasNodeBeenUpdated(node) {
     return node.parentElement && node.parentElement.getAttribute("wudooh") === "true";
 }
 /**
@@ -40,7 +40,7 @@ function hasArabicScript(node) {
  * @param node the node to check
  * @return true if the node is editable and false otherwise
  */
-function isEditable(node) {
+function isNodeEditable(node) {
     var element = node;
     var nodeName = element.nodeName.toLowerCase();
     return (element.isContentEditable || (element.nodeType === Node.ELEMENT_NODE && htmlEditables.contains(nodeName)));
@@ -100,9 +100,9 @@ function updateNode(node, textSize, lineHeight, font) {
     var newSize = textSize / 100;
     var newHeight = lineHeight / 100;
     if (!!node.nodeValue) {
-        if (hasBeenUpdated(node))
+        if (hasNodeBeenUpdated(node))
             updateByChanging(node, newSize, newHeight, font);
-        else if (!hasBeenUpdated(node))
+        else if (!hasNodeBeenUpdated(node))
             updateByAdding(node, newSize, newHeight, font);
     }
 }
@@ -112,7 +112,7 @@ function updateByAdding(node, textSize, lineHeight, font) {
     if (!parent || !node)
         return;
     // don't do anything if this node or its parent are editable
-    if (isEditable(parent) || isEditable(node))
+    if (isNodeEditable(parent) || isNodeEditable(node))
         return;
     var newHTML;
     if (font === "Original") {

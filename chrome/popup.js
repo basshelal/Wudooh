@@ -28,6 +28,7 @@ var exportButton = get("exportButton");
 var exportAnchor = get("exportAnchor");
 var importButton = get("importButton");
 var importInput = get("importInput");
+var langSelect = get("lang-select");
 function addCustomFonts(customFonts) {
     return new Promise(function () {
         customFonts.forEach(function (customFont) {
@@ -91,6 +92,7 @@ function initializeUI() {
         fontSelect.value = font;
         fontSelect.style.fontFamily = font;
         websiteText.innerText = thisURL;
+        websiteText.title = thisURL;
         if (!thisTab.favIconUrl)
             websiteIcon.style.display = "none";
         else
@@ -160,6 +162,16 @@ function updateHeight() {
 function changeFont() {
     fontSelect.style.fontFamily = fontSelect.value;
     sync.set({ font: fontSelect.value, }).then(function () { return updateAllText(); });
+}
+function changeLang() {
+    var font;
+    if (langSelect.value === "ar")
+        font = "'Droid Arabic Naskh', sans-serif";
+    else if (langSelect.value === "fa")
+        font = "'Noto Nastaliq Urdu', sans-serif";
+    else
+        font = "'Roboto Light', sans-serif";
+    langSelect.style.fontFamily = font;
 }
 /**
  * Toggles the override site settings switch and saves the setting
@@ -356,5 +368,6 @@ function popupAddListeners() {
     importInput.oninput = function () { return importSettings(); };
     // Clicking the button simulates clicking the import input which is the one dealing with the actual file reading
     importButton.onclick = function () { return importInput.click(); };
+    langSelect.oninput = function () { return changeLang(); };
 }
 popupAddListeners();

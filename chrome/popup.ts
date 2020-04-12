@@ -36,6 +36,8 @@ let exportAnchor = get<HTMLAnchorElement>("exportAnchor");
 let importButton = get<HTMLButtonElement>("importButton");
 let importInput = get<HTMLInputElement>("importInput");
 
+let langSelect = get<HTMLSelectElement>("lang-select");
+
 function addCustomFonts(customFonts: Array<CustomFont>): Promise<void> {
     return new Promise(() => {
         customFonts.forEach((customFont: CustomFont) => {
@@ -104,6 +106,7 @@ function initializeUI() {
         fontSelect.value = font;
         fontSelect.style.fontFamily = font;
         websiteText.innerText = thisURL;
+        websiteText.title = thisURL;
         if (!thisTab.favIconUrl) websiteIcon.style.display = "none";
         else websiteIcon.src = thisTab.favIconUrl;
         websiteIcon.title = thisURL;
@@ -174,6 +177,14 @@ function updateHeight() {
 function changeFont() {
     fontSelect.style.fontFamily = fontSelect.value;
     sync.set({font: fontSelect.value,}).then(() => updateAllText());
+}
+
+function changeLang() {
+    let font: string;
+    if (langSelect.value === "ar") font = "'Droid Arabic Naskh', sans-serif";
+    else if (langSelect.value === "fa") font = "'Noto Nastaliq Urdu', sans-serif";
+    else font = "'Roboto Light', sans-serif";
+    langSelect.style.fontFamily = font;
 }
 
 /**
@@ -390,6 +401,8 @@ function popupAddListeners() {
 
     // Clicking the button simulates clicking the import input which is the one dealing with the actual file reading
     importButton.onclick = () => importInput.click();
+
+    langSelect.oninput = () => changeLang();
 }
 
 popupAddListeners();

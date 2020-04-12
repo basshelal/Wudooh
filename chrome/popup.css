@@ -124,13 +124,30 @@ a:hover, a:active {
 #lang-select {
     font-size: 14px;
     font-family: "Roboto Light", sans-serif;
-    width: 95%;
+    width: 65%;
     text-align-last: center;
     text-align: center;
     text-align-all: center;
     cursor: pointer;
+    align-items: center;
+}
+
+#lang-selectDiv:after {
+    left: 20%;
+    bottom: 14px;
 }
 
 #lang-select > option {
     font-size: 20px;
+    text-align: center;
+    alignment: center;
+    align-self: center;
+}
+
+#lang-selectBarSpan:before {
+    left: 20%;
+}
+
+#lang-selectBarSpan:after {
+    right: 20%;
 }

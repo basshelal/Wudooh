@@ -95,18 +95,6 @@
         <img alt="Website Icon" height="32" id="websiteIcon" src="" width="32">
         <p id="website">Website</p>
     </div>
-
-    <hr style="width: 80%">
-
-    <!-- Override Site Settings Switch -->
-    <div class="centered" style="width: 80%">
-        <label class="centered" id="overrideSettingsLabel" style="font-size: 1.3em">
-            Using global settings</label>
-    </div>
-    <label class="material-switch centered">
-        <input class="centered" id="overrideSettingsSwitch" type="checkbox">
-        <span></span>
-    </label>
     <hr style="width: 80%">
 
     <!-- Whitelist Switch -->
@@ -120,23 +108,34 @@
     </label>
     <hr style="width: 80%">
 
+    <!-- Override Site Settings Switch -->
+    <div class="centered" style="width: 80%">
+        <label class="centered" id="overrideSettingsLabel" style="font-size: 1.3em">
+            Using global settings</label>
+    </div>
+    <label class="material-switch centered">
+        <input class="centered" id="overrideSettingsSwitch" type="checkbox">
+        <span></span>
+    </label>
+    <hr style="width: 80%">
+
     <!-- Export / Import -->
-    <button class="material-button" id="exportButton">Export</button>
-    <a id="exportAnchor"></a>
     <button class="material-button" id="importButton">Import</button>
     <input accept="application/json" id="importInput" type="file"/>
+    <button class="material-button" id="exportButton">Export</button>
+    <a id="exportAnchor"></a>
 
     <br>
     <br>
 
     <!-- Lang select -->
-    <div class="select">
+    <div class="select" id="lang-selectDiv">
         <select class="select-text" id="lang-select">
             <option style="font-family: 'Roboto Light', sans-serif" value="en">English</option>
-            <option style="font-family: 'Droid Arabic Naskh', sans-serif" value="ar">العَرَبِيَّة</option>
+            <option style="font-family: 'Droid Arabic Naskh', sans-serif" value="ar">العربية</option>
             <option style="font-family: 'Noto Nastaliq Urdu', sans-serif" value="fa">فارسی</option>
         </select>
-        <span class="select-bar"></span>
+        <span class="select-bar" id="lang-selectBarSpan"></span>
     </div>
 
 </div>

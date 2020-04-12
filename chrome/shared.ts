@@ -268,7 +268,7 @@ var tabs = {
  * @param elementId the id of the element to get
  */
 function get<T extends HTMLElement>(elementId: string): T | null {
-    return document.getElementById(elementId) as T
+    return document.getElementById(elementId) as T | null
 }
 
 function wait(millis: number, func: Function): number {

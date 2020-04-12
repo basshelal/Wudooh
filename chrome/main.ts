@@ -20,7 +20,7 @@ let observer: MutationObserver;
 /**
  * Returns true if the passed in Node has been updated by Wudooh and false otherwise
  */
-function hasBeenUpdated(node: Node): boolean {
+function hasNodeBeenUpdated(node: Node): boolean {
     return node.parentElement && node.parentElement.getAttribute("wudooh") === "true";
 }
 
@@ -49,7 +49,7 @@ function hasArabicScript(node: Node): boolean {
  * @param node the node to check
  * @return true if the node is editable and false otherwise
  */
-function isEditable(node: Node): boolean {
+function isNodeEditable(node: Node): boolean {
     let element: HTMLElement = node as HTMLElement;
     let nodeName: string = element.nodeName.toLowerCase();
 
@@ -106,8 +106,8 @@ function updateNode(node: Node, textSize: number, lineHeight: number, font: stri
     let newHeight: number = lineHeight / 100;
 
     if (!!node.nodeValue) {
-        if (hasBeenUpdated(node)) updateByChanging(node, newSize, newHeight, font);
-        else if (!hasBeenUpdated(node)) updateByAdding(node, newSize, newHeight, font);
+        if (hasNodeBeenUpdated(node)) updateByChanging(node, newSize, newHeight, font);
+        else if (!hasNodeBeenUpdated(node)) updateByAdding(node, newSize, newHeight, font);
     }
 }
 
@@ -116,7 +116,7 @@ function updateByAdding(node: Node, textSize: number, lineHeight: number, font: 
     // return if parent or node are null
     if (!parent || !node) return;
     // don't do anything if this node or its parent are editable
-    if (isEditable(parent) || isEditable(node)) return;
+    if (isNodeEditable(parent) || isNodeEditable(node)) return;
 
     let newHTML: string;
     if (font === "Original") {
