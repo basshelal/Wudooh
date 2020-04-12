@@ -4,21 +4,21 @@
   "short_name": "Wudooh",
   "description": "Clarity for Arabic script text",
   "version": "1.1",
-  "minimum_chrome_version": "38",
+  "minimum_chrome_version": "35",
   "default_locale": "en",
   "permissions": [
     "storage",
-    "tabs",
-    "chrome://favicon/"
+    "tabs"
   ],
   "browser_action": {
-    "default_icon": "/assets/icon128c.png",
+    "default_icon": "/assets/icon256c.png",
     "default_popup": "popup.html"
   },
   "icons": {
     "16": "assets/icon16c.png",
     "48": "assets/icon48c.png",
-    "128": "assets/icon128c.png"
+    "128": "assets/icon128c.png",
+    "256": "assets/icon256c.png"
   },
   "content_scripts": [
     {
@@ -44,8 +44,6 @@
     "persistent": false
   },
   "web_accessible_resources": [
-    "main.js",
     "fonts/*"
-  ],
-  "content_security_policy": "script-src 'self'; object-src 'self'; img-src chrome://favicon;"
+  ]
 }

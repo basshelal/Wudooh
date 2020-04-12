@@ -91,7 +91,10 @@ function initializeUI() {
         fontSelect.value = font;
         fontSelect.style.fontFamily = font;
         websiteText.innerText = thisURL;
-        websiteIcon.src = "chrome://favicon/size/32/" + thisTab.url;
+        if (!thisTab.favIconUrl)
+            websiteIcon.style.display = "none";
+        else
+            websiteIcon.src = thisTab.favIconUrl;
         websiteIcon.title = thisURL;
         websiteIcon.alt = thisURL;
         var isWhitelisted = !!(whiteListed.find(function (it) { return it === thisURL; }));
