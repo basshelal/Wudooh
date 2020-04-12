@@ -41,6 +41,47 @@ var homePage = "http://basshelal.github.io/Wudooh";
 // Message Reasons
 var reasonUpdateAllText = "updateAllText";
 var reasonInjectCustomFonts = "injectCustomFonts";
+var allWudoohFonts = [
+    "Droid Arabic Naskh",
+    "Noto Naskh Arabic",
+    "Arabic Typesetting",
+    "Simplified Arabic",
+    "Traditional Arabic",
+    "Noto Sans Arabic",
+    "Noto Kufi Arabic",
+    "Aldhabi",
+    "Amiri",
+    "Amiri Quran",
+    "Andalus",
+    "Reem Kufi Regular",
+    "Scheherazade",
+    "Urdu Typesetting",
+    "Noto Nastaliq Urdu",
+    "Aref Ruqaa",
+    "Cairo",
+    "Lemonada",
+    "Lalezar",
+    "Tajawal",
+    "Changa",
+    "El Messiri",
+    "Lateef",
+    "Mada",
+    "Markazi Text",
+    "Mirza",
+    "Harmattan",
+    "Rakkas",
+    "Katibeh",
+    "Jomhuria",
+    "Shakstah",
+    "Mehr Nastaliq",
+    "Rooznameh",
+    "DecoType Naskh",
+    "sans-serif",
+    "Times New Roman",
+    "Arial",
+    "Calibri",
+    "Original"
+];
 /**
  * Represents a site that uses different settings from the global settings
  * The settings themselves may be the same as the global but they will change independently
@@ -74,18 +115,11 @@ var CustomSettings = /** @class */ (function () {
     return CustomSettings;
 }());
 var CustomFont = /** @class */ (function () {
-    function CustomFont(fontName, displayedName, url) {
+    function CustomFont(fontName, localName, url) {
         this.fontName = fontName;
-        if (displayedName)
-            this.displayedName = displayedName;
-        else
-            this.displayedName = fontName;
+        this.localName = localName;
         this.url = url;
     }
-    // TODO fonts will send errors if they're invalid ONLY WHEN THEY ARE REQUESTED TO BE USED
-    //  this means they will silently exist if they've been injected as CSS even if they're invalid
-    //  so to check validity we need to force use them and see if they display or at least don't throw
-    //  errors
     /**
      * Trick to make sure that a font is installed on the client's machine.
      * I found this somewhere online and they claimed it works 99% of the time,
@@ -119,6 +153,21 @@ var CustomFont = /** @class */ (function () {
     CustomFont.isFontUrlValid = function (fontUrl) {
         return fetch(fontUrl).then(function (response) { return response.ok; });
     };
+    CustomFont.isFontUrlInstalled = function (fontUrl) {
+        var tempFontStyle = document.createElement("style");
+        var fontName = "temporaryWudoohFont";
+        var injectedCss = "@font-face { font-family: '" + fontName + "'; src: url('" + fontUrl + "'); }\n";
+        tempFontStyle.innerHTML = tempFontStyle.innerHTML.concat(injectedCss);
+        document.head.append(tempFontStyle);
+        document.getElementById("fontTest").style.fontFamily = fontName;
+        // Don't delete this! The checker always fails once before succeeding for some reason!
+        CustomFont.isFontInstalled(fontName);
+        return fetch(fontUrl).then(function (response) {
+            console.log(CustomFont.isFontInstalled(fontName));
+            return response.ok && CustomFont.isFontInstalled(fontName);
+        });
+        //  document.head.removeChild(tempFontStyle);
+    };
     CustomFont.prototype.isFontInstalled = function () {
         return CustomFont.isFontInstalled(this.fontName);
     };
@@ -130,21 +179,19 @@ var CustomFont = /** @class */ (function () {
     };
     return CustomFont;
 }());
-/**
- * Finds the first element that matches the given {@param predicate} else returns null
- * You can use this as a way to check if the array contains an element that matches the given {@param predicate}, it
- * will return null if none exists
- * @param predicate the predicate to match
- */
-Array.prototype.findFirst = function (predicate) {
-    for (var i = 0; i < this.length; i++) {
-        if (predicate(this[i], i))
-            return this[i];
-    }
-    return null;
-};
 Array.prototype.contains = function (element) {
-    return !!this.findFirst(function (it) { return it === element; });
+    return this.indexOf(element) !== -1;
+};
+String.prototype.contains = function (string) {
+    return this.indexOf(string) !== -1;
+};
+Element.prototype.postDelayed = function (millis, func) {
+    var _this = this;
+    var localTask = wait(millis, function () {
+        if (localTask === _this.currentTask)
+            func.call(_this);
+    });
+    this.currentTask = localTask;
 };
 // endregion Extensions
 var htmlEditables = ["textarea", "input", "text", "email", "number", "search", "tel", "url", "password"];
@@ -155,6 +202,12 @@ var htmlEditables = ["textarea", "input", "text", "email", "number", "search", "
  */
 function get(elementId) {
     return document.getElementById(elementId);
+}
+function wait(millis, func) {
+    return setTimeout(func, millis);
+}
+function now() {
+    return Date.now();
 }
 /**
  * An abstraction and simplification of the storage.sync API to make it use Promises

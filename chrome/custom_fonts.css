@@ -81,3 +81,9 @@ h1 {
     font-size: 36px;
     color: red;
 }
+
+#fontTest {
+    /*noinspection CssNoGenericFontName*/
+    font-family: "";
+    font-size: 3em;
+}

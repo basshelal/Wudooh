@@ -7,7 +7,7 @@
 ///<reference path="./shared.ts"/>
 var mainDiv = get("main");
 // Custom Fonts
-var fontsStyle = get("customFontsStyle");
+var fontsStyle = get("wudoohCustomFontsStyle");
 // Inputs
 var sizeSlider = get("size");
 var heightSlider = get("height");
@@ -34,7 +34,6 @@ function addCustomFonts() {
         var customFonts = storage.customFonts;
         customFonts.forEach(function (customFont) {
             var fontName = customFont.fontName;
-            var displayedName = customFont.displayedName;
             var fontUrl = customFont.url;
             var injectedCss = "@font-face { font-family: '" + fontName + "'; src: local('" + fontName + "')";
             if (fontUrl)
@@ -44,8 +43,7 @@ function addCustomFonts() {
             var option = document.createElement("option");
             option.style.fontFamily = fontName;
             option.value = fontName;
-            option.innerHTML = displayedName;
-            option.style.color = "#ff00ff";
+            option.innerHTML = fontName;
             fontSelect.add(option);
         });
     });
@@ -77,7 +75,7 @@ function initializeUI() {
         var lineHeight;
         var font;
         // The above will be different if thisURL is a custom one so we set them depending on this
-        var custom = customSettings.findFirst(function (custom) { return custom.url === thisURL; });
+        var custom = customSettings.find(function (custom) { return custom.url === thisURL; });
         if (!!custom) {
             textSize = custom.textSize;
             lineHeight = custom.lineHeight;
@@ -99,7 +97,7 @@ function initializeUI() {
         websiteIcon.src = "chrome://favicon/size/32/" + thisTab.url;
         websiteIcon.title = thisURL;
         websiteIcon.alt = thisURL;
-        var isWhitelisted = !!(whiteListed.findFirst(function (it) { return it === thisURL; }));
+        var isWhitelisted = !!(whiteListed.find(function (it) { return it === thisURL; }));
         var isCustom = !!custom;
         whiteListSwitch.checked = !isWhitelisted;
         if (isWhitelisted)
@@ -136,7 +134,7 @@ function updateAllText() {
             return tabs.queryAllTabs();
         }).then(function (allTabs) { return allTabs.forEach(function (tab) {
             var thisURL = new URL(tab.url).hostname;
-            var custom = customSettings_1.findFirst(function (custom) { return custom.url === thisURL; });
+            var custom = customSettings_1.find(function (custom) { return custom.url === thisURL; });
             if (custom) {
                 oldSize_1 = custom.textSize;
                 oldHeight_1 = custom.lineHeight;
@@ -367,15 +365,15 @@ function importSettings() {
 /**
  * Add all listeners to the UI elements
  */
-function addListeners() {
+function popupAddListeners() {
     // Get options when the popup.html document is loaded
     document.addEventListener("DOMContentLoaded", initializeUI);
     // Update size and height HTML when input is changed, changes no variables so cheap
     sizeSlider.oninput = function () { return sizeValue.innerHTML = sizeSlider.value + '%'; };
     heightSlider.oninput = function () { return heightValue.innerHTML = heightSlider.value + '%'; };
     // Update text and save options when any change happens, including by using keys, mouse touch etc
-    sizeSlider.onchange = function () { return updateSize(); };
-    heightSlider.onchange = function () { return updateHeight(); };
+    sizeSlider.onchange = function () { return sizeSlider.postDelayed(250, updateSize); };
+    heightSlider.onchange = function () { return heightSlider.postDelayed(250, updateHeight); };
     // Update switches when they're clicked
     onOffSwitch.onclick = function () { return toggleOnOff(); };
     whiteListSwitch.onclick = function () { return toggleWhitelist(); };
@@ -389,4 +387,4 @@ function addListeners() {
     // Clicking the button simulates clicking the import input which is the one dealing with the actual file reading
     importButton.onclick = function () { return importInput.click(); };
 }
-addListeners();
+popupAddListeners();

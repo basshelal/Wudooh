@@ -10,7 +10,7 @@
 const mainDiv = get<HTMLDivElement>("main");
 
 // Custom Fonts
-const fontsStyle: HTMLStyleElement = get("customFontsStyle");
+const fontsStyle: HTMLStyleElement = get("wudoohCustomFontsStyle");
 
 // Inputs
 const sizeSlider = get<HTMLInputElement>("size");
@@ -43,7 +43,6 @@ function addCustomFonts() {
 
         customFonts.forEach((customFont: CustomFont) => {
             const fontName: string = customFont.fontName;
-            const displayedName: string = customFont.displayedName;
             const fontUrl: string = customFont.url;
 
             let injectedCss = `@font-face { font-family: '${fontName}'; src: local('${fontName}')`;
@@ -55,8 +54,7 @@ function addCustomFonts() {
             let option: HTMLOptionElement = document.createElement("option");
             option.style.fontFamily = fontName;
             option.value = fontName;
-            option.innerHTML = displayedName;
-            option.style.color = "#ff00ff";
+            option.innerHTML = fontName;
 
             fontSelect.add(option);
         });
@@ -91,7 +89,7 @@ function initializeUI() {
         let lineHeight: number;
         let font: string;
         // The above will be different if thisURL is a custom one so we set them depending on this
-        let custom = customSettings.findFirst((custom: CustomSettings) => custom.url === thisURL);
+        let custom = customSettings.find((custom: CustomSettings) => custom.url === thisURL);
         if (!!custom) {
             textSize = custom.textSize;
             lineHeight = custom.lineHeight;
@@ -114,7 +112,7 @@ function initializeUI() {
         websiteIcon.title = thisURL;
         websiteIcon.alt = thisURL;
 
-        let isWhitelisted: boolean = !!(whiteListed.findFirst((it: string) => it === thisURL));
+        let isWhitelisted: boolean = !!(whiteListed.find((it: string) => it === thisURL));
         let isCustom: boolean = !!custom;
 
         whiteListSwitch.checked = !isWhitelisted;
@@ -151,7 +149,7 @@ function updateAllText() {
             return tabs.queryAllTabs();
         }).then((allTabs: Array<Tab>) => allTabs.forEach((tab: Tab) => {
             let thisURL: string = new URL(tab.url).hostname;
-            let custom = customSettings.findFirst((custom: CustomSettings) => custom.url === thisURL);
+            let custom = customSettings.find((custom: CustomSettings) => custom.url === thisURL);
             if (custom) {
                 oldSize = custom.textSize;
                 oldHeight = custom.lineHeight;
@@ -398,7 +396,7 @@ function importSettings() {
 /**
  * Add all listeners to the UI elements
  */
-function addListeners() {
+function popupAddListeners() {
     // Get options when the popup.html document is loaded
     document.addEventListener("DOMContentLoaded", initializeUI);
 
@@ -407,8 +405,8 @@ function addListeners() {
     heightSlider.oninput = () => heightValue.innerHTML = heightSlider.value + '%';
 
     // Update text and save options when any change happens, including by using keys, mouse touch etc
-    sizeSlider.onchange = () => updateSize();
-    heightSlider.onchange = () => updateHeight();
+    sizeSlider.onchange = () => sizeSlider.postDelayed(250, updateSize);
+    heightSlider.onchange = () => heightSlider.postDelayed(250, updateHeight);
 
     // Update switches when they're clicked
     onOffSwitch.onclick = () => toggleOnOff();
@@ -428,4 +426,4 @@ function addListeners() {
     importButton.onclick = () => importInput.click();
 }
 
-addListeners();
+popupAddListeners();

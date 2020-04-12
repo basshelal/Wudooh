@@ -4,14 +4,30 @@
 const template = get<HTMLTemplateElement>("template");
 const fontsDiv = get<HTMLDivElement>("fontsDiv");
 const fontNameInput = get<HTMLInputElement>("fontNameInput");
-const displayedNameInput = get<HTMLInputElement>("displayedNameInput");
+const localNameInput = get<HTMLInputElement>("localNameInput");
 const urlInput = get<HTMLInputElement>("urlInput");
 const addButton = get<HTMLButtonElement>("addButton");
 const infoLabel = get<HTMLParagraphElement>("infoLabel");
+const fontTest = get("fontTest");
 const templateDiv = template.content.querySelector("div");
 
 // Use this to reduce the number of requests made to chrome storage
 let displayedFonts: Array<string> = [];
+
+function injectTemporaryCustomFont(fontName: string, url: string, localName: string) {
+    let customFontsStyle = get("wudoohCustomFontsStyle");
+    if (!customFontsStyle) {
+        customFontsStyle = document.createElement("style");
+        customFontsStyle.id = "wudoohCustomFontsStyle";
+        document.head.append(customFontsStyle);
+    }
+
+    let injectedCss = `@font-face { font-family: '${fontName}'; src: local('${localName}')`;
+    if (url) injectedCss = injectedCss.concat(`, url('${url}')`);
+    injectedCss = injectedCss.concat(`; }\n`);
+
+    customFontsStyle.innerHTML = injectedCss;
+}
 
 function notifyCustomFontsChanged(customFonts: Array<CustomFont>) {
     tabs.queryAllTabs().then((allTabs: Array<Tab>) => {
@@ -27,50 +43,28 @@ function notifyCustomFontsChanged(customFonts: Array<CustomFont>) {
 
 function displayFont(customFont: CustomFont) {
     const fontName: string = customFont.fontName;
-    const displayedName: string = customFont.displayedName;
+    const localName: string = customFont.localName;
     const fontUrl: string = customFont.url;
 
-    let rootDiv = document.importNode(templateDiv, true);
-    let inputs = rootDiv.getElementsByTagName("input");
+    const rootDiv = document.importNode(templateDiv, true);
+    const inputs = rootDiv.getElementsByTagName("input");
     const fontNameInput = inputs.namedItem("templateFontNameInput") as HTMLInputElement;
-    const displayedNameInput = inputs.namedItem("templateDisplayedNameInput") as HTMLInputElement;
     const urlInput = inputs.namedItem("templateUrlInput") as HTMLInputElement;
-    let deleteButton = rootDiv.children.namedItem("templateDeleteButton") as HTMLButtonElement;
+    const localNameInput = inputs.namedItem("templateLocalNameInput") as HTMLInputElement;
+    const deleteButton = rootDiv.children.namedItem("templateDeleteButton") as HTMLButtonElement;
 
     fontNameInput.value = fontName;
-    displayedNameInput.value = displayedName;
     urlInput.value = fontUrl;
+    localNameInput.value = localName;
 
-    rootDiv.id += `-${customFont}`;
-    fontNameInput.id += `-${customFont}`;
-    deleteButton.id += `-${customFont}`;
+    let idSuffix = `-${customFont.fontName}`;
+    rootDiv.id += idSuffix;
+    fontNameInput.id += idSuffix;
+    urlInput.id += idSuffix;
+    localNameInput.id += idSuffix;
+    deleteButton.id += idSuffix;
 
-    // Temporary variable so that we don't perform a save every time the user leaves the input
-    let savedValue: string = customFont.fontName;
-
-    if (CustomFont.isFontInstalled(customFont.fontName)) {
-        fontNameInput.style.color = "green";
-    } else {
-        fontNameInput.style.color = "red";
-    }
-
-    fontNameInput.oninput = () => {
-        fontNameInput.size = fontNameInput.value.length;
-        if (CustomFont.isFontInstalled(fontNameInput.value)) {
-            fontNameInput.style.color = "green";
-        } else {
-            fontNameInput.style.color = "red";
-        }
-    };
-
-    fontNameInput.onmouseleave = () => {
-
-        // Save only if input value has changed
-        if (savedValue !== fontNameInput.value) {
-            savedValue = fontNameInput.value;
-            console.log(`Saved: ${savedValue}`)
-        }
-    };
+    fontsDiv.appendChild(rootDiv);
 
     deleteButton.onclick = () => {
         if (confirm(`Are you sure you want to delete ${fontNameInput.value}\nThis cannot be undone`)) {
@@ -86,73 +80,69 @@ function displayFont(customFont: CustomFont) {
             });
         }
     };
-
-    fontsDiv.appendChild(rootDiv);
-
-    let injectedCss = `@font-face { font-family: '${fontName}'; src: local('${fontName}')`;
-    if (fontUrl) injectedCss = injectedCss.concat(`, url('${fontUrl}')`);
-    injectedCss = injectedCss.concat(`; }\n`);
-
-    let fontsStyle = get("customFontsStyle");
-    fontsStyle.innerHTML = fontsStyle.innerHTML.concat(injectedCss);
-
 }
-
-sync.get([keyCustomFonts]).then((storage: WudoohStorage) => {
-    let customFonts: Array<CustomFont> = storage.customFonts;
-    displayedFonts = [];
-    customFonts.forEach((it: CustomFont) => {
-        displayFont(it);
-        displayedFonts.push(it.fontName)
-    });
-});
-
-fontNameInput.oninput = () => {
-    if (CustomFont.isFontInstalled(fontNameInput.value)) {
-        fontNameInput.style.color = "green";
-    } else {
-        fontNameInput.style.color = "red";
-    }
-};
 
 function pressedEnter(event: KeyboardEvent) {
     if (event.code === "Enter") addButton.click();
 }
 
-fontNameInput.onkeypress = pressedEnter;
-displayedNameInput.onkeypress = pressedEnter;
-urlInput.onkeypress = pressedEnter;
+function initializeCustomFonts() {
+    sync.get([keyCustomFonts]).then((storage: WudoohStorage) => {
+        let customFonts: Array<CustomFont> = storage.customFonts;
+        displayedFonts = [];
+        customFonts.forEach((it: CustomFont) => {
+            displayFont(it);
+            displayedFonts.push(it.fontName)
+        });
+    });
+}
 
-addButton.onclick = () => {
+function inputOnInput() {
+    this.postDelayed(250, () => {
+        let fontName = CSS.escape(fontNameInput.value);
+        let url = CSS.escape(urlInput.value);
+        let localName = CSS.escape(localNameInput.value);
+        injectTemporaryCustomFont(fontName, url, localName);
+        fontTest.style.fontFamily = fontName;
+    });
+}
+
+function addButtonOnClick() {
     let fontName = fontNameInput.value;
-    let displayedName = displayedNameInput.value;
     let url = urlInput.value;
+    let localName = localNameInput.value;
 
-    if (displayedName == "") displayedName = null;
+    if (fontName == "") fontName = null;
     if (url == "") url = null;
+    if (localName == "") localName = null;
 
     let isValid = true;
 
-    if (fontName.length === 0) {
+    if (!fontName) {
         isValid = false;
         infoLabel.style.display = "block";
-        infoLabel.innerText = "Cannot be empty!";
+        infoLabel.innerText = "Font Name cannot be empty!";
         return;
     }
-    if (displayedFonts.contains(fontName)) {
+    if (!url && !localName) {
         isValid = false;
         infoLabel.style.display = "block";
-        infoLabel.innerText = "Already in list!";
+        infoLabel.innerText = "URL and local cannot both be empty!";
         return;
     }
-    // TODO only allow inputs of letters and - and _, no commas and exclamation marks etc
+    if (displayedFonts.contains(fontName) || allWudoohFonts.contains(fontName)) {
+        isValid = false;
+        infoLabel.style.display = "block";
+        infoLabel.innerText = "A font with this Font Name already exists!";
+        return;
+    }
     if (isValid) {
         infoLabel.innerText = "";
         let customFonts: Array<CustomFont>;
         let customFont: CustomFont;
         sync.get([keyCustomFonts]).then((storage: WudoohStorage) => {
             customFonts = storage.customFonts;
-            customFont = new CustomFont(fontName, displayedName, url);
+            customFont = new CustomFont(fontName, localName, url);
             customFonts.push(customFont);
             return sync.set({customFonts: customFonts});
         }).then(() => {
@@ -161,8 +151,24 @@ addButton.onclick = () => {
             notifyCustomFontsChanged(customFonts);
             infoLabel.style.display = "none";
             fontNameInput.value = "";
-            displayedNameInput.value = "";
             urlInput.value = "";
+            localNameInput.value = "";
         });
     }
-};
+}
+
+function customFontsAddListeners() {
+    document.addEventListener("DOMContentLoaded", initializeCustomFonts);
+
+    fontNameInput.onkeypress = pressedEnter;
+    localNameInput.onkeypress = pressedEnter;
+    urlInput.onkeypress = pressedEnter;
+
+    fontNameInput.oninput = inputOnInput;
+    localNameInput.oninput = inputOnInput;
+    urlInput.oninput = inputOnInput;
+
+    addButton.onclick = addButtonOnClick;
+}
+
+customFontsAddListeners();

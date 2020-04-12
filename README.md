@@ -11,7 +11,7 @@
 [![Chrome](https://img.shields.io/badge/-Download%20on%20Chrome-yellow?style=flat&logo=Google%20Chrome&logoColor=blue)](https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn)
 [![Firefox](https://img.shields.io/badge/-Download%20on%20Firefox-blue?style=flat&logo=Mozilla%20Firefox&logoColor=orange)](https://addons.mozilla.org/en-US/firefox/addon/wudooh/)
 
-[![Wudooh Banner](https://github.com/basshelal/Wudooh/blob/master/pictures/GitHubPromo.png)](https://basshelal.github.io/Wudooh/)
+[![Wudooh Banner](https://github.com/basshelal/Wudooh/blob/master/pics/GitHubPromo.png)](https://basshelal.github.io/Wudooh/)
 
 [![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/P5P5XSTN)
 

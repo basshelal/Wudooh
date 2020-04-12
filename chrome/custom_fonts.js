@@ -3,13 +3,27 @@
 var template = get("template");
 var fontsDiv = get("fontsDiv");
 var fontNameInput = get("fontNameInput");
-var displayedNameInput = get("displayedNameInput");
+var localNameInput = get("localNameInput");
 var urlInput = get("urlInput");
 var addButton = get("addButton");
 var infoLabel = get("infoLabel");
+var fontTest = get("fontTest");
 var templateDiv = template.content.querySelector("div");
 // Use this to reduce the number of requests made to chrome storage
 var displayedFonts = [];
+function injectTemporaryCustomFont(fontName, url, localName) {
+    var customFontsStyle = get("wudoohCustomFontsStyle");
+    if (!customFontsStyle) {
+        customFontsStyle = document.createElement("style");
+        customFontsStyle.id = "wudoohCustomFontsStyle";
+        document.head.append(customFontsStyle);
+    }
+    var injectedCss = "@font-face { font-family: '" + fontName + "'; src: local('" + localName + "')";
+    if (url)
+        injectedCss = injectedCss.concat(", url('" + url + "')");
+    injectedCss = injectedCss.concat("; }\n");
+    customFontsStyle.innerHTML = injectedCss;
+}
 function notifyCustomFontsChanged(customFonts) {
     tabs.queryAllTabs().then(function (allTabs) {
         allTabs.forEach(function (tab) {
@@ -23,44 +37,24 @@ function notifyCustomFontsChanged(customFonts) {
 }
 function displayFont(customFont) {
     var fontName = customFont.fontName;
-    var displayedName = customFont.displayedName;
+    var localName = customFont.localName;
     var fontUrl = customFont.url;
     var rootDiv = document.importNode(templateDiv, true);
     var inputs = rootDiv.getElementsByTagName("input");
     var fontNameInput = inputs.namedItem("templateFontNameInput");
-    var displayedNameInput = inputs.namedItem("templateDisplayedNameInput");
     var urlInput = inputs.namedItem("templateUrlInput");
+    var localNameInput = inputs.namedItem("templateLocalNameInput");
     var deleteButton = rootDiv.children.namedItem("templateDeleteButton");
     fontNameInput.value = fontName;
-    displayedNameInput.value = displayedName;
     urlInput.value = fontUrl;
-    rootDiv.id += "-" + customFont;
-    fontNameInput.id += "-" + customFont;
-    deleteButton.id += "-" + customFont;
-    // Temporary variable so that we don't perform a save every time the user leaves the input
-    var savedValue = customFont.fontName;
-    if (CustomFont.isFontInstalled(customFont.fontName)) {
-        fontNameInput.style.color = "green";
-    }
-    else {
-        fontNameInput.style.color = "red";
-    }
-    fontNameInput.oninput = function () {
-        fontNameInput.size = fontNameInput.value.length;
-        if (CustomFont.isFontInstalled(fontNameInput.value)) {
-            fontNameInput.style.color = "green";
-        }
-        else {
-            fontNameInput.style.color = "red";
-        }
-    };
-    fontNameInput.onmouseleave = function () {
-        // Save only if input value has changed
-        if (savedValue !== fontNameInput.value) {
-            savedValue = fontNameInput.value;
-            console.log("Saved: " + savedValue);
-        }
-    };
+    localNameInput.value = localName;
+    var idSuffix = "-" + customFont.fontName;
+    rootDiv.id += idSuffix;
+    fontNameInput.id += idSuffix;
+    urlInput.id += idSuffix;
+    localNameInput.id += idSuffix;
+    deleteButton.id += idSuffix;
+    fontsDiv.appendChild(rootDiv);
     deleteButton.onclick = function () {
         if (confirm("Are you sure you want to delete " + fontNameInput.value + "\nThis cannot be undone")) {
             var font_1 = fontNameInput.value;
@@ -75,66 +69,66 @@ function displayFont(customFont) {
             });
         }
     };
-    fontsDiv.appendChild(rootDiv);
-    var injectedCss = "@font-face { font-family: '" + fontName + "'; src: local('" + fontName + "')";
-    if (fontUrl)
-        injectedCss = injectedCss.concat(", url('" + fontUrl + "')");
-    injectedCss = injectedCss.concat("; }\n");
-    var fontsStyle = get("customFontsStyle");
-    fontsStyle.innerHTML = fontsStyle.innerHTML.concat(injectedCss);
 }
-sync.get([keyCustomFonts]).then(function (storage) {
-    var customFonts = storage.customFonts;
-    displayedFonts = [];
-    customFonts.forEach(function (it) {
-        displayFont(it);
-        displayedFonts.push(it.fontName);
-    });
-});
-fontNameInput.oninput = function () {
-    if (CustomFont.isFontInstalled(fontNameInput.value)) {
-        fontNameInput.style.color = "green";
-    }
-    else {
-        fontNameInput.style.color = "red";
-    }
-};
 function pressedEnter(event) {
     if (event.code === "Enter")
         addButton.click();
 }
-fontNameInput.onkeypress = pressedEnter;
-displayedNameInput.onkeypress = pressedEnter;
-urlInput.onkeypress = pressedEnter;
-addButton.onclick = function () {
+function initializeCustomFonts() {
+    sync.get([keyCustomFonts]).then(function (storage) {
+        var customFonts = storage.customFonts;
+        displayedFonts = [];
+        customFonts.forEach(function (it) {
+            displayFont(it);
+            displayedFonts.push(it.fontName);
+        });
+    });
+}
+function inputOnInput() {
+    this.postDelayed(250, function () {
+        var fontName = CSS.escape(fontNameInput.value);
+        var url = CSS.escape(urlInput.value);
+        var localName = CSS.escape(localNameInput.value);
+        injectTemporaryCustomFont(fontName, url, localName);
+        fontTest.style.fontFamily = fontName;
+    });
+}
+function addButtonOnClick() {
     var fontName = fontNameInput.value;
-    var displayedName = displayedNameInput.value;
     var url = urlInput.value;
-    if (displayedName == "")
-        displayedName = null;
+    var localName = localNameInput.value;
+    if (fontName == "")
+        fontName = null;
     if (url == "")
         url = null;
+    if (localName == "")
+        localName = null;
     var isValid = true;
-    if (fontName.length === 0) {
+    if (!fontName) {
         isValid = false;
         infoLabel.style.display = "block";
-        infoLabel.innerText = "Cannot be empty!";
+        infoLabel.innerText = "Font Name cannot be empty!";
         return;
     }
-    if (displayedFonts.contains(fontName)) {
+    if (!url && !localName) {
         isValid = false;
         infoLabel.style.display = "block";
-        infoLabel.innerText = "Already in list!";
+        infoLabel.innerText = "URL and local cannot both be empty!";
         return;
     }
-    // TODO only allow inputs of letters and - and _, no commas and exclamation marks etc
+    if (displayedFonts.contains(fontName) || allWudoohFonts.contains(fontName)) {
+        isValid = false;
+        infoLabel.style.display = "block";
+        infoLabel.innerText = "A font with this Font Name already exists!";
+        return;
+    }
     if (isValid) {
         infoLabel.innerText = "";
         var customFonts_2;
         var customFont_1;
         sync.get([keyCustomFonts]).then(function (storage) {
             customFonts_2 = storage.customFonts;
-            customFont_1 = new CustomFont(fontName, displayedName, url);
+            customFont_1 = new CustomFont(fontName, localName, url);
             customFonts_2.push(customFont_1);
             return sync.set({ customFonts: customFonts_2 });
         }).then(function () {
@@ -143,8 +137,19 @@ addButton.onclick = function () {
             notifyCustomFontsChanged(customFonts_2);
             infoLabel.style.display = "none";
             fontNameInput.value = "";
-            displayedNameInput.value = "";
             urlInput.value = "";
+            localNameInput.value = "";
         });
     }
-};
+}
+function customFontsAddListeners() {
+    document.addEventListener("DOMContentLoaded", initializeCustomFonts);
+    fontNameInput.onkeypress = pressedEnter;
+    localNameInput.onkeypress = pressedEnter;
+    urlInput.onkeypress = pressedEnter;
+    fontNameInput.oninput = inputOnInput;
+    localNameInput.oninput = inputOnInput;
+    urlInput.oninput = inputOnInput;
+    addButton.onclick = addButtonOnClick;
+}
+customFontsAddListeners();

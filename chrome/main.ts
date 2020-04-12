@@ -15,14 +15,16 @@ const arabicRegex = new RegExp("([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-
 /** The observer used in {@linkcode startObserver} to dynamically update any newly added Nodes */
 let observer: MutationObserver;
 
+/**
+ * Returns true if the passed in Node has been updated by Wudooh and false otherwise
+ */
 function hasBeenUpdated(node: Node): boolean {
     return node.parentElement && node.parentElement.getAttribute("wudooh") === "true";
 }
 
 /**
- * Returns whether the given node has any Arabic script or not, this is any script that matches arabicRegEx
- * @param node the node to check
- * @return true if the node contains any arabic script, false otherwise
+ * Returns whether the given node has any Arabic script or not, this is any script that matches arabicRegEx.
+ * True if it does and false otherwise
  */
 function hasArabicScript(node: Node): boolean {
     return !!node.nodeValue && !!(node.nodeValue.match(arabicRegex));
@@ -225,7 +227,6 @@ function injectCustomFonts(customFonts: Array<CustomFont>) {
         document.head.removeChild(customFontsStyle);
         customFontsStyle = null;
     }
-    // Inject custom fonts into this page
     customFontsStyle = document.createElement("style");
     customFontsStyle.id = "wudoohCustomFontsStyle";
     customFonts.forEach((customFont: CustomFont) => {
@@ -281,9 +282,9 @@ function main() {
         let customFonts: Array<CustomFont> = storage.customFonts;
 
         let thisHostname: string = new URL(document.URL).hostname;
-        let isWhitelisted: boolean = !!whitelisted.findFirst((it) => it === thisHostname);
+        let isWhitelisted: boolean = !!whitelisted.find((it) => it === thisHostname);
 
-        let customSite: CustomSettings = customSettings.findFirst((custom: CustomSettings) => custom.url === thisHostname);
+        let customSite: CustomSettings = customSettings.find((custom: CustomSettings) => custom.url === thisHostname);
 
         // Only do anything if the switch is on and this site is not whitelisted
         if (isOn && !isWhitelisted) {

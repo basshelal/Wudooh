@@ -59,12 +59,54 @@ const homePage: string = "http://basshelal.github.io/Wudooh";
 const reasonUpdateAllText = "updateAllText";
 const reasonInjectCustomFonts = "injectCustomFonts";
 
+const allWudoohFonts: Array<string> = [
+    "Droid Arabic Naskh",
+    "Noto Naskh Arabic",
+    "Arabic Typesetting",
+    "Simplified Arabic",
+    "Traditional Arabic",
+    "Noto Sans Arabic",
+    "Noto Kufi Arabic",
+    "Aldhabi",
+    "Amiri",
+    "Amiri Quran",
+    "Andalus",
+    "Reem Kufi Regular",
+    "Scheherazade",
+    "Urdu Typesetting",
+    "Noto Nastaliq Urdu",
+    "Aref Ruqaa",
+    "Cairo",
+    "Lemonada",
+    "Lalezar",
+    "Tajawal",
+    "Changa",
+    "El Messiri",
+    "Lateef",
+    "Mada",
+    "Markazi Text",
+    "Mirza",
+    "Harmattan",
+    "Rakkas",
+    "Katibeh",
+    "Jomhuria",
+    "Shakstah",
+    "Mehr Nastaliq",
+    "Rooznameh",
+    "DecoType Naskh",
+    "sans-serif",
+    "Times New Roman",
+    "Arial",
+    "Calibri",
+    "Original"
+];
+
 /**
  * Represents a site that uses different settings from the global settings
  * The settings themselves may be the same as the global but they will change independently
  */
 class CustomSettings {
-    /** The hostname url of this web site, this will always be in the form of example.com */
+    /** The hostname url of this web site */
     url: string;
     /** The font size percent to use on this site */
     textSize: number;
@@ -105,24 +147,18 @@ class CustomSettings {
 }
 
 class CustomFont {
-    /** The actual name of the font as it is stored in the Operating System */
-    fontName: string;
-    /** The optional name to be displayed for this font, if not set it will equal the fontName */
-    displayedName: string;
-    /** Optional URL if the font is located online */
-    url?: string;
 
-    constructor(fontName: string, displayedName: string, url: string) {
+    fontName: string;
+
+    localName: string;
+
+    url: string;
+
+    constructor(fontName: string, localName: string, url: string) {
         this.fontName = fontName;
-        if (displayedName) this.displayedName = displayedName;
-        else this.displayedName = fontName;
+        this.localName = localName;
         this.url = url;
     }
-
-    // TODO fonts will send errors if they're invalid ONLY WHEN THEY ARE REQUESTED TO BE USED
-    //  this means they will silently exist if they've been injected as CSS even if they're invalid
-    //  so to check validity we need to force use them and see if they display or at least don't throw
-    //  errors
 
     /**
      * Trick to make sure that a font is installed on the client's machine.
@@ -162,6 +198,32 @@ class CustomFont {
         return fetch(fontUrl).then(response => response.ok);
     }
 
+    static isFontUrlInstalled(fontUrl: string): Promise<boolean> {
+        let tempFontStyle: HTMLStyleElement = document.createElement("style");
+
+        const fontName: string = "temporaryWudoohFont";
+
+        let injectedCss = `@font-face { font-family: '${fontName}'; src: url('${fontUrl}'); }\n`;
+
+        tempFontStyle.innerHTML = tempFontStyle.innerHTML.concat(injectedCss);
+
+        document.head.append(tempFontStyle);
+
+        document.getElementById("fontTest").style.fontFamily = fontName;
+
+        // Don't delete this! The checker always fails once before succeeding for some reason!
+        CustomFont.isFontInstalled(fontName);
+
+        return fetch(fontUrl).then(response => {
+                console.log(CustomFont.isFontInstalled(fontName));
+
+                return response.ok && CustomFont.isFontInstalled(fontName);
+            }
+        );
+
+        //  document.head.removeChild(tempFontStyle);
+    }
+
     isFontInstalled(): boolean {
         return CustomFont.isFontInstalled(this.fontName);
     }
@@ -175,26 +237,32 @@ class CustomFont {
 // region Extensions
 
 interface Array<T> {
-    findFirst(predicate: (element: T, index: number) => boolean): T | null;
-
     contains(element: T): boolean;
 }
 
-/**
- * Finds the first element that matches the given {@param predicate} else returns null
- * You can use this as a way to check if the array contains an element that matches the given {@param predicate}, it
- * will return null if none exists
- * @param predicate the predicate to match
- */
-Array.prototype.findFirst = function <T>(predicate: (element: T, index: number) => boolean): T | null {
-    for (let i = 0; i < this.length; i++) {
-        if (predicate(this[i], i)) return this[i];
-    }
-    return null;
+Array.prototype.contains = function <T>(element: T): boolean {
+    return this.indexOf(element) !== -1;
 };
 
-Array.prototype.contains = function <T>(element: T): boolean {
-    return !!this.findFirst((it: T) => it === element);
+interface String {
+    contains(string: string): boolean
+}
+
+String.prototype.contains = function (string: string) {
+    return this.indexOf(string) !== -1;
+};
+
+interface Element {
+    currentTask: number;
+
+    postDelayed(millis: number, func: Function);
+}
+
+Element.prototype.postDelayed = function (millis: number, func: Function) {
+    let localTask = wait(millis, () => {
+        if (localTask === this.currentTask) func.call(this);
+    });
+    this.currentTask = localTask;
 };
 
 // endregion Extensions
@@ -208,6 +276,14 @@ let htmlEditables = ["textarea", "input", "text", "email", "number", "search", "
  */
 function get<T extends HTMLElement>(elementId: string): T | null {
     return document.getElementById(elementId) as T
+}
+
+function wait(millis: number, func: Function): number {
+    return setTimeout(func, millis);
+}
+
+function now() {
+    return Date.now();
 }
 
 /**

@@ -10,13 +10,15 @@
 var arabicRegex = new RegExp("([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\]+([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\\W\\d]+)*)", "g");
 /** The observer used in {@linkcode startObserver} to dynamically update any newly added Nodes */
 var observer;
+/**
+ * Returns true if the passed in Node has been updated by Wudooh and false otherwise
+ */
 function hasBeenUpdated(node) {
     return node.parentElement && node.parentElement.getAttribute("wudooh") === "true";
 }
 /**
- * Returns whether the given node has any Arabic script or not, this is any script that matches arabicRegEx
- * @param node the node to check
- * @return true if the node contains any arabic script, false otherwise
+ * Returns whether the given node has any Arabic script or not, this is any script that matches arabicRegEx.
+ * True if it does and false otherwise
  */
 function hasArabicScript(node) {
     return !!node.nodeValue && !!(node.nodeValue.match(arabicRegex));
@@ -203,7 +205,6 @@ function injectCustomFonts(customFonts) {
         document.head.removeChild(customFontsStyle);
         customFontsStyle = null;
     }
-    // Inject custom fonts into this page
     customFontsStyle = document.createElement("style");
     customFontsStyle.id = "wudoohCustomFontsStyle";
     customFonts.forEach(function (customFont) {
@@ -256,8 +257,8 @@ function main() {
         var customSettings = storage.customSettings;
         var customFonts = storage.customFonts;
         var thisHostname = new URL(document.URL).hostname;
-        var isWhitelisted = !!whitelisted.findFirst(function (it) { return it === thisHostname; });
-        var customSite = customSettings.findFirst(function (custom) { return custom.url === thisHostname; });
+        var isWhitelisted = !!whitelisted.find(function (it) { return it === thisHostname; });
+        var customSite = customSettings.find(function (custom) { return custom.url === thisHostname; });
         // Only do anything if the switch is on and this site is not whitelisted
         if (isOn && !isWhitelisted) {
             injectCustomFonts(customFonts);
