@@ -17,7 +17,7 @@
 <div class="centered">
     <label class="material-switch">
         <input id="onOffSwitch" type="checkbox">
-        <span></span>
+        <span title="Turn extension on or off"></span>
     </label>
 </div>
 
@@ -25,7 +25,7 @@
 
     <!-- Font select -->
     <div class="select">
-        <select class="select-text" id="font-select">
+        <select class="select-text" id="font-select" title="Select font">
             <option style="font-family: 'Droid Arabic Naskh', sans-serif" value="Droid Arabic Naskh">درويد نسخ</option>
             <option style="font-family: 'Noto Naskh Arabic', sans-serif" value="Noto Naskh Arabic">نوتو نسخ</option>
             <option style="font-family: 'Arabic Typesetting', sans-serif" value="Arabic Typesetting">تنضيد</option>
@@ -74,7 +74,7 @@
     <div class="centered" style="width: 80%">
         <label class="label">Font Size:</label>
         <label class="value" id="sizeValue"></label>
-        <label class="pure-material-slider" style="width: 95%">
+        <label class="pure-material-slider" style="width: 95%" title="Change font size">
             <input id="size" max="300" min="100" name="size" type="range">
         </label>
         <hr>
@@ -84,14 +84,14 @@
     <div class="centered" style="width: 80%">
         <label class="label">Line Height:</label>
         <label class="value" id="heightValue"></label>
-        <label class="pure-material-slider" style="width: 95%">
+        <label class="pure-material-slider" style="width: 95%" title="Change line height">
             <input id="height" max="300" min="100" name="height" type="range">
         </label>
         <hr>
     </div>
 
     <!-- Website Info -->
-    <div class="centered" style="width: 80%">
+    <div class="centered" style="width: 80%" title="Website info">
         <img alt="Website Icon" height="32" id="websiteIcon" src="" width="32">
         <p id="website">Website</p>
     </div>
@@ -104,7 +104,7 @@
     </div>
     <label class="material-switch centered">
         <input class="centered" id="whitelistSwitch" type="checkbox">
-        <span></span>
+        <span title="Whitelist website"></span>
     </label>
     <hr style="width: 80%">
 
@@ -115,14 +115,14 @@
     </div>
     <label class="material-switch centered">
         <input class="centered" id="overrideSettingsSwitch" type="checkbox">
-        <span></span>
+        <span title="Use site specific settings"></span>
     </label>
     <hr style="width: 80%">
 
     <!-- Export / Import -->
-    <button class="material-button" id="importButton">Import</button>
+    <button class="material-button" id="importButton" title="Import settings from JSON file">Import</button>
     <input accept="application/json" id="importInput" type="file"/>
-    <button class="material-button" id="exportButton">Export</button>
+    <button class="material-button" id="exportButton" title="Export settings to JSON file">Export</button>
     <a id="exportAnchor"></a>
 
     <br>
@@ -130,10 +130,10 @@
 
     <!-- Lang select -->
     <div class="select" id="lang-selectDiv">
-        <select class="select-text" id="lang-select">
-            <option style="font-family: 'Roboto Light', sans-serif" value="en">English</option>
-            <option style="font-family: 'Droid Arabic Naskh', sans-serif" value="ar">العربية</option>
-            <option style="font-family: 'Noto Nastaliq Urdu', sans-serif" value="fa">فارسی</option>
+        <select class="select-text" id="lang-select" title="Select extension language">
+            <option style="font-family: 'Roboto Light', sans-serif" title="English" value="en">English</option>
+            <option style="font-family: 'Droid Arabic Naskh', sans-serif" title="Arabic" value="ar">العربية</option>
+            <option style="font-family: 'Noto Nastaliq Urdu', sans-serif" title="Persian" value="fa">فارسی</option>
         </select>
         <span class="select-bar" id="lang-selectBarSpan"></span>
     </div>

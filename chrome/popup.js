@@ -348,20 +348,19 @@ function importSettings() {
  * Add all listeners to the UI elements
  */
 function popupAddListeners() {
-    // Get options when the popup.html document is loaded
     document.addEventListener("DOMContentLoaded", initializeUI);
-    // Update size and height HTML when input is changed, changes no variables so cheap
-    sizeSlider.oninput = function () { return sizeValue.innerHTML = sizeSlider.value + '%'; };
-    heightSlider.oninput = function () { return heightValue.innerHTML = heightSlider.value + '%'; };
-    // Update text and save options when any change happens, including by using keys, mouse touch etc
-    sizeSlider.onchange = function () { return sizeSlider.postDelayed(250, updateSize); };
-    heightSlider.onchange = function () { return heightSlider.postDelayed(250, updateHeight); };
-    // Update switches when they're clicked
     onOffSwitch.onclick = function () { return toggleOnOff(); };
+    fontSelect.oninput = function () { return changeFont(); };
+    sizeSlider.oninput = function () {
+        sizeValue.innerHTML = sizeSlider.value + '%';
+        sizeSlider.postDelayed(250, updateSize);
+    };
+    heightSlider.oninput = function () {
+        heightValue.innerHTML = heightSlider.value + '%';
+        heightSlider.postDelayed(250, updateHeight);
+    };
     whiteListSwitch.onclick = function () { return toggleWhitelist(); };
     overrideSiteSwitch.onclick = function () { return toggleOverrideSiteSettings(); };
-    // Update font when a new item is selected
-    fontSelect.oninput = function () { return changeFont(); };
     // Export settings when button is clicked
     exportButton.onclick = function () { return exportSettings(); };
     // The invisible input is the one in charge of dealing with the importing
