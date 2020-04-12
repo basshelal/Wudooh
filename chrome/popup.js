@@ -114,43 +114,12 @@ function initializeUI() {
 /**
  * Updates all Arabic text in all tabs to adhere to the new options. This is done by sending a message to all
  * tabs that main.ts will handle.
- * The updated text will sometimes have problems with spacing, making the actual look of a set of options differ
- * somewhat from the live updated look, a page refresh will always solve this.
  */
 function updateAllText() {
-    // Only update text if this site is checked and is not whitelisted
-    if (onOffSwitch.checked && whiteListSwitch.checked) {
-        var oldSize_1;
-        var oldHeight_1;
-        var font_1;
-        var customSettings_1;
-        sync.get([keyTextSize, keyLineHeight, keyFont, keyCustomSettings]).then(function (storage) {
-            // We need the old values to know how much we should change the options in main.ts
-            oldSize_1 = storage.textSize;
-            oldHeight_1 = storage.lineHeight;
-            font_1 = storage.font;
-            customSettings_1 = storage.customSettings;
-            // Query All Tabs
-            return tabs.queryAllTabs();
-        }).then(function (allTabs) { return allTabs.forEach(function (tab) {
-            var thisURL = new URL(tab.url).hostname;
-            var custom = customSettings_1.find(function (custom) { return custom.url === thisURL; });
-            if (custom) {
-                oldSize_1 = custom.textSize;
-                oldHeight_1 = custom.lineHeight;
-                font_1 = custom.font;
-            }
-            var message = {
-                reason: reasonUpdateAllText,
-                oldSize: oldSize_1,
-                oldHeight: oldHeight_1,
-                newSize: parseInt(sizeSlider.value),
-                newHeight: parseInt(heightSlider.value),
-                font: font_1
-            };
-            tabs.sendMessage(tab.id, message);
-        }); });
-    }
+    tabs.queryAllTabs().then(function (allTabs) { return allTabs.forEach(function (tab) {
+        var message = { reason: reasonUpdateAllText };
+        tabs.sendMessage(tab.id, message);
+    }); });
 }
 /**
  * Toggles the on off switch and saves the "onOff" setting, this will update all text if the switch is turned on
@@ -158,11 +127,18 @@ function updateAllText() {
 function toggleOnOff() {
     sync.set({ onOff: onOffSwitch.checked }).then(function () {
         if (onOffSwitch.checked) {
-            updateAllText();
             mainDiv.style.maxHeight = "100%";
+            updateAllText();
         }
         else {
             mainDiv.style.maxHeight = "0";
+            tabs.queryAllTabs().then(function (allTabs) { return allTabs.forEach(function (tab) {
+                var message = {
+                    reason: reasonToggleOnOff,
+                    onOff: false
+                };
+                tabs.sendMessage(tab.id, message);
+            }); });
         }
     });
 }
@@ -170,26 +146,20 @@ function toggleOnOff() {
  * Update font size by updating all text and then saving the setting
  */
 function updateSize() {
-    // Update before saving because we need the old value in the update function before saving
-    updateAllText();
-    sync.set({ textSize: parseInt(sizeSlider.value) });
+    sync.set({ textSize: parseInt(sizeSlider.value) }).then(function () { return updateAllText(); });
 }
 /**
  * Update line height by updating all text and then saving the setting
  */
 function updateHeight() {
-    // Update before saving because we need the old value in the update function before saving
-    updateAllText();
-    sync.set({ lineHeight: parseInt(heightSlider.value) });
+    sync.set({ lineHeight: parseInt(heightSlider.value) }).then(function () { return updateAllText(); });
 }
 /**
  * Changes the font and saves the "font" setting, this will update all text
  */
 function changeFont() {
     fontSelect.style.fontFamily = fontSelect.value;
-    sync.set({ font: fontSelect.value, }).then(function () {
-        updateAllText();
-    });
+    sync.set({ font: fontSelect.value, }).then(function () { return updateAllText(); });
 }
 /**
  * Toggles the override site settings switch and saves the setting

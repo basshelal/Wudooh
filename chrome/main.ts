@@ -211,9 +211,12 @@ function startObserver(textSize: number, lineHeight: number, font: string = defa
  * testing
  */
 function notifyDocument() {
-    let meta = document.createElement("meta");
-    meta.setAttribute("wudooh", "true");
-    document.head.appendChild(meta);
+    if (!document.getElementById("wudoohMetaElement")) {
+        let meta = document.createElement("meta");
+        meta.id = "wudoohMetaElement";
+        meta.setAttribute("wudooh", "true");
+        document.head.appendChild(meta);
+    }
 }
 
 /**
@@ -242,6 +245,16 @@ function injectCustomFonts(customFonts: Array<CustomFont>) {
     document.head.append(customFontsStyle);
 }
 
+function toggleOff() {
+    observer.disconnect();
+    observer = null;
+    getArabicTextNodesIn(document.body).forEach((node: Node) => {
+        node.parentElement.style.fontSize = null;
+        node.parentElement.style.lineHeight = null;
+        node.parentElement.style.fontFamily = null;
+    });
+}
+
 /**
  * Listener to update text if options are modified, the options being text size, line height and font
  * Since the original font is not saved, reverting the text to it's original form is not possible
@@ -251,16 +264,17 @@ function injectCustomFonts(customFonts: Array<CustomFont>) {
  */
 function addMessageListener() {
     runtime.onMessage.addListener((message) => {
-        if (!message.reason) return;
+        if (message.reason == null) return;
         if (message.reason === reasonUpdateAllText) {
-            let newSize: number = message.newSize;
-            let newHeight: number = message.newHeight;
-            updateAll(newSize, newHeight, message.font);
-            startObserver(newSize, newHeight, message.font);
+            main();
         }
         if (message.reason === reasonInjectCustomFonts) {
-            let customFonts: Array<CustomFont> = message.customFonts;
-            injectCustomFonts(customFonts);
+            injectCustomFonts(message.customFonts);
+        }
+        if (message.reason === reasonToggleOnOff) {
+            if (!message.onOff) {
+                toggleOff();
+            }
         }
     });
 }

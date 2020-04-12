@@ -58,6 +58,7 @@ const homePage: string = "http://basshelal.github.io/Wudooh";
 // Message Reasons
 const reasonUpdateAllText = "updateAllText";
 const reasonInjectCustomFonts = "injectCustomFonts";
+const reasonToggleOnOff = "toggleOnOff";
 
 const allWudoohFonts: Array<string> = [
     "Droid Arabic Naskh",

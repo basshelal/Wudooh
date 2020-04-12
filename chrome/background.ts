@@ -16,26 +16,33 @@ function launchSite(path: string = "") {
  * If some key has not been initialized then it will create it and set it to its default value
  */
 runtime.onInstalled.addListener((details: InstalledDetails) => {
+    let storage: WudoohStorage;
     sync.get(keys).then((storage: WudoohStorage) => {
-        if (!storage.textSize) sync.set({textSize: defaultTextSize});
-        if (!storage.lineHeight) sync.set({lineHeight: defaultLineHeight});
-        if (!storage.onOff) sync.set({onOff: true,});
-        if (!storage.font) sync.set({font: defaultFont});
-        if (!storage.whitelisted) sync.set({whitelisted: []});
-        if (!storage.customSettings) sync.set({customSettings: []});
-        if (!storage.customFonts) sync.set({customFonts: []});
+        // User has just installed extension
+        if (details.reason == "install") {
 
+        }
         // User has updated extension
         if (details.reason == "update") {
             let oldVersion: string = details.previousVersion; // string of previous version if we need it
             let newVersion: string = runtime.getManifest().version; // string of newly updated version
-            // TODO here we can create a new Tab with the details of the update probably the extension website
-            //  basshelal.github.io/Wudooh and do any DB migrations that we want
         }
-        // User has just installed extension
-        if (details.reason == "install") {
-            // TODO here we can create a new Tab with the details of the extension also probably the extension website
-            //  basshelal.github.io/Wudooh
-        }
-    });
+        let promises: Array<Promise<void>> = [];
+        if (storage.textSize == null) promises.push(sync.set({textSize: defaultTextSize}));
+        if (storage.lineHeight == null) promises.push(sync.set({lineHeight: defaultLineHeight}));
+        if (storage.onOff == null) promises.push(sync.set({onOff: true}));
+        if (storage.font == null) promises.push(sync.set({font: defaultFont}));
+        if (storage.whitelisted == null) promises.push(sync.set({whitelisted: []}));
+        if (storage.customSettings == null) promises.push(sync.set({customSettings: []}));
+        if (storage.customFonts == null) promises.push(sync.set({customFonts: []}));
+        return Promise.all(promises);
+    }).then(() => sync.get(keys))
+        .then(it => storage = it)
+        .then(() => tabs.queryAllTabs())
+        .then((allTabs: Array<Tab>) => allTabs.forEach((tab: Tab) => {
+            if (storage.onOff) {
+                let message = {reason: reasonUpdateAllText};
+                tabs.sendMessage(tab.id, message);
+            }
+        }));
 });
