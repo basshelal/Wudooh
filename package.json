@@ -1,0 +1,24 @@
+{
+  "name": "wudooh",
+  "version": "2.0.0",
+  "description": "",
+  "main": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/basshelal/Wudooh.git"
+  },
+  "author": "Bassam Helal",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/basshelal/Wudooh/issues"
+  },
+  "homepage": "https://github.com/basshelal/Wudooh#readme",
+  "dependencies": {
+    "@types/chrome": "0.0.104",
+    "@types/firefox-webext-browser": "^70.0.1",
+    "@types/materialize-css": "^1.0.7"
+  }
+}
