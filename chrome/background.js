@@ -5,26 +5,25 @@
  */
 ///<reference path="../../../.WebStorm2019.3/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
 ///<reference path="./shared.ts"/>
-function launchSite(path) {
-    if (path === void 0) { path = ""; }
+function launchSite(path = "") {
     tabs.create(homePage + path);
 }
 /**
  * Runs on install or update to check if the storage has initialized all its values correctly.
  * If some key has not been initialized then it will create it and set it to its default value
  */
-runtime.onInstalled.addListener(function (details) {
-    var storage;
-    sync.get(keys).then(function (storage) {
+runtime.onInstalled.addListener((details) => {
+    let storage;
+    sync.get(keys).then((storage) => {
         // User has just installed extension
         if (details.reason == "install") {
         }
         // User has updated extension
         if (details.reason == "update") {
-            var oldVersion = details.previousVersion; // string of previous version if we need it
-            var newVersion = runtime.getManifest().version; // string of newly updated version
+            let oldVersion = details.previousVersion; // string of previous version if we need it
+            let newVersion = runtime.getManifest().version; // string of newly updated version
         }
-        var promises = [];
+        let promises = [];
         if (storage.textSize == null)
             promises.push(sync.set({ textSize: defaultTextSize }));
         if (storage.lineHeight == null)
@@ -40,13 +39,13 @@ runtime.onInstalled.addListener(function (details) {
         if (storage.customFonts == null)
             promises.push(sync.set({ customFonts: [] }));
         return Promise.all(promises);
-    }).then(function () { return sync.get(keys); })
-        .then(function (it) { return storage = it; })
-        .then(function () { return tabs.queryAllTabs(); })
-        .then(function (allTabs) { return allTabs.forEach(function (tab) {
+    }).then(() => sync.get(keys))
+        .then(it => storage = it)
+        .then(() => tabs.queryAllTabs())
+        .then((allTabs) => allTabs.forEach((tab) => {
         if (storage.onOff) {
-            var message = { reason: reasonUpdateAllText };
+            let message = { reason: reasonUpdateAllText };
             tabs.sendMessage(tab.id, message);
         }
-    }); });
+    }));
 });

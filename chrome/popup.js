@@ -1,446 +1,337 @@
-/**
- * This script is used by the extension's popup (popup.html) for options
- *
- * Currently there are 6 options, textSize, lineHeight, onOff, font, whitelisted and customSettings
- */
 ///<reference path="../../../.WebStorm2019.3/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
 ///<reference path="./shared.ts"/>
-var mainDiv = get("main");
+const mainDiv = get("main");
 // Custom Fonts
-var fontsStyle = get("wudoohCustomFontsStyle");
+const fontsStyle = get("wudoohCustomFontsStyle");
 // Inputs
-var sizeSlider = get("size");
-var heightSlider = get("height");
-var onOffSwitch = get("onOffSwitch");
-var fontSelect = get("font-select");
-var overrideSiteSwitch = get("overrideSettingsSwitch");
-var whiteListSwitch = get("whitelistSwitch");
+const sizeSlider = get("size");
+const heightSlider = get("height");
+const onOffSwitch = get("onOffSwitch");
+const fontSelect = get("font-select");
+const overrideSiteSwitch = get("overrideSettingsSwitch");
+const whiteListSwitch = get("whitelistSwitch");
 // Labels
-var sizeValue = get("sizeValue");
-var heightValue = get("heightValue");
-var overrideSettingsValue = get("overrideSettingsLabel");
-var whitelistedValue = get("whitelistedLabel");
+const sizeValue = get("sizeValue");
+const heightValue = get("heightValue");
+const overrideSettingsValue = get("overrideSettingsLabel");
+const whitelistedValue = get("whitelistedLabel");
 // Website Info
-var websiteText = get("website");
-var websiteIcon = get("websiteIcon");
+const websiteText = get("website");
+const websiteIcon = get("websiteIcon");
 // Import / Export
-var exportButton = get("exportButton");
-var exportAnchor = get("exportAnchor");
-var importButton = get("importButton");
-var importInput = get("importInput");
-var langSelect = get("lang-select");
-function addCustomFonts(customFonts) {
-    fontsStyle.innerHTML = "";
-    return new Promise(function () {
-        customFonts.forEach(function (customFont) {
-            var fontName = customFont.fontName;
-            var fontUrl = customFont.url;
-            var injectedCss = "@font-face { font-family: '" + fontName + "'; src: local('" + fontName + "')";
-            if (fontUrl)
-                injectedCss = injectedCss.concat(", url('" + fontUrl + "')");
-            injectedCss = injectedCss.concat("; }\n");
-            fontsStyle.innerHTML = fontsStyle.innerHTML.concat(injectedCss);
-            var option = document.createElement("option");
-            option.style.fontFamily = fontName;
-            option.value = fontName;
-            option.innerHTML = fontName;
-            fontSelect.add(option);
-        });
+const exportButton = get("exportButton");
+const exportAnchor = get("exportAnchor");
+const importButton = get("importButton");
+const importInput = get("importInput");
+async function addCustomFonts(customFonts) {
+    fontsStyle.textContent = "";
+    customFonts.forEach((customFont) => {
+        const fontName = customFont.fontName;
+        const fontUrl = customFont.url;
+        let injectedCss = `@font-face { font-family: '${fontName}' src: local('${fontName}')`;
+        if (fontUrl)
+            injectedCss = injectedCss.concat(`, url('${fontUrl}')`);
+        injectedCss = injectedCss.concat(` }\n`);
+        fontsStyle.textContent = fontsStyle.textContent.concat(injectedCss);
+        const option = document.createElement("option");
+        option.style.fontFamily = fontName;
+        option.value = fontName;
+        option.textContent = fontName;
+        fontSelect.add(option);
     });
 }
-/**
- * Gets options from the chrome's storage sync for the user with default values if they do not already exist,
- * this is only called when the document (popup.html) is loaded, it only initializes values and updates the UI
- * to match the settings
- */
-function initializeUI() {
-    var storage;
-    sync.get(keys).then(function (_storage) {
-        storage = _storage;
-        return tabs.queryCurrentTab();
-    }).then(function (tabs) {
-        addCustomFonts(storage.customFonts);
-        // If the extension is off then hide the main div
-        onOffSwitch.checked = storage.onOff;
-        if (storage.onOff)
-            mainDiv.style.maxHeight = "100%";
-        else
-            mainDiv.style.maxHeight = "0";
-        var thisTab = tabs[0];
-        var thisURL = new URL(thisTab.url).hostname;
-        var customSettings = storage.customSettings;
-        var whiteListed = storage.whitelisted;
-        var textSize;
-        var lineHeight;
-        var font;
-        // The above will be different if thisURL is a custom one so we set them depending on this
-        var custom = customSettings.find(function (custom) { return custom.url === thisURL; });
-        if (!!custom) {
-            textSize = custom.textSize;
-            lineHeight = custom.lineHeight;
-            font = custom.font;
-        }
-        else {
-            textSize = storage.textSize;
-            lineHeight = storage.lineHeight;
-            font = storage.font;
-        }
-        // Initialize all the HTMLElements to the values from storage
-        sizeSlider.value = textSize.toString();
-        sizeValue.innerHTML = textSize.toString() + '%';
-        heightSlider.value = lineHeight.toString();
-        heightValue.innerHTML = lineHeight.toString() + '%';
-        fontSelect.value = font;
-        fontSelect.style.fontFamily = font;
-        websiteText.innerText = thisURL;
-        websiteText.title = thisURL;
-        if (!thisTab.favIconUrl)
-            websiteIcon.style.display = "none";
-        else
-            websiteIcon.src = thisTab.favIconUrl;
-        websiteIcon.title = thisURL;
-        websiteIcon.alt = thisURL;
-        var isWhitelisted = !!(whiteListed.find(function (it) { return it === thisURL; }));
-        var isCustom = !!custom;
-        whiteListSwitch.checked = !isWhitelisted;
-        if (isWhitelisted)
-            whitelistedValue.innerText = "This site is whitelisted";
-        else
-            whitelistedValue.innerText = "Running on this site";
-        overrideSiteSwitch.checked = isCustom;
-        if (isCustom)
-            overrideSettingsValue.innerText = "Using site specific settings";
-        else
-            overrideSettingsValue.innerText = "Using global settings";
-    });
-}
-/**
- * Updates all Arabic text in all tabs to adhere to the new options. This is done by sending a message to all
- * tabs that main.ts will handle.
- */
-function updateAllText() {
-    tabs.queryAllTabs().then(function (allTabs) {
-        return allTabs.forEach(function (tab) {
-            return tabs.sendMessage(tab.id, { reason: reasonUpdateAllText });
-        });
-    });
-}
-/**
- * Toggles the on off switch and saves the "onOff" setting, this will update all text if the switch is turned on
- */
-function toggleOnOff() {
-    sync.set({ onOff: onOffSwitch.checked }).then(function () {
-        if (onOffSwitch.checked) {
-            mainDiv.style.maxHeight = "100%";
-            updateAllText();
-        }
-        else {
-            mainDiv.style.maxHeight = "0";
-            tabs.queryAllTabs().then(function (allTabs) { return allTabs.forEach(function (tab) {
-                return tabs.sendMessage(tab.id, { reason: reasonToggleOff });
-            }); });
-        }
-    });
-}
-/**
- * Update font size by updating all text and then saving the setting
- */
-function updateSize() {
-    var newSize = parseInt(sizeSlider.value);
-    var thisURL;
-    tabs.queryCurrentTab().then(function (tabs) {
-        thisURL = new URL(tabs[0].url).hostname;
-        return sync.get([keyCustomSettings]);
-    }).then(function (storage) {
-        var customSettings = storage.customSettings;
-        var custom = customSettings.find(function (custom) { return custom.url === thisURL; });
-        if (custom) {
-            var index = customSettings.indexOf(custom);
-            custom.textSize = newSize;
-            customSettings[index] = custom;
-            return sync.set({ customSettings: customSettings });
-        }
-        else {
-            return sync.set({ textSize: newSize });
-        }
-    }).then(function () { return updateAllText(); });
-}
-/**
- * Update line height by updating all text and then saving the setting
- */
-function updateHeight() {
-    var newHeight = parseInt(heightSlider.value);
-    var thisURL;
-    tabs.queryCurrentTab().then(function (tabs) {
-        thisURL = new URL(tabs[0].url).hostname;
-        return sync.get([keyCustomSettings]);
-    }).then(function (storage) {
-        var customSettings = storage.customSettings;
-        var custom = customSettings.find(function (custom) { return custom.url === thisURL; });
-        if (custom) {
-            var index = customSettings.indexOf(custom);
-            custom.lineHeight = newHeight;
-            customSettings[index] = custom;
-            return sync.set({ customSettings: customSettings });
-        }
-        else {
-            return sync.set({ lineHeight: newHeight });
-        }
-    }).then(function () { return updateAllText(); });
-}
-/**
- * Changes the font and saves the "font" setting, this will update all text
- */
-function changeFont() {
-    var newFont = fontSelect.value;
-    var thisURL;
-    fontSelect.style.fontFamily = newFont;
-    tabs.queryCurrentTab().then(function (tabs) {
-        thisURL = new URL(tabs[0].url).hostname;
-        return sync.get([keyCustomSettings]);
-    }).then(function (storage) {
-        var customSettings = storage.customSettings;
-        var custom = customSettings.find(function (custom) { return custom.url === thisURL; });
-        if (custom) {
-            var index = customSettings.indexOf(custom);
-            custom.font = newFont;
-            customSettings[index] = custom;
-            return sync.set({ customSettings: customSettings });
-        }
-        else {
-            return sync.set({ font: newFont });
-        }
-    }).then(function () { return updateAllText(); });
-}
-function changeLang() {
-    var font;
-    if (langSelect.value === "ar")
-        font = "'Droid Arabic Naskh', sans-serif";
-    else if (langSelect.value === "fa")
-        font = "'Noto Nastaliq Urdu', sans-serif";
+async function initializeUI() {
+    const storage = await sync.get(keys);
+    const currentTabs = await tabs.queryCurrentTab();
+    addCustomFonts(storage.customFonts);
+    // If the extension is off then hide the main div
+    onOffSwitch.checked = storage.onOff;
+    if (storage.onOff)
+        mainDiv.style.maxHeight = "100%";
     else
-        font = "'Roboto Light', sans-serif";
-    langSelect.style.fontFamily = font;
+        mainDiv.style.maxHeight = "0";
+    const thisTab = currentTabs[0];
+    const thisURL = new URL(thisTab.url).hostname;
+    const customSettings = storage.customSettings;
+    const whiteListed = storage.whitelisted;
+    const custom = customSettings.find((custom) => custom.url === thisURL);
+    const isCustom = !!custom;
+    let textSize;
+    let lineHeight;
+    let font;
+    if (isCustom) {
+        textSize = custom.textSize;
+        lineHeight = custom.lineHeight;
+        font = custom.font;
+    }
+    else {
+        textSize = storage.textSize;
+        lineHeight = storage.lineHeight;
+        font = storage.font;
+    }
+    // Initialize all the HTMLElements to the values from storage
+    sizeSlider.value = textSize.toString();
+    sizeValue.innerHTML = textSize.toString() + '%';
+    heightSlider.value = lineHeight.toString();
+    heightValue.innerHTML = lineHeight.toString() + '%';
+    fontSelect.value = font;
+    fontSelect.style.fontFamily = font;
+    websiteText.innerText = thisURL;
+    websiteText.title = thisURL;
+    if (!thisTab.favIconUrl)
+        websiteIcon.style.display = "none";
+    else
+        websiteIcon.src = thisTab.favIconUrl;
+    websiteIcon.title = thisURL;
+    websiteIcon.alt = thisURL;
+    const isWhitelisted = !!(whiteListed.find((it) => it === thisURL));
+    whiteListSwitch.checked = !isWhitelisted;
+    if (isWhitelisted)
+        whitelistedValue.innerText = "This site is whitelisted";
+    else
+        whitelistedValue.innerText = "Running on this site";
+    overrideSiteSwitch.checked = isCustom;
+    if (isCustom)
+        overrideSettingsValue.innerText = "Using site specific settings";
+    else
+        overrideSettingsValue.innerText = "Using global settings";
 }
-/**
- * Toggles the override site settings switch and saves the setting
- */
-function toggleOverrideSiteSettings() {
-    var thisURL;
-    // This only requires this current tab
-    tabs.queryCurrentTab().then(function (tabs) {
-        // Get the url we are currently on
-        thisURL = new URL(tabs[0].url).hostname;
-        return sync.get([keyCustomSettings]);
-    }).then(function (storage) {
-        // Get the array of all custom websites
-        var customSettings = storage.customSettings;
-        // Override switch is on so use custom settings
-        if (overrideSiteSwitch.checked) {
-            var custom = new CustomSettings(thisURL, parseInt(sizeSlider.value), parseInt(heightSlider.value), fontSelect.value);
-            customSettings.push(custom);
-            overrideSettingsValue.innerText = "Using site specific settings";
-        }
-        else {
-            // Using global settings
-            // Remove all occurrences of this url from customSettings, just in case
-            customSettings = customSettings.filter(function (it) { return it.url !== thisURL; });
-            overrideSettingsValue.innerText = "Using global settings";
-        }
-        // Set the array of all whitelisted websites in storage
-        return sync.set({ customSettings: customSettings });
-    }).then(function () { return sync.get([keyTextSize, keyLineHeight, keyFont, keyCustomSettings]); })
-        .then(function (storage) {
-        var customSettings = storage.customSettings;
-        var textSize;
-        var lineHeight;
-        var font;
-        // The above will be different if thisURL is a custom one so we set them depending on this
-        var custom = customSettings.find(function (custom) { return custom.url === thisURL; });
-        if (!!custom) {
-            textSize = custom.textSize;
-            lineHeight = custom.lineHeight;
-            font = custom.font;
-        }
-        else {
-            textSize = storage.textSize;
-            lineHeight = storage.lineHeight;
-            font = storage.font;
-        }
-        sizeSlider.value = textSize.toString();
-        sizeValue.innerHTML = textSize.toString() + '%';
-        heightSlider.value = lineHeight.toString();
-        heightValue.innerHTML = lineHeight.toString() + '%';
-        fontSelect.value = font;
-        fontSelect.style.fontFamily = font;
-    })
-        .then(function () { return updateAllText(); });
+async function updateAllTabsText() {
+    const allTabs = await tabs.queryAllTabs();
+    allTabs.forEach((tab) => tabs.sendMessage(tab.id, { reason: reasonUpdateAllText }));
 }
-/**
- * Toggles this site's whitelist status, this is only done to the active tab's site.
- * Note that the switch checked means that the site is running and is not whitelisted,
- * the switched unchecked means the site does not run the script and is whitelisted.
- * The whitelist saved contains the sites that are whitelisted, meaning the ones that do
- * not run the script. The user must reload to see any changes as original formatting
- * is not preserved
- */
-function toggleWhitelist() {
-    var thisURL;
-    // This only requires this current tab
-    tabs.queryCurrentTab().then(function (tabs) {
-        // Get the url we are on right now
-        thisURL = new URL(tabs[0].url).hostname;
-        return sync.get([keyWhitelisted]);
-    }).then(function (storage) {
-        // Get the array of all whitelisted websites
-        var whitelisted = storage.whitelisted;
-        // Allowed to run on this site
-        if (whiteListSwitch.checked) {
-            // Remove all occurrences of this url from that array, just in case
-            whitelisted = whitelisted.filter(function (it) { return it != thisURL; });
-            whitelistedValue.innerText = "Running on this site";
-        }
-        else {
-            // Whitelisted, add this url to the whitelisted array
-            whitelisted.push(thisURL);
-            whitelistedValue.innerText = "This site is whitelisted";
-        }
-        // Set the array of all whitelisted websites in storage
-        return sync.set({ whitelisted: whitelisted });
-    }).then(function () { return updateAllText(); });
+async function toggleOnOff() {
+    await sync.set({ onOff: onOffSwitch.checked });
+    if (onOffSwitch.checked) {
+        mainDiv.style.maxHeight = "100%";
+        updateAllTabsText();
+    }
+    else {
+        mainDiv.style.maxHeight = "0";
+        const allTabs = await tabs.queryAllTabs();
+        allTabs.forEach((tab) => tabs.sendMessage(tab.id, { reason: reasonToggleOff }));
+    }
 }
-/**
- * Exports all settings saved in chrome sync storage to a pretty json file called "settings.wudooh.json"
- */
-function exportSettings() {
-    sync.get(keys).then(function (storage) {
-        var json = JSON.stringify(storage, null, 4);
-        exportAnchor.href = "data:application/octet-stream," + encodeURIComponent(json);
-        exportAnchor.download = "settings.wudooh.json";
-        exportAnchor.click();
-    });
+async function updateTextSize() {
+    const newSize = parseInt(sizeSlider.value);
+    const currentTabs = await tabs.queryCurrentTab();
+    const wudoohStorage = await sync.get([keyCustomSettings]);
+    const thisURL = new URL(currentTabs[0].url).hostname;
+    const customSettings = wudoohStorage.customSettings;
+    const custom = customSettings.find((custom) => custom.url === thisURL);
+    if (!!custom) {
+        custom.textSize = newSize;
+        customSettings[customSettings.indexOf(custom)] = custom;
+        await sync.set({ customSettings: customSettings });
+    }
+    else {
+        await sync.set({ textSize: newSize });
+    }
+    updateAllTabsText();
 }
-/**
- * Imports settings from a json file, this function has extensive error checking to ensure that all fields read are
- * valid
- */
-function importSettings() {
-    var file = importInput.files[0];
-    var reader = new FileReader();
-    reader.onload = function (event) {
+async function updateLineHeight() {
+    const newHeight = parseInt(heightSlider.value);
+    const currentTabs = await tabs.queryCurrentTab();
+    const wudoohStorage = await sync.get([keyCustomSettings]);
+    const thisURL = new URL(currentTabs[0].url).hostname;
+    const customSettings = wudoohStorage.customSettings;
+    const custom = customSettings.find((custom) => custom.url === thisURL);
+    if (!!custom) {
+        custom.lineHeight = newHeight;
+        customSettings[customSettings.indexOf(custom)] = custom;
+        await sync.set({ customSettings: customSettings });
+    }
+    else {
+        await sync.set({ lineHeight: newHeight });
+    }
+    updateAllTabsText();
+}
+async function changeFont() {
+    const newFont = fontSelect.value;
+    const currentTabs = await tabs.queryCurrentTab();
+    const wudoohStorage = await sync.get([keyCustomSettings]);
+    const thisURL = new URL(currentTabs[0].url).hostname;
+    const customSettings = wudoohStorage.customSettings;
+    const custom = customSettings.find((custom) => custom.url === thisURL);
+    fontSelect.style.fontFamily = newFont;
+    if (!!custom) {
+        custom.font = newFont;
+        customSettings[customSettings.indexOf(custom)] = custom;
+        await sync.set({ customSettings: customSettings });
+    }
+    else {
+        await sync.set({ font: newFont });
+    }
+    updateAllTabsText();
+}
+async function toggleOverrideSiteSettings() {
+    const currentTabs = await tabs.queryCurrentTab();
+    const thisURL = new URL(currentTabs[0].url).hostname;
+    let wudoohStorage = await sync.get([keyCustomSettings]);
+    let customSettings = wudoohStorage.customSettings;
+    if (overrideSiteSwitch.checked) {
+        customSettings.push(new CustomSettings(thisURL, parseInt(sizeSlider.value), parseInt(heightSlider.value), fontSelect.value));
+        overrideSettingsValue.textContent = "Using site specific settings";
+    }
+    else {
+        customSettings = customSettings.filter((it) => it.url !== thisURL);
+        overrideSettingsValue.textContent = "Using global settings";
+    }
+    await sync.set({ customSettings: customSettings });
+    wudoohStorage = await sync.get([keyTextSize, keyLineHeight, keyFont, keyCustomSettings]);
+    customSettings = wudoohStorage.customSettings;
+    let textSize;
+    let lineHeight;
+    let font;
+    let custom = customSettings.find((custom) => custom.url === thisURL);
+    if (!!custom) {
+        textSize = custom.textSize;
+        lineHeight = custom.lineHeight;
+        font = custom.font;
+    }
+    else {
+        textSize = wudoohStorage.textSize;
+        lineHeight = wudoohStorage.lineHeight;
+        font = wudoohStorage.font;
+    }
+    sizeSlider.value = textSize.toString();
+    sizeValue.innerHTML = textSize.toString() + '%';
+    heightSlider.value = lineHeight.toString();
+    heightValue.innerHTML = lineHeight.toString() + '%';
+    fontSelect.value = font;
+    fontSelect.style.fontFamily = font;
+    updateAllTabsText();
+}
+async function toggleWhitelist() {
+    const currentTabs = await tabs.queryCurrentTab();
+    const thisURL = new URL(currentTabs[0].url).hostname;
+    const wudoohStorage = await sync.get([keyWhitelisted]);
+    let whitelisted = wudoohStorage.whitelisted;
+    if (whiteListSwitch.checked) {
+        whitelisted = whitelisted.filter((it) => it != thisURL);
+        whitelistedValue.textContent = "Running on this site";
+    }
+    else {
+        whitelisted.push(thisURL);
+        whitelistedValue.textContent = "This site is whitelisted";
+    }
+    await sync.set({ whitelisted: whitelisted });
+    updateAllTabsText();
+}
+async function exportSettings() {
+    const wudoohStorage = await sync.get(keys);
+    const json = JSON.stringify(wudoohStorage, null, 4);
+    exportAnchor.href = "data:application/octet-stream," + encodeURIComponent(json);
+    exportAnchor.download = "wudooh.settings.json";
+    exportAnchor.click();
+}
+async function importSettings() {
+    const file = importInput.files[0];
+    const reader = new FileReader();
+    reader.onload = async (event) => {
         // @ts-ignore
-        var json = event.target.result;
-        var result = JSON.parse(json);
-        var textSize = result[keyTextSize];
-        var lineHeight = result[keyLineHeight];
-        var onOff = result[keyOnOff];
-        var font = result[keyFont];
-        var whitelisted = result[keyWhitelisted];
-        var customSettings = result[keyCustomSettings];
-        var valid = true;
-        if (textSize) {
-            if (typeof textSize !== "number" || (textSize < 100 || textSize > 300)) {
-                alert("Import failed!\n\nField \"textSize\" must be a number between 100 and 300");
-                valid = false;
+        const json = event.target.result;
+        let result;
+        try {
+            result = JSON.parse(json);
+        }
+        catch (e) {
+            if (e instanceof SyntaxError) {
+                alert("Import Failed!\n\n" + "Malformed JSON" +
+                    "\n\nEnsure settings file contains valid JSON");
+                return;
             }
         }
-        else {
-            alert("Import failed!\n\nField \"textSize\" is missing! It must be a number between 100 and 300");
-            valid = false;
+        const errorMessages = [];
+        const textSize = result[keyTextSize];
+        const lineHeight = result[keyLineHeight];
+        const onOff = result[keyOnOff];
+        const font = result[keyFont];
+        const whitelisted = result[keyWhitelisted];
+        const customSettings = result[keyCustomSettings];
+        const customFonts = result[keyCustomFonts];
+        if (textSize === null) {
+            errorMessages.push("Field \"textSize\" is missing! It must be a number between 100 and 300");
         }
-        if (lineHeight) {
-            if (typeof lineHeight !== "number" || (lineHeight < 100 || lineHeight > 300)) {
-                alert("Import failed!\n\nField \"lineHeight\" must be a number between 100 and 300");
-                valid = false;
-            }
+        else if (typeof textSize !== "number" || (textSize < 100 || textSize > 300)) {
+            errorMessages.push("Field \"textSize\" must be a number between 100 and 300");
         }
-        else {
-            alert("Import failed!\n\nField \"lineHeight\" is missing! It must be a number between 100 and 300");
-            valid = false;
+        if (lineHeight === null) {
+            errorMessages.push("Field \"lineHeight\" is missing! It must be a number between 100 and 300");
         }
-        if (!!onOff) {
-            if (typeof onOff !== "boolean") {
-                alert("Import failed!\n\nField \"onOff\" must be a boolean");
-                valid = false;
-            }
+        else if (typeof lineHeight !== "number" || (lineHeight < 100 || lineHeight > 300)) {
+            errorMessages.push("Field \"lineHeight\" must be a number between 100 and 300");
         }
-        else {
-            alert("Import failed!\n\nField \"onOff\" is missing! It must be a boolean");
-            valid = false;
+        if (onOff === null) {
+            errorMessages.push("Field \"onOff\" is missing! It must be a boolean");
         }
-        if (font) {
-            if (typeof font !== "string") {
-                alert("Import failed!\n\nField \"font\" must be a string");
-                valid = false;
-            }
+        else if (typeof onOff !== "boolean") {
+            errorMessages.push("Field \"onOff\" must be a boolean");
         }
-        else {
-            alert("Import failed!\n\nField \"font\" is missing! It must be a string");
-            valid = false;
+        if (font === null) {
+            errorMessages.push("Field \"font\" is missing! It must be a string");
         }
-        if (whitelisted) {
-            if (!(whitelisted instanceof Array) || (whitelisted.length > 0 && typeof whitelisted[0] !== "string")) {
-                alert("Import failed!\n\nField \"whitelisted\" must be an array of strings");
-                valid = false;
-            }
+        else if (typeof font !== "string") {
+            errorMessages.push("Field \"font\" must be a string");
         }
-        else {
-            alert("Import failed!\n\nField \"whitelisted\" is missing! It must be an array of strings");
-            valid = false;
+        if (whitelisted === null) {
+            errorMessages.push("Field \"whitelisted\" is missing! It must be an array of strings");
         }
-        if (customSettings) {
-            if (!(customSettings instanceof Array) || !CustomSettings.isCustomSettingsArray(customSettings)) {
-                alert("Import failed!\n\nField \"customSettings\" must be an array of CustomSettings objects");
-                valid = false;
-            }
+        else if (!Array.isArray(whitelisted) || (whitelisted.length > 0 && typeof whitelisted[0] !== "string")) {
+            errorMessages.push("Field \"whitelisted\" must be an array of strings");
         }
-        else {
-            alert("Import failed!\n\nField \"customSettings\" is missing! It must be an array of CustomSettings objects");
-            valid = false;
+        if (customSettings === null) {
+            errorMessages.push("Field \"customSettings\" is missing! It must be an array of CustomSettings objects");
         }
-        if (!valid) {
-            window.close();
+        else if (!Array.isArray(customSettings) || !CustomSettings.isCustomSettingsArray(customSettings)) {
+            errorMessages.push("Field \"customSettings\" must be an array of CustomSettings objects");
+        }
+        if (customFonts === null) {
+            errorMessages.push("Field \"customFonts\" is missing! It must be an array of CustomFont objects");
+        }
+        else if (!Array.isArray(customFonts) || !CustomFont.isCustomFontsArray(customFonts)) {
+            errorMessages.push("Field \"customFonts\" must be an array of CustomFont objects");
+        }
+        if (errorMessages.length > 0) {
+            alert("Import Failed!\n\n" + errorMessages.join("\n") +
+                "\n\nClick Help to find the guides at the extension website");
             return;
         }
         // If we've reached here the JSON was valid, save all new settings!
-        sync.set({
+        await sync.set({
             textSize: textSize,
             lineHeight: lineHeight,
             onOff: onOff,
             font: font,
             whitelisted: whitelisted,
-            customSettings: customSettings
+            customSettings: customSettings,
+            customFonts: customFonts
         });
         alert("Imported settings successfully!");
-        // we must close the window otherwise it doesn't work again for some reason!
-        close();
-        window.close();
+        initializeUI();
     };
     reader.readAsText(file);
+    importInput.value = null;
 }
-/**
- * Add all listeners to the UI elements
- */
 function popupAddListeners() {
     document.addEventListener("DOMContentLoaded", initializeUI);
-    onOffSwitch.onclick = function () { return toggleOnOff(); };
-    fontSelect.oninput = function () { return changeFont(); };
-    sizeSlider.oninput = function () {
-        sizeValue.innerHTML = sizeSlider.value + '%';
-        sizeSlider.postDelayed(250, updateSize);
+    onOffSwitch.onclick = () => toggleOnOff();
+    fontSelect.oninput = () => changeFont();
+    sizeSlider.oninput = () => {
+        sizeValue.textContent = sizeSlider.value + '%';
+        sizeSlider.postDelayed(250, updateTextSize);
     };
-    heightSlider.oninput = function () {
-        heightValue.innerHTML = heightSlider.value + '%';
-        heightSlider.postDelayed(250, updateHeight);
+    heightSlider.oninput = () => {
+        heightValue.textContent = heightSlider.value + '%';
+        heightSlider.postDelayed(250, updateLineHeight);
     };
-    whiteListSwitch.onclick = function () { return toggleWhitelist(); };
-    overrideSiteSwitch.onclick = function () { return toggleOverrideSiteSettings(); };
+    whiteListSwitch.onclick = () => toggleWhitelist();
+    overrideSiteSwitch.onclick = () => toggleOverrideSiteSettings();
     // Export settings when button is clicked
-    exportButton.onclick = function () { return exportSettings(); };
+    exportButton.onclick = () => exportSettings();
     // The invisible input is the one in charge of dealing with the importing
-    importInput.oninput = function () { return importSettings(); };
+    importInput.oninput = () => importSettings();
     // Clicking the button simulates clicking the import input which is the one dealing with the actual file reading
-    importButton.onclick = function () { return importInput.click(); };
-    langSelect.oninput = function () { return changeLang(); };
+    importButton.onclick = () => importInput.click();
 }
 popupAddListeners();

@@ -135,17 +135,17 @@ class CustomSettings {
         return !!url && typeof url === "string" &&
             !!textSize && typeof textSize === "number" && textSize >= 100 && textSize <= 300 &&
             !!lineHeight && typeof lineHeight === "number" && lineHeight >= 100 && lineHeight <= 300 &&
-            !!font && typeof font === "string";
+            !!font && typeof font === "string"
     }
 
-    static isCustomSettings(obj: object): boolean {
+    static isCustomSettings(obj: any): boolean {
         return !!obj && obj.hasOwnProperty("url") && obj.hasOwnProperty("textSize") &&
             obj.hasOwnProperty("lineHeight") && obj.hasOwnProperty("font") &&
-            this.isValidCustomSettings(obj as CustomSettings);
+            this.isValidCustomSettings(obj as CustomSettings)
     }
 
     static isCustomSettingsArray(array: Array<any>): boolean {
-        return array.length === 0 || array.every((obj: object) => this.isCustomSettings(obj));
+        return array.length === 0 || array.every((obj: any) => this.isCustomSettings(obj))
     }
 }
 
@@ -209,6 +209,26 @@ class CustomFont {
         if (!this.url) return Promise.resolve(false);
         if (this.url) return CustomFont.isFontUrlValid(this.url);
     }
+
+    static isValidCustomFont(customFont: CustomFont): boolean {
+        const fontName: string = customFont.fontName
+        const localName: string = customFont.localName
+        const url: string = customFont.url
+
+        return !!fontName && typeof fontName === "string" &&
+            !!localName && typeof localName === "string" &&
+            !!url && typeof url === "string"
+    }
+
+    static isCustomFont(obj: any): boolean {
+        return !!obj && obj.hasOwnProperty("fontName") && obj.hasOwnProperty("localName") &&
+            obj.hasOwnProperty("url") &&
+            this.isValidCustomFont(obj as CustomFont)
+    }
+
+    static isCustomFontsArray(array: Array<any>): boolean {
+        return array.length === 0 || array.every((obj: any) => this.isCustomFont(obj))
+    }
 }
 
 /**
@@ -229,12 +249,12 @@ interface WudoohStorage {
  * An abstraction and simplification of the storage.sync API to make it use Promises
  */
 var sync = {
-    get(keys: Array<string> = null): Promise<WudoohStorage> {
+    async get(keys: Array<string> = null): Promise<WudoohStorage> {
         return new Promise<WudoohStorage>(resolve => {
             chrome.storage.sync.get(keys, storage => resolve(storage as WudoohStorage));
         });
     },
-    set(wudoohStorage: WudoohStorage): Promise<void> {
+    async set(wudoohStorage: WudoohStorage): Promise<void> {
         return new Promise<void>(resolve => chrome.storage.sync.set(wudoohStorage, () => resolve()));
     }
 };
@@ -243,16 +263,16 @@ var sync = {
  * An abstraction and simplification of the tabs API to make it use Promises
  */
 var tabs = {
-    create(url: string): Promise<Tab> {
+    async create(url: string): Promise<Tab> {
         return new Promise<Tab>(resolve =>
             chrome.tabs.create({url: url}, tab => resolve(tab)));
     },
-    queryAllTabs(): Promise<Array<Tab>> {
+    async queryAllTabs(): Promise<Array<Tab>> {
         return new Promise<Array<Tab>>(resolve =>
             chrome.tabs.query({}, (tabs: Array<Tab>) => resolve(tabs))
         );
     },
-    queryCurrentTab(): Promise<Array<Tab>> {
+    async queryCurrentTab(): Promise<Array<Tab>> {
         return new Promise<Array<Tab>>(resolve =>
             chrome.tabs.query({active: true, currentWindow: true},
                 (tabs: Array<Tab>) => resolve(tabs)));

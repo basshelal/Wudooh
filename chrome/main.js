@@ -7,10 +7,10 @@
  * This Arabic regex allows and accepts any non Arabic symbols next to Arabic symbols,
  * this means that it accepts anything as long as it has some Arabic symbol in it
  */
-var arabicRegex = new RegExp("([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\]+([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\\W\\d]+)*)", "g");
-var arabicNumbersRegex = new RegExp("([\u0660-\u0669\u06F0-\u06F9]+)", "g");
+const arabicRegex = new RegExp("([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\]+([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\\W\\d]+)*)", "g");
+const arabicNumbersRegex = new RegExp("([\u0660-\u0669\u06F0-\u06F9]+)", "g");
 /** The observer used in {@linkcode startObserver} to dynamically update any newly added Nodes */
-var observer;
+let observer;
 /**
  * Returns true if the passed in Node has been updated by Wudooh and false otherwise
  */
@@ -41,12 +41,12 @@ function hasArabicScript(node) {
  * @return true if the node is editable and false otherwise
  */
 function isNodeEditable(node) {
-    var element = node;
-    var nodeName = element.nodeName.toLowerCase();
+    let element = node;
+    let nodeName = element.nodeName.toLowerCase();
     return (element.isContentEditable || (element.nodeType === Node.ELEMENT_NODE && htmlEditables.contains(nodeName)));
 }
 function remapNumber(numberCharacter) {
-    var char = numberCharacter.charAt(0);
+    const char = numberCharacter.charAt(0);
     if (char === "٠" || char === "۰")
         return "0";
     if (char === "١" || char === "۱")
@@ -75,9 +75,9 @@ function remapNumber(numberCharacter) {
  * root node
  */
 function getArabicTextNodesIn(rootNode) {
-    var treeWalker = document.createTreeWalker(rootNode, NodeFilter.SHOW_TEXT);
-    var arabicTextNodes = [];
-    var node = treeWalker.nextNode();
+    let treeWalker = document.createTreeWalker(rootNode, NodeFilter.SHOW_TEXT);
+    let arabicTextNodes = [];
+    let node = treeWalker.nextNode();
     while (!!node) {
         if (hasArabicScript(node))
             arabicTextNodes.push(node);
@@ -95,10 +95,9 @@ function getArabicTextNodesIn(rootNode) {
  * @param lineHeight the height to update the line to
  * @param font the name of the font to update the text to
  */
-function updateNode(node, textSize, lineHeight, font) {
-    if (font === void 0) { font = defaultFont; }
-    var newSize = textSize / 100;
-    var newHeight = lineHeight / 100;
+function updateNode(node, textSize, lineHeight, font = defaultFont) {
+    let newSize = textSize / 100;
+    let newHeight = lineHeight / 100;
     if (!!node.nodeValue) {
         if (hasNodeBeenUpdated(node))
             updateByChanging(node, newSize, newHeight, font);
@@ -107,14 +106,14 @@ function updateNode(node, textSize, lineHeight, font) {
     }
 }
 function updateByAdding(node, textSize, lineHeight, font) {
-    var parent = node.parentNode;
+    const parent = node.parentNode;
     // return if parent or node are null
     if (!parent || !node)
         return;
     // don't do anything if this node or its parent are editable
     if (isNodeEditable(parent) || isNodeEditable(node))
         return;
-    var newHTML;
+    let newHTML;
     if (font === "Original") {
         newHTML = "<span wudooh='true' style='" +
             "font-size:" + textSize + "em;" +
@@ -128,10 +127,10 @@ function updateByAdding(node, textSize, lineHeight, font) {
             "font-family:" + "\"" + font + "\";" +
             "'>$&</span>";
     }
-    var text = node.nodeValue.replace(arabicRegex, newHTML);
-    var nextSibling = node.nextSibling;
+    let text = node.nodeValue.replace(arabicRegex, newHTML);
+    let nextSibling = node.nextSibling;
     // the div is temporary and doesn't show up in the html
-    var newElement = document.createElement("div");
+    let newElement = document.createElement("div");
     newElement.innerHTML = text;
     while (newElement.firstChild) {
         // we only insert the passed in html, the div is not inserted
@@ -154,9 +153,8 @@ function updateByChanging(node, textSize, lineHeight, font) {
  * @param lineHeight the height to update the line to
  * @param font the name of the font to update the text to
  */
-function updateAll(textSize, lineHeight, font) {
-    if (font === void 0) { font = defaultFont; }
-    getArabicTextNodesIn(document.body).forEach(function (it) { return updateNode(it, textSize, lineHeight, font); });
+function updateAll(textSize, lineHeight, font = defaultFont) {
+    getArabicTextNodesIn(document.body).forEach((it) => updateNode(it, textSize, lineHeight, font));
 }
 /**
  * Starts the observer that will observe for any additions to the document and update them if they have any
@@ -165,8 +163,7 @@ function updateAll(textSize, lineHeight, font) {
  * @param lineHeight the height to update the line to
  * @param font the name of the font to update the text to
  */
-function startObserver(textSize, lineHeight, font) {
-    if (font === void 0) { font = defaultFont; }
+function startObserver(textSize, lineHeight, font = defaultFont) {
     // If observer was existing then disconnect it and delete it
     if (!!observer) {
         observer.disconnect();
@@ -174,7 +171,7 @@ function startObserver(textSize, lineHeight, font) {
     }
     // Only do anything if observer is null
     if (!observer) {
-        var config = {
+        let config = {
             attributes: false,
             attributeOldValue: false,
             characterData: true,
@@ -182,14 +179,14 @@ function startObserver(textSize, lineHeight, font) {
             childList: true,
             subtree: true,
         };
-        var callback = function (mutationsList) {
-            mutationsList.forEach(function (record) {
+        let callback = (mutationsList) => {
+            mutationsList.forEach((record) => {
                 // If something has been added
                 if (record.addedNodes.length > 0) {
                     //  For each added node
-                    record.addedNodes.forEach(function (addedNode) {
+                    record.addedNodes.forEach((addedNode) => {
                         // For each node with Arabic script in addedNode
-                        getArabicTextNodesIn(addedNode).forEach(function (arabicNode) {
+                        getArabicTextNodesIn(addedNode).forEach((arabicNode) => {
                             updateNode(arabicNode, textSize, lineHeight, font);
                         });
                     });
@@ -197,7 +194,7 @@ function startObserver(textSize, lineHeight, font) {
                 // If the value has changed
                 if (record.target.nodeValue !== record.oldValue && record.target.parentNode instanceof Node) {
                     // If the node now has Arabic text when it didn't, this is rare and only occurs on YouTube
-                    getArabicTextNodesIn(record.target.parentNode).forEach(function (arabicNode) {
+                    getArabicTextNodesIn(record.target.parentNode).forEach((arabicNode) => {
                         updateNode(arabicNode, textSize, lineHeight, font);
                     });
                 }
@@ -214,7 +211,7 @@ function startObserver(textSize, lineHeight, font) {
  */
 function notifyDocument() {
     if (!hasDocumentBeenUpdated()) {
-        var meta = document.createElement("meta");
+        let meta = document.createElement("meta");
         meta.id = "wudoohMetaElement";
         meta.setAttribute("wudooh", "true");
         document.head.appendChild(meta);
@@ -225,7 +222,7 @@ function notifyDocument() {
  * @param customFonts the Array of CustomFonts to inject into this document
  */
 function injectCustomFonts(customFonts) {
-    var customFontsStyle = get("wudoohCustomFontsStyle");
+    let customFontsStyle = get("wudoohCustomFontsStyle");
     if (customFontsStyle) {
         customFontsStyle.innerHTML = "";
         document.head.removeChild(customFontsStyle);
@@ -233,13 +230,13 @@ function injectCustomFonts(customFonts) {
     }
     customFontsStyle = document.createElement("style");
     customFontsStyle.id = "wudoohCustomFontsStyle";
-    customFonts.forEach(function (customFont) {
-        var fontName = customFont.fontName;
-        var fontUrl = customFont.url;
-        var injectedCss = "@font-face { font-family: '" + fontName + "'; src: local('" + fontName + "')";
+    customFonts.forEach((customFont) => {
+        const fontName = customFont.fontName;
+        const fontUrl = customFont.url;
+        let injectedCss = `@font-face { font-family: '${fontName}'; src: local('${fontName}')`;
         if (fontUrl)
-            injectedCss = injectedCss.concat(", url('" + fontUrl + "')");
-        injectedCss = injectedCss.concat("; }\n");
+            injectedCss = injectedCss.concat(`, url('${fontUrl}')`);
+        injectedCss = injectedCss.concat(`; }\n`);
         customFontsStyle.innerHTML = customFontsStyle.innerHTML.concat(injectedCss);
     });
     document.head.append(customFontsStyle);
@@ -247,7 +244,7 @@ function injectCustomFonts(customFonts) {
 function toggleOff() {
     observer.disconnect();
     observer = null;
-    getArabicTextNodesIn(document.body).forEach(function (node) {
+    getArabicTextNodesIn(document.body).forEach((node) => {
         node.parentElement.style.fontSize = null;
         node.parentElement.style.lineHeight = null;
         node.parentElement.style.fontFamily = null;
@@ -261,7 +258,7 @@ function toggleOff() {
  * sender's sendMessage call
  */
 function addMessageListener() {
-    runtime.onMessage.addListener(function (message) {
+    runtime.onMessage.addListener((message) => {
         if (message.reason == null)
             return;
         if (message.reason === reasonUpdateAllText) {
@@ -282,17 +279,17 @@ function addMessageListener() {
  * This only happens if the on off switch is on and the site is not whitelisted
  */
 function main() {
-    sync.get(keys).then(function (storage) {
-        var textSize = storage.textSize;
-        var lineHeight = storage.lineHeight;
-        var isOn = storage.onOff;
-        var font = storage.font;
-        var whitelisted = storage.whitelisted;
-        var customSettings = storage.customSettings;
-        var customFonts = storage.customFonts;
-        var thisHostname = new URL(document.URL).hostname;
-        var isWhitelisted = !!whitelisted.find(function (it) { return it === thisHostname; });
-        var customSite = customSettings.find(function (custom) { return custom.url === thisHostname; });
+    sync.get(keys).then((storage) => {
+        let textSize = storage.textSize;
+        let lineHeight = storage.lineHeight;
+        let isOn = storage.onOff;
+        let font = storage.font;
+        let whitelisted = storage.whitelisted;
+        let customSettings = storage.customSettings;
+        let customFonts = storage.customFonts;
+        let thisHostname = new URL(document.URL).hostname;
+        let isWhitelisted = !!whitelisted.find((it) => it === thisHostname);
+        let customSite = customSettings.find((custom) => custom.url === thisHostname);
         // Only do anything if the switch is on and this site is not whitelisted
         if (isOn && !isWhitelisted) {
             injectCustomFonts(customFonts);

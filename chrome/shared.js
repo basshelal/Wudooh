@@ -7,23 +7,23 @@
  * ///<reference path="./shared.ts"/>
  */
 // Declare Browser APIs
-var runtime = chrome.runtime;
+const runtime = chrome.runtime;
 /** The font size percent, between 100 and 300 */
-var keyTextSize = "textSize";
+const keyTextSize = "textSize";
 /** The line height percent, between 100 and 300 */
-var keyLineHeight = "lineHeight";
+const keyLineHeight = "lineHeight";
 /** Determines whether the extension is on or off, true is on */
-var keyOnOff = "onOff";
+const keyOnOff = "onOff";
 /** The font to update to, this is a string */
-var keyFont = "font";
+const keyFont = "font";
 /** The array of strings of whitelisted websites, this contains their hostnames in the format example.com */
-var keyWhitelisted = "whitelisted";
+const keyWhitelisted = "whitelisted";
 /** The array of {@linkcode CustomSettings} that represents the sites with custom settings */
-var keyCustomSettings = "customSettings";
+const keyCustomSettings = "customSettings";
 /** The array of {@linkcode CustomFont}s, this is used in {@linkcode chrome.storage.local} */
-var keyCustomFonts = "customFonts";
+const keyCustomFonts = "customFonts";
 /** The keys of the {@linkcode chrome.storage.sync} */
-var keys = [
+const keys = [
     keyTextSize,
     keyLineHeight,
     keyOnOff,
@@ -33,17 +33,17 @@ var keys = [
     keyCustomFonts
 ];
 // Defaults
-var defaultFont = "Droid Arabic Naskh";
-var defaultTextSize = 125;
-var defaultLineHeight = 145;
-var defaultColor = "#880E4F";
-var homePage = "http://basshelal.github.io/Wudooh";
+const defaultFont = "Droid Arabic Naskh";
+const defaultTextSize = 125;
+const defaultLineHeight = 145;
+const defaultColor = "#880E4F";
+const homePage = "http://basshelal.github.io/Wudooh";
 // Message Reasons
-var reasonUpdateAllText = "updateAllText";
-var reasonInjectCustomFonts = "injectCustomFonts";
-var reasonToggleOff = "toggleOff";
-var htmlEditables = ["textarea", "input", "text", "email", "number", "search", "tel", "url", "password"];
-var allWudoohFonts = [
+const reasonUpdateAllText = "updateAllText";
+const reasonInjectCustomFonts = "injectCustomFonts";
+const reasonToggleOff = "toggleOff";
+let htmlEditables = ["textarea", "input", "text", "email", "number", "search", "tel", "url", "password"];
+const allWudoohFonts = [
     "Droid Arabic Naskh",
     "Noto Naskh Arabic",
     "Arabic Typesetting",
@@ -88,36 +88,34 @@ var allWudoohFonts = [
  * Represents a site that uses different settings from the global settings
  * The settings themselves may be the same as the global but they will change independently
  */
-var CustomSettings = /** @class */ (function () {
-    function CustomSettings(url, textSize, lineHeight, font) {
+class CustomSettings {
+    constructor(url, textSize, lineHeight, font) {
         this.url = url;
         this.textSize = textSize;
         this.lineHeight = lineHeight;
         this.font = font;
     }
-    CustomSettings.isValidCustomSettings = function (customSettings) {
-        var url = customSettings.url;
-        var textSize = customSettings.textSize;
-        var lineHeight = customSettings.lineHeight;
-        var font = customSettings.font;
+    static isValidCustomSettings(customSettings) {
+        const url = customSettings.url;
+        const textSize = customSettings.textSize;
+        const lineHeight = customSettings.lineHeight;
+        const font = customSettings.font;
         return !!url && typeof url === "string" &&
             !!textSize && typeof textSize === "number" && textSize >= 100 && textSize <= 300 &&
             !!lineHeight && typeof lineHeight === "number" && lineHeight >= 100 && lineHeight <= 300 &&
             !!font && typeof font === "string";
-    };
-    CustomSettings.isCustomSettings = function (obj) {
+    }
+    static isCustomSettings(obj) {
         return !!obj && obj.hasOwnProperty("url") && obj.hasOwnProperty("textSize") &&
             obj.hasOwnProperty("lineHeight") && obj.hasOwnProperty("font") &&
             this.isValidCustomSettings(obj);
-    };
-    CustomSettings.isCustomSettingsArray = function (array) {
-        var _this = this;
-        return array.length === 0 || array.every(function (obj) { return _this.isCustomSettings(obj); });
-    };
-    return CustomSettings;
-}());
-var CustomFont = /** @class */ (function () {
-    function CustomFont(fontName, localName, url) {
+    }
+    static isCustomSettingsArray(array) {
+        return array.length === 0 || array.every((obj) => this.isCustomSettings(obj));
+    }
+}
+class CustomFont {
+    constructor(fontName, localName, url) {
         this.fontName = fontName;
         this.localName = localName;
         this.url = url;
@@ -127,7 +125,7 @@ var CustomFont = /** @class */ (function () {
      * I found this somewhere online and they claimed it works 99% of the time,
      * it's worked perfectly for me so far
      */
-    CustomFont.isFontInstalled = function (font) {
+    static isFontInstalled(font) {
         var container = document.createElement('span');
         container.innerHTML = Array(100).join('wi');
         container.style.cssText = [
@@ -139,7 +137,7 @@ var CustomFont = /** @class */ (function () {
         function getWidth(fontFamily) {
             container.style.fontFamily = fontFamily;
             document.body.appendChild(container);
-            var width = container.clientWidth;
+            let width = container.clientWidth;
             document.body.removeChild(container);
             return width;
         }
@@ -151,55 +149,63 @@ var CustomFont = /** @class */ (function () {
         return monoWidth !== getWidth(font + ',monospace') ||
             sansWidth !== getWidth(font + ',sans-serif') ||
             serifWidth !== getWidth(font + ',serif');
-    };
-    CustomFont.isFontUrlValid = function (fontUrl) {
-        return fetch(fontUrl).then(function (response) { return response.ok; });
-    };
-    CustomFont.prototype.isFontInstalled = function () {
+    }
+    static isFontUrlValid(fontUrl) {
+        return fetch(fontUrl).then(response => response.ok);
+    }
+    isFontInstalled() {
         return CustomFont.isFontInstalled(this.fontName);
-    };
-    CustomFont.prototype.isUrlValid = function () {
+    }
+    isUrlValid() {
         if (!this.url)
             return Promise.resolve(false);
         if (this.url)
             return CustomFont.isFontUrlValid(this.url);
-    };
-    return CustomFont;
-}());
+    }
+    static isValidCustomFont(customFont) {
+        const fontName = customFont.fontName;
+        const localName = customFont.localName;
+        const url = customFont.url;
+        return !!fontName && typeof fontName === "string" &&
+            !!localName && typeof localName === "string" &&
+            !!url && typeof url === "string";
+    }
+    static isCustomFont(obj) {
+        return !!obj && obj.hasOwnProperty("fontName") && obj.hasOwnProperty("localName") &&
+            obj.hasOwnProperty("url") &&
+            this.isValidCustomFont(obj);
+    }
+    static isCustomFontsArray(array) {
+        return array.length === 0 || array.every((obj) => this.isCustomFont(obj));
+    }
+}
 /**
  * An abstraction and simplification of the storage.sync API to make it use Promises
  */
 var sync = {
-    get: function (keys) {
-        if (keys === void 0) { keys = null; }
-        return new Promise(function (resolve) {
-            chrome.storage.sync.get(keys, function (storage) { return resolve(storage); });
+    async get(keys = null) {
+        return new Promise(resolve => {
+            chrome.storage.sync.get(keys, storage => resolve(storage));
         });
     },
-    set: function (wudoohStorage) {
-        return new Promise(function (resolve) { return chrome.storage.sync.set(wudoohStorage, function () { return resolve(); }); });
+    async set(wudoohStorage) {
+        return new Promise(resolve => chrome.storage.sync.set(wudoohStorage, () => resolve()));
     }
 };
 /**
  * An abstraction and simplification of the tabs API to make it use Promises
  */
 var tabs = {
-    create: function (url) {
-        return new Promise(function (resolve) {
-            return chrome.tabs.create({ url: url }, function (tab) { return resolve(tab); });
-        });
+    async create(url) {
+        return new Promise(resolve => chrome.tabs.create({ url: url }, tab => resolve(tab)));
     },
-    queryAllTabs: function () {
-        return new Promise(function (resolve) {
-            return chrome.tabs.query({}, function (tabs) { return resolve(tabs); });
-        });
+    async queryAllTabs() {
+        return new Promise(resolve => chrome.tabs.query({}, (tabs) => resolve(tabs)));
     },
-    queryCurrentTab: function () {
-        return new Promise(function (resolve) {
-            return chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) { return resolve(tabs); });
-        });
+    async queryCurrentTab() {
+        return new Promise(resolve => chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => resolve(tabs)));
     },
-    sendMessage: function (tabId, message) {
+    sendMessage(tabId, message) {
         chrome.tabs.sendMessage(tabId, message);
     }
 };
@@ -221,10 +227,9 @@ String.prototype.contains = function (string) {
     return this.indexOf(string) !== -1;
 };
 Element.prototype.postDelayed = function (millis, func) {
-    var _this = this;
-    var localTask = wait(millis, function () {
-        if (localTask === _this.currentTask)
-            func.call(_this);
+    let localTask = wait(millis, () => {
+        if (localTask === this.currentTask)
+            func.call(this);
     });
     this.currentTask = localTask;
 };
