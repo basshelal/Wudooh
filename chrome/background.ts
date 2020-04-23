@@ -4,7 +4,6 @@
  * Here we only run code that will execute when the extension is installed or updated.
  */
 
-///<reference path="../../../.WebStorm2019.3/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
 ///<reference path="./shared.ts"/>
 
 function launchSite(path: string = "") {

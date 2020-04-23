@@ -1,24 +1,17 @@
-///<reference path="../../../.WebStorm2019.3/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
-///<reference path="./shared.ts"/>
 const mainDiv = get("main");
-// Custom Fonts
 const fontsStyle = get("wudoohCustomFontsStyle");
-// Inputs
 const sizeSlider = get("size");
 const heightSlider = get("height");
 const onOffSwitch = get("onOffSwitch");
 const fontSelect = get("font-select");
 const overrideSiteSwitch = get("overrideSettingsSwitch");
 const whiteListSwitch = get("whitelistSwitch");
-// Labels
 const sizeValue = get("sizeValue");
 const heightValue = get("heightValue");
 const overrideSettingsValue = get("overrideSettingsLabel");
 const whitelistedValue = get("whitelistedLabel");
-// Website Info
 const websiteText = get("website");
 const websiteIcon = get("websiteIcon");
-// Import / Export
 const exportButton = get("exportButton");
 const exportAnchor = get("exportAnchor");
 const importButton = get("importButton");
@@ -28,10 +21,10 @@ async function addCustomFonts(customFonts) {
     customFonts.forEach((customFont) => {
         const fontName = customFont.fontName;
         const fontUrl = customFont.url;
-        let injectedCss = `@font-face { font-family: '${fontName}' src: local('${fontName}')`;
+        let injectedCss = `@font-face { font-family: '${fontName}'; src: local('${fontName}')`;
         if (fontUrl)
             injectedCss = injectedCss.concat(`, url('${fontUrl}')`);
-        injectedCss = injectedCss.concat(` }\n`);
+        injectedCss = injectedCss.concat(`; }\n`);
         fontsStyle.textContent = fontsStyle.textContent.concat(injectedCss);
         const option = document.createElement("option");
         option.style.fontFamily = fontName;
@@ -44,7 +37,6 @@ async function initializeUI() {
     const storage = await sync.get(keys);
     const currentTabs = await tabs.queryCurrentTab();
     addCustomFonts(storage.customFonts);
-    // If the extension is off then hide the main div
     onOffSwitch.checked = storage.onOff;
     if (storage.onOff)
         mainDiv.style.maxHeight = "100%";
@@ -69,7 +61,6 @@ async function initializeUI() {
         lineHeight = storage.lineHeight;
         font = storage.font;
     }
-    // Initialize all the HTMLElements to the values from storage
     sizeSlider.value = textSize.toString();
     sizeValue.innerHTML = textSize.toString() + '%';
     heightSlider.value = lineHeight.toString();
@@ -229,7 +220,6 @@ async function importSettings() {
     const file = importInput.files[0];
     const reader = new FileReader();
     reader.onload = async (event) => {
-        // @ts-ignore
         const json = event.target.result;
         let result;
         try {
@@ -297,7 +287,6 @@ async function importSettings() {
                 "\n\nClick Help to find the guides at the extension website");
             return;
         }
-        // If we've reached here the JSON was valid, save all new settings!
         await sync.set({
             textSize: textSize,
             lineHeight: lineHeight,
@@ -327,11 +316,8 @@ function popupAddListeners() {
     };
     whiteListSwitch.onclick = () => toggleWhitelist();
     overrideSiteSwitch.onclick = () => toggleOverrideSiteSettings();
-    // Export settings when button is clicked
     exportButton.onclick = () => exportSettings();
-    // The invisible input is the one in charge of dealing with the importing
     importInput.oninput = () => importSettings();
-    // Clicking the button simulates clicking the import input which is the one dealing with the actual file reading
     importButton.onclick = () => importInput.click();
 }
 popupAddListeners();

@@ -1,4 +1,3 @@
-///<reference path="../../../.WebStorm2019.3/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
 ///<reference path="./shared.ts"/>
 
 const mainDiv = get<HTMLDivElement>("main")
@@ -36,9 +35,9 @@ async function addCustomFonts(customFonts: Array<CustomFont>): Promise<void> {
         const fontName: string = customFont.fontName
         const fontUrl: string = customFont.url
 
-        let injectedCss = `@font-face { font-family: '${fontName}' src: local('${fontName}')`
+        let injectedCss = `@font-face { font-family: '${fontName}'; src: local('${fontName}')`
         if (fontUrl) injectedCss = injectedCss.concat(`, url('${fontUrl}')`)
-        injectedCss = injectedCss.concat(` }\n`)
+        injectedCss = injectedCss.concat(`; }\n`)
 
         fontsStyle.textContent = fontsStyle.textContent.concat(injectedCss)
 

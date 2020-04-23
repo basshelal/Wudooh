@@ -1,5 +1,3 @@
-///<reference path="../../../.WebStorm2019.3/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
-///<reference path="./shared.ts"/>
 const template = get("template");
 const fontsDiv = get("fontsDiv");
 const fontNameInput = get("fontNameInput");
@@ -9,7 +7,6 @@ const addButton = get("addButton");
 const infoLabel = get("infoLabel");
 const fontTest = get("fontTest");
 const templateDiv = template.content.querySelector("div");
-// Use this to reduce the number of requests made to chrome storage
 let displayedFonts = [];
 function injectTemporaryCustomFont(fontName, url, localName) {
     let customFontsStyle = get("wudoohCustomFontsStyle");

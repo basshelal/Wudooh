@@ -1,28 +1,11 @@
-/**
- * This file contains common shared code that is used by all three main TypeScript files
- * These are background.ts, main.ts, and popup.ts.
- *
- * This trick is done by loading this script before any others when they are requested and
- * then adding the following line at the top of the file for support from WebStorm IDE.
- * ///<reference path="./shared.ts"/>
- */
-// Declare Browser APIs
 const runtime = chrome.runtime;
-/** The font size percent, between 100 and 300 */
 const keyTextSize = "textSize";
-/** The line height percent, between 100 and 300 */
 const keyLineHeight = "lineHeight";
-/** Determines whether the extension is on or off, true is on */
 const keyOnOff = "onOff";
-/** The font to update to, this is a string */
 const keyFont = "font";
-/** The array of strings of whitelisted websites, this contains their hostnames in the format example.com */
 const keyWhitelisted = "whitelisted";
-/** The array of {@linkcode CustomSettings} that represents the sites with custom settings */
 const keyCustomSettings = "customSettings";
-/** The array of {@linkcode CustomFont}s, this is used in {@linkcode chrome.storage.local} */
 const keyCustomFonts = "customFonts";
-/** The keys of the {@linkcode chrome.storage.sync} */
 const keys = [
     keyTextSize,
     keyLineHeight,
@@ -32,13 +15,11 @@ const keys = [
     keyCustomSettings,
     keyCustomFonts
 ];
-// Defaults
 const defaultFont = "Droid Arabic Naskh";
 const defaultTextSize = 125;
 const defaultLineHeight = 145;
 const defaultColor = "#880E4F";
 const homePage = "http://basshelal.github.io/Wudooh";
-// Message Reasons
 const reasonUpdateAllText = "updateAllText";
 const reasonInjectCustomFonts = "injectCustomFonts";
 const reasonToggleOff = "toggleOff";
@@ -84,10 +65,6 @@ const allWudoohFonts = [
     "Calibri",
     "Original"
 ];
-/**
- * Represents a site that uses different settings from the global settings
- * The settings themselves may be the same as the global but they will change independently
- */
 class CustomSettings {
     constructor(url, textSize, lineHeight, font) {
         this.url = url;
@@ -120,11 +97,6 @@ class CustomFont {
         this.localName = localName;
         this.url = url;
     }
-    /**
-     * Trick to make sure that a font is installed on the client's machine.
-     * I found this somewhere online and they claimed it works 99% of the time,
-     * it's worked perfectly for me so far
-     */
     static isFontInstalled(font) {
         var container = document.createElement('span');
         container.innerHTML = Array(100).join('wi');
@@ -141,8 +113,6 @@ class CustomFont {
             document.body.removeChild(container);
             return width;
         }
-        // Pre compute the widths of monospace, serif & sans-serif
-        // to improve performance.
         var monoWidth = getWidth('monospace');
         var serifWidth = getWidth('serif');
         var sansWidth = getWidth('sans-serif');
@@ -179,9 +149,6 @@ class CustomFont {
         return array.length === 0 || array.every((obj) => this.isCustomFont(obj));
     }
 }
-/**
- * An abstraction and simplification of the storage.sync API to make it use Promises
- */
 var sync = {
     async get(keys = null) {
         return new Promise(resolve => {
@@ -192,9 +159,6 @@ var sync = {
         return new Promise(resolve => chrome.storage.sync.set(wudoohStorage, () => resolve()));
     }
 };
-/**
- * An abstraction and simplification of the tabs API to make it use Promises
- */
 var tabs = {
     async create(url) {
         return new Promise(resolve => chrome.tabs.create({ url: url }, tab => resolve(tab)));
@@ -209,11 +173,6 @@ var tabs = {
         chrome.tabs.sendMessage(tabId, message);
     }
 };
-/**
- * Shorthand for {@linkcode document.getElementById}, automatically casts to T, a HTMLElement
- *
- * @param elementId the id of the element to get
- */
 function get(elementId) {
     return document.getElementById(elementId);
 }
@@ -233,4 +192,3 @@ Element.prototype.postDelayed = function (millis, func) {
     });
     this.currentTask = localTask;
 };
-// endregion Extensions

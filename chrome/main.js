@@ -1,48 +1,18 @@
-/**
- * This is the main script that reads the document and updates any Arabic script text
- */
-///<reference path="../../../.WebStorm2019.3/config/javascript/extLibs/global-types/node_modules/@types/chrome/index.d.ts"/>
-///<reference path="./shared.ts"/>
-/**
- * This Arabic regex allows and accepts any non Arabic symbols next to Arabic symbols,
- * this means that it accepts anything as long as it has some Arabic symbol in it
- */
 const arabicRegex = new RegExp("([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\]+([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\\W\\d]+)*)", "g");
 const arabicNumbersRegex = new RegExp("([\u0660-\u0669\u06F0-\u06F9]+)", "g");
-/** The observer used in {@linkcode startObserver} to dynamically update any newly added Nodes */
 let observer;
-/**
- * Returns true if the passed in Node has been updated by Wudooh and false otherwise
- */
 function hasNodeBeenUpdated(node) {
     return node.parentElement && node.parentElement.getAttribute("wudooh") === "true";
 }
-/**
- * Returns true if this document has already been updated by Wudooh before,
- * this is done in {@linkcode notifyDocument()}
- */
 function hasDocumentBeenUpdated() {
     return document.getElementById("wudoohMetaElement") !== null;
 }
-/**
- * Returns whether the given node has any Arabic script or not, this is any script that matches arabicRegEx.
- * True if it does and false otherwise
- */
 function hasArabicScript(node) {
     return !!node.nodeValue && !!(node.nodeValue.match(arabicRegex));
 }
-/**
- * Checks whether the passed in node is editable or not.
- * An editable node is one that returns true to isContentEditable or has a tag name as
- * any one of the following:
- * "textarea", "input", "text", "email", "number", "search", "tel", "url", "password"
- *
- * @param node the node to check
- * @return true if the node is editable and false otherwise
- */
 function isNodeEditable(node) {
-    let element = node;
-    let nodeName = element.nodeName.toLowerCase();
+    const element = node;
+    const nodeName = element.nodeName.toLowerCase();
     return (element.isContentEditable || (element.nodeType === Node.ELEMENT_NODE && htmlEditables.contains(nodeName)));
 }
 function remapNumber(numberCharacter) {
@@ -68,12 +38,6 @@ function remapNumber(numberCharacter) {
     if (char === "٩" || char === "۹")
         return "9";
 }
-/**
- * Gets all nodes within the passed in node that have any Arabic text
- * @param rootNode the node to use as the root of the traversal
- * @return an array of nodes that contain all the nodes with Arabic text that are children of the passed in
- * root node
- */
 function getArabicTextNodesIn(rootNode) {
     let treeWalker = document.createTreeWalker(rootNode, NodeFilter.SHOW_TEXT);
     let arabicTextNodes = [];
@@ -85,17 +49,7 @@ function getArabicTextNodesIn(rootNode) {
     }
     return arabicTextNodes;
 }
-/**
- * Updates the passed in node's html to have the properties of a modified Arabic text node, this will
- * replace any text that matches arabicRegEx to be a span with the font size and line height specified by
- * the user's options, the span will have a class='ar', this can be used to check if the text has been
- * updated by this function or not
- * @param node the node to update
- * @param textSize the size to update the text to
- * @param lineHeight the height to update the line to
- * @param font the name of the font to update the text to
- */
-function updateNode(node, textSize, lineHeight, font = defaultFont) {
+async function updateNode(node, textSize, lineHeight, font) {
     let newSize = textSize / 100;
     let newHeight = lineHeight / 100;
     if (!!node.nodeValue) {
@@ -105,12 +59,10 @@ function updateNode(node, textSize, lineHeight, font = defaultFont) {
             updateByAdding(node, newSize, newHeight, font);
     }
 }
-function updateByAdding(node, textSize, lineHeight, font) {
+async function updateByAdding(node, textSize, lineHeight, font) {
     const parent = node.parentNode;
-    // return if parent or node are null
     if (!parent || !node)
         return;
-    // don't do anything if this node or its parent are editable
     if (isNodeEditable(parent) || isNodeEditable(node))
         return;
     let newHTML;
@@ -129,16 +81,14 @@ function updateByAdding(node, textSize, lineHeight, font) {
     }
     let text = node.nodeValue.replace(arabicRegex, newHTML);
     let nextSibling = node.nextSibling;
-    // the div is temporary and doesn't show up in the html
     let newElement = document.createElement("div");
     newElement.innerHTML = text;
     while (newElement.firstChild) {
-        // we only insert the passed in html, the div is not inserted
         parent.insertBefore(newElement.firstChild, nextSibling);
     }
     parent.removeChild(node);
 }
-function updateByChanging(node, textSize, lineHeight, font) {
+async function updateByChanging(node, textSize, lineHeight, font) {
     node.parentElement.style.fontSize = textSize + "em";
     node.parentElement.style.lineHeight = lineHeight + "em";
     if (font === "Original")
@@ -146,32 +96,16 @@ function updateByChanging(node, textSize, lineHeight, font) {
     else
         node.parentElement.style.fontFamily = font;
 }
-/**
- * Updates all Arabic script nodes in this document's body by calling updateNode() on each node in this document
- * with Arabic script
- * @param textSize the size to update the text to
- * @param lineHeight the height to update the line to
- * @param font the name of the font to update the text to
- */
-function updateAll(textSize, lineHeight, font = defaultFont) {
+async function updateAll(textSize, lineHeight, font) {
     getArabicTextNodesIn(document.body).forEach((it) => updateNode(it, textSize, lineHeight, font));
 }
-/**
- * Starts the observer that will observe for any additions to the document and update them if they have any
- * Arabic text and they have not been updated yet
- * @param textSize the size to update the text to
- * @param lineHeight the height to update the line to
- * @param font the name of the font to update the text to
- */
-function startObserver(textSize, lineHeight, font = defaultFont) {
-    // If observer was existing then disconnect it and delete it
+async function startObserver(textSize, lineHeight, font) {
     if (!!observer) {
         observer.disconnect();
         observer = null;
     }
-    // Only do anything if observer is null
     if (!observer) {
-        let config = {
+        const config = {
             attributes: false,
             attributeOldValue: false,
             characterData: true,
@@ -179,21 +113,16 @@ function startObserver(textSize, lineHeight, font = defaultFont) {
             childList: true,
             subtree: true,
         };
-        let callback = (mutationsList) => {
+        const callback = (mutationsList) => {
             mutationsList.forEach((record) => {
-                // If something has been added
                 if (record.addedNodes.length > 0) {
-                    //  For each added node
                     record.addedNodes.forEach((addedNode) => {
-                        // For each node with Arabic script in addedNode
                         getArabicTextNodesIn(addedNode).forEach((arabicNode) => {
                             updateNode(arabicNode, textSize, lineHeight, font);
                         });
                     });
                 }
-                // If the value has changed
                 if (record.target.nodeValue !== record.oldValue && record.target.parentNode instanceof Node) {
-                    // If the node now has Arabic text when it didn't, this is rare and only occurs on YouTube
                     getArabicTextNodesIn(record.target.parentNode).forEach((arabicNode) => {
                         updateNode(arabicNode, textSize, lineHeight, font);
                     });
@@ -204,12 +133,7 @@ function startObserver(textSize, lineHeight, font = defaultFont) {
         observer.observe(document.body, config);
     }
 }
-/**
- * Notify the current document that Wudooh has been executed on it.
- * This has no use currently but may be useful later for sites to know if Wudooh is changing their content and for
- * testing
- */
-function notifyDocument() {
+async function notifyDocument() {
     if (!hasDocumentBeenUpdated()) {
         let meta = document.createElement("meta");
         meta.id = "wudoohMetaElement";
@@ -217,11 +141,7 @@ function notifyDocument() {
         document.head.appendChild(meta);
     }
 }
-/**
- * Injects the passed in {@linkcode CustomFont}s into this document's head into a new style element
- * @param customFonts the Array of CustomFonts to inject into this document
- */
-function injectCustomFonts(customFonts) {
+async function injectCustomFonts(customFonts) {
     let customFontsStyle = get("wudoohCustomFontsStyle");
     if (customFontsStyle) {
         customFontsStyle.innerHTML = "";
@@ -241,7 +161,7 @@ function injectCustomFonts(customFonts) {
     });
     document.head.append(customFontsStyle);
 }
-function toggleOff() {
+async function toggleOff() {
     observer.disconnect();
     observer = null;
     getArabicTextNodesIn(document.body).forEach((node) => {
@@ -250,14 +170,7 @@ function toggleOff() {
         node.parentElement.style.fontFamily = null;
     });
 }
-/**
- * Listener to update text if options are modified, the options being text size, line height and font
- * Since the original font is not saved, reverting the text to it's original form is not possible
- * This will disconnect the previous observer and start a new one its place with the new options
- * The check whether the switch is on or if this site is whitelisted is not done here but at the
- * sender's sendMessage call
- */
-function addMessageListener() {
+async function addMessageListener() {
     runtime.onMessage.addListener((message) => {
         if (message.reason == null)
             return;
@@ -272,42 +185,32 @@ function addMessageListener() {
         }
     });
 }
-/**
- * Main execution:
- * Updates all existing text according to the options
- * Then starts an observer with those same options to update any new text that will come
- * This only happens if the on off switch is on and the site is not whitelisted
- */
-function main() {
-    sync.get(keys).then((storage) => {
-        let textSize = storage.textSize;
-        let lineHeight = storage.lineHeight;
-        let isOn = storage.onOff;
-        let font = storage.font;
-        let whitelisted = storage.whitelisted;
-        let customSettings = storage.customSettings;
-        let customFonts = storage.customFonts;
-        let thisHostname = new URL(document.URL).hostname;
-        let isWhitelisted = !!whitelisted.find((it) => it === thisHostname);
-        let customSite = customSettings.find((custom) => custom.url === thisHostname);
-        // Only do anything if the switch is on and this site is not whitelisted
-        if (isOn && !isWhitelisted) {
-            injectCustomFonts(customFonts);
-            // If it's a custom site then change the textSize, lineHeight and font
-            if (customSite) {
-                textSize = customSite.textSize;
-                lineHeight = customSite.lineHeight;
-                font = customSite.font;
-            }
-            updateAll(textSize, lineHeight, font);
-            startObserver(textSize, lineHeight, font);
-            notifyDocument();
+async function main() {
+    const storage = await sync.get(keys);
+    let textSize = storage.textSize;
+    let lineHeight = storage.lineHeight;
+    let isOn = storage.onOff;
+    let font = storage.font;
+    let whitelisted = storage.whitelisted;
+    let customSettings = storage.customSettings;
+    let customFonts = storage.customFonts;
+    let thisURL = new URL(document.URL).hostname;
+    let isWhitelisted = !!whitelisted.find((it) => it === thisURL);
+    let customSite = customSettings.find((custom) => custom.url === thisURL);
+    if (isOn && !isWhitelisted) {
+        injectCustomFonts(customFonts);
+        if (customSite) {
+            textSize = customSite.textSize;
+            lineHeight = customSite.lineHeight;
+            font = customSite.font;
         }
-        // We've been updated and now we've become whitelisted
-        if (hasDocumentBeenUpdated() && isWhitelisted) {
-            toggleOff();
-        }
-    });
+        updateAll(textSize, lineHeight, font);
+        startObserver(textSize, lineHeight, font);
+        notifyDocument();
+    }
+    if (hasDocumentBeenUpdated() && isWhitelisted) {
+        toggleOff();
+    }
 }
 main();
 addMessageListener();
