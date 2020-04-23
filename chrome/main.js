@@ -189,14 +189,14 @@ async function main() {
     const storage = await sync.get(keys);
     let textSize = storage.textSize;
     let lineHeight = storage.lineHeight;
-    let isOn = storage.onOff;
     let font = storage.font;
-    let whitelisted = storage.whitelisted;
-    let customSettings = storage.customSettings;
-    let customFonts = storage.customFonts;
-    let thisURL = new URL(document.URL).hostname;
-    let isWhitelisted = !!whitelisted.find((it) => it === thisURL);
-    let customSite = customSettings.find((custom) => custom.url === thisURL);
+    const isOn = storage.onOff;
+    const whitelisted = storage.whitelisted;
+    const customSettings = storage.customSettings;
+    const customFonts = storage.customFonts;
+    const thisURL = new URL(document.URL).hostname;
+    const isWhitelisted = !!whitelisted.find((it) => it === thisURL);
+    const customSite = customSettings.find((custom) => custom.url === thisURL);
     if (isOn && !isWhitelisted) {
         injectCustomFonts(customFonts);
         if (customSite) {

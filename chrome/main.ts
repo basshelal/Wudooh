@@ -276,16 +276,16 @@ async function main() {
     const storage: WudoohStorage = await sync.get(keys)
     let textSize: number = storage.textSize
     let lineHeight: number = storage.lineHeight
-    let isOn: boolean = storage.onOff
     let font: string = storage.font
-    let whitelisted: Array<string> = storage.whitelisted
-    let customSettings: Array<CustomSettings> = storage.customSettings
-    let customFonts: Array<CustomFont> = storage.customFonts
+    const isOn: boolean = storage.onOff
+    const whitelisted: Array<string> = storage.whitelisted
+    const customSettings: Array<CustomSettings> = storage.customSettings
+    const customFonts: Array<CustomFont> = storage.customFonts
 
-    let thisURL: string = new URL(document.URL).hostname
-    let isWhitelisted: boolean = !!whitelisted.find((it) => it === thisURL)
+    const thisURL: string = new URL(document.URL).hostname
+    const isWhitelisted: boolean = !!whitelisted.find((it) => it === thisURL)
 
-    let customSite: CustomSettings = customSettings.find((custom: CustomSettings) => custom.url === thisURL)
+    const customSite: CustomSettings = customSettings.find((custom: CustomSettings) => custom.url === thisURL)
 
     // Only do anything if the switch is on and this site is not whitelisted
     if (isOn && !isWhitelisted) {

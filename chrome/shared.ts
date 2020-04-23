@@ -60,7 +60,7 @@ const reasonUpdateAllText = "updateAllText";
 const reasonInjectCustomFonts = "injectCustomFonts";
 const reasonToggleOff = "toggleOff";
 
-let htmlEditables = ["textarea", "input", "text", "email", "number", "search", "tel", "url", "password"];
+const htmlEditables = ["textarea", "input", "text", "email", "number", "search", "tel", "url", "password"];
 
 const allWudoohFonts: Array<string> = [
     "Droid Arabic Naskh",

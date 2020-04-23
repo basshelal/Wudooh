@@ -3,7 +3,7 @@
     font-family: 'Droid Arabic Naskh';
     font-style: normal;
     font-weight: normal;
-    src: local('Droid Arabic Naskh'), url('../../fonts/DroidNaskh.woff2') format('woff2');
+    src: local('Droid Arabic Naskh'), url('fonts/DroidNaskh.woff2') format('woff2');
 }
 
 /** Noto Nastaliq Urdu */
@@ -11,7 +11,7 @@
     font-family: 'Noto Nastaliq Urdu';
     font-style: normal;
     font-weight: normal;
-    src: local('Noto Nastaliq Urdu'), url('../../fonts/NotoNastaliqUrdu.woff2') format('woff2');
+    src: local('Noto Nastaliq Urdu'), url('fonts/NotoNastaliqUrdu.woff2') format('woff2');
 }
 
 /** Aref Ruqaa */
@@ -19,7 +19,7 @@
     font-family: 'Aref Ruqaa';
     font-style: normal;
     font-weight: normal;
-    src: local('Aref Ruqaa'), url('../../fonts/ArefRuqaa.woff2') format('woff2');
+    src: local('Aref Ruqaa'), url('fonts/ArefRuqaa.woff2') format('woff2');
 }
 
 /** Cairo */
@@ -27,7 +27,7 @@
     font-family: 'Cairo';
     font-style: normal;
     font-weight: normal;
-    src: local('Cairo'), url('../../fonts/Cairo.woff2') format('woff2');
+    src: local('Cairo'), url('fonts/Cairo.woff2') format('woff2');
 }
 
 /** Lemonada */
@@ -35,7 +35,7 @@
     font-family: 'Lemonada';
     font-style: normal;
     font-weight: normal;
-    src: local('Lemonada'), url('../../fonts/Lemonada.woff2') format('woff2');
+    src: local('Lemonada'), url('fonts/Lemonada.woff2') format('woff2');
 }
 
 /** Lalezar */
@@ -43,7 +43,7 @@
     font-family: 'Lalezar';
     font-style: normal;
     font-weight: normal;
-    src: local('Lalezar'), url('../../fonts/Lalezar.woff2') format('woff2');
+    src: local('Lalezar'), url('fonts/Lalezar.woff2') format('woff2');
 }
 
 /** Tajawal */
@@ -51,7 +51,7 @@
     font-family: 'Tajawal';
     font-style: normal;
     font-weight: normal;
-    src: local('Tajawal'), url('../../fonts/Tajawal.woff2') format('woff2');
+    src: local('Tajawal'), url('fonts/Tajawal.woff2') format('woff2');
 }
 
 /** Changa */
@@ -59,7 +59,7 @@
     font-family: 'Changa';
     font-style: normal;
     font-weight: normal;
-    src: local('Changa'), url('../../fonts/Changa.woff2') format('woff2');
+    src: local('Changa'), url('fonts/Changa.woff2') format('woff2');
 }
 
 /** El Messiri */
@@ -67,7 +67,7 @@
     font-family: 'El Messiri';
     font-style: normal;
     font-weight: normal;
-    src: local('El Messiri'), url('../../fonts/El-Messiri.woff2') format('woff2');
+    src: local('El Messiri'), url('fonts/El-Messiri.woff2') format('woff2');
 }
 
 /** Lateef */
@@ -75,7 +75,7 @@
     font-family: 'Lateef';
     font-style: normal;
     font-weight: normal;
-    src: local('Lateef'), url('../../fonts/Lateef.woff2') format('woff2');
+    src: local('Lateef'), url('fonts/Lateef.woff2') format('woff2');
 }
 
 /** Mada */
@@ -83,7 +83,7 @@
     font-family: 'Mada';
     font-style: normal;
     font-weight: normal;
-    src: local('Mada'), url('../../fonts/Mada.woff2') format('woff2');
+    src: local('Mada'), url('fonts/Mada.woff2') format('woff2');
 }
 
 /** Markazi Text */
@@ -91,7 +91,7 @@
     font-family: 'Markazi Text';
     font-style: normal;
     font-weight: normal;
-    src: local('Markazi Text'), url('../../fonts/Markazi-Text.woff2') format('woff2');
+    src: local('Markazi Text'), url('fonts/Markazi-Text.woff2') format('woff2');
 }
 
 /** Mirza */
@@ -99,7 +99,7 @@
     font-family: 'Mirza';
     font-style: normal;
     font-weight: normal;
-    src: local('Mirza'), url('../../fonts/Mirza.woff2') format('woff2');
+    src: local('Mirza'), url('fonts/Mirza.woff2') format('woff2');
 }
 
 /** Harmattan */
@@ -107,7 +107,7 @@
     font-family: 'Harmattan';
     font-style: normal;
     font-weight: normal;
-    src: local('Harmattan'), url('../../fonts/Harmattan.woff2') format('woff2');
+    src: local('Harmattan'), url('fonts/Harmattan.woff2') format('woff2');
 }
 
 /** Rakkas */
@@ -115,7 +115,7 @@
     font-family: 'Rakkas';
     font-style: normal;
     font-weight: normal;
-    src: local('Rakkas'), url('../../fonts/Rakkas.woff2') format('woff2');
+    src: local('Rakkas'), url('fonts/Rakkas.woff2') format('woff2');
 }
 
 /** Katibeh */
@@ -123,7 +123,7 @@
     font-family: 'Katibeh';
     font-style: normal;
     font-weight: normal;
-    src: local('Katibeh-Regular'), url('../../fonts/Katibeh.woff2') format('woff2');
+    src: local('Katibeh-Regular'), url('fonts/Katibeh.woff2') format('woff2');
 }
 
 /** Jomhuria */
@@ -131,7 +131,7 @@
     font-family: 'Jomhuria';
     font-style: normal;
     font-weight: normal;
-    src: local('Jomhuria'), url('../../fonts/Jomhuria.woff2') format('woff2');
+    src: local('Jomhuria'), url('fonts/Jomhuria.woff2') format('woff2');
 }
 
 /** Shakstah */
@@ -139,7 +139,7 @@
     font-family: 'Shakstah';
     font-style: normal;
     font-weight: normal;
-    src: local('Shakstah'), url('../../fonts/Shakstah.woff2') format('woff2');
+    src: local('Shakstah'), url('fonts/Shakstah.woff2') format('woff2');
 }
 
 /** Mehr Nastaliq */
@@ -147,7 +147,7 @@
     font-family: 'Mehr Nastaliq';
     font-style: normal;
     font-weight: normal;
-    src: local('Mehr Nastaliq'), url('../../fonts/MehrNastaliq.woff2') format('woff2');
+    src: local('Mehr Nastaliq'), url('fonts/MehrNastaliq.woff2') format('woff2');
 }
 
 /** Rooznameh */
@@ -155,7 +155,7 @@
     font-family: 'Rooznameh';
     font-style: normal;
     font-weight: normal;
-    src: local('Rooznameh'), url('../../fonts/Rooznameh.woff2') format('woff2');
+    src: local('Rooznameh'), url('fonts/Rooznameh.woff2') format('woff2');
 }
 
 /** DecoType Naskh */
@@ -163,5 +163,5 @@
     font-family: 'DecoType Naskh';
     font-style: normal;
     font-weight: normal;
-    src: local('DecoType Naskh'), url('../../fonts/DecoTypeNaskh.woff2') format('woff2');
+    src: local('DecoType Naskh'), url('fonts/DecoTypeNaskh.woff2') format('woff2');
 }

@@ -23,7 +23,7 @@ const homePage = "http://basshelal.github.io/Wudooh";
 const reasonUpdateAllText = "updateAllText";
 const reasonInjectCustomFonts = "injectCustomFonts";
 const reasonToggleOff = "toggleOff";
-let htmlEditables = ["textarea", "input", "text", "email", "number", "search", "tel", "url", "password"];
+const htmlEditables = ["textarea", "input", "text", "email", "number", "search", "tel", "url", "password"];
 const allWudoohFonts = [
     "Droid Arabic Naskh",
     "Noto Naskh Arabic",
