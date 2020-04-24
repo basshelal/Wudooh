@@ -28,8 +28,8 @@
       "all_frames": true,
       "run_at": "document_idle",
       "js": [
-        "shared.min.js",
-        "main.min.js"
+        "shared.js",
+        "main.js"
       ],
       "css": [
         "fonts.css"
@@ -38,8 +38,8 @@
   ],
   "background": {
     "scripts": [
-      "shared.min.js",
-      "background.min.js"
+      "shared.js",
+      "background.js"
     ],
     "persistent": false
   },

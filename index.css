@@ -1,6 +1,6 @@
 @import "pages/res/common.css";
 
-html {
+body {
     animation: fadeIn ease-in 500ms;
     -webkit-animation: fadeIn ease-in 500ms;
     -moz-animation: fadeIn ease-in 500ms;

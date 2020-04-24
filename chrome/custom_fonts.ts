@@ -13,31 +13,39 @@ const templateDiv = template.content.querySelector("div")
 // Use this to reduce the number of requests made to chrome storage
 let displayedFonts: Array<string> = []
 
-function injectTemporaryCustomFont(fontName: string, url: string, localName: string) {
-    let customFontsStyle = get("wudoohCustomFontsStyle");
-    if (!customFontsStyle) {
-        customFontsStyle = document.createElement("style");
-        customFontsStyle.id = "wudoohCustomFontsStyle";
-        document.head.append(customFontsStyle);
-    }
-
-    let injectedCss = `@font-face { font-family: '${fontName}'; src: local('${localName}')`;
-    if (url) injectedCss = injectedCss.concat(`, url('${url}')`);
-    injectedCss = injectedCss.concat(`; }\n`);
-
-    customFontsStyle.innerHTML = injectedCss;
+async function initializeCustomFonts() {
+    const storage: WudoohStorage = await sync.get([keyCustomFonts])
+    displayedFonts = []
+    storage.customFonts.forEach((it: CustomFont) => {
+        displayFont(it)
+        displayedFonts.push(it.fontName)
+    })
 }
 
-function notifyCustomFontsChanged(customFonts: Array<CustomFont>) {
-    tabs.queryAllTabs().then((allTabs: Array<Tab>) => {
-        allTabs.forEach((tab: Tab) => {
-            let message = {
-                reason: reasonInjectCustomFonts,
-                customFonts: customFonts
-            };
-            tabs.sendMessage(tab.id, message);
-        });
-    });
+async function injectTemporaryCustomFont(fontName: string, url: string, localName: string) {
+    let customFontsStyle = get("wudoohCustomFontsStyle")
+    if (!customFontsStyle) {
+        customFontsStyle = document.createElement("style")
+        customFontsStyle.id = "wudoohCustomFontsStyle"
+        document.head.append(customFontsStyle)
+    }
+
+    let injectedCss = `@font-face { font-family: '${fontName}'; src: local('${localName}')`
+    if (url) injectedCss = injectedCss.concat(`, url('${url}')`)
+    injectedCss = injectedCss.concat(`; }\n`)
+
+    customFontsStyle.innerHTML = injectedCss
+}
+
+async function notifyAllTabsCustomFontsChanged(customFonts: Array<CustomFont>) {
+    const allTabs = await tabs.queryAllTabs()
+    allTabs.forEach((tab: Tab) => {
+        let message = {
+            reason: reasonInjectCustomFonts,
+            customFonts: customFonts
+        }
+        tabs.sendMessage(tab.id, message);
+    })
 }
 
 function displayFont(customFont: CustomFont) {
@@ -73,7 +81,7 @@ function displayFont(customFont: CustomFont) {
                 customFonts = storage.customFonts.filter((it: CustomFont) => it.fontName !== font);
                 return sync.set({customFonts: customFonts});
             }).then(() => {
-                notifyCustomFontsChanged(customFonts);
+                notifyAllTabsCustomFontsChanged(customFonts);
                 displayedFonts = customFonts.map(it => it.fontName);
                 rootDiv.parentNode.removeChild(rootDiv);
             });
@@ -81,93 +89,75 @@ function displayFont(customFont: CustomFont) {
     };
 }
 
-function pressedEnter(event: KeyboardEvent) {
-    if (event.code === "Enter") addButton.click();
-}
-
-function initializeCustomFonts() {
-    sync.get([keyCustomFonts]).then((storage: WudoohStorage) => {
-        let customFonts: Array<CustomFont> = storage.customFonts;
-        displayedFonts = [];
-        customFonts.forEach((it: CustomFont) => {
-            displayFont(it);
-            displayedFonts.push(it.fontName)
-        });
-    });
-}
-
 function inputOnInput() {
     this.postDelayed(250, () => {
-        let fontName = CSS.escape(fontNameInput.value);
-        let url = CSS.escape(urlInput.value);
-        let localName = CSS.escape(localNameInput.value);
-        injectTemporaryCustomFont(fontName, url, localName);
-        fontTest.style.fontFamily = fontName;
+        let fontName = CSS.escape(fontNameInput.value)
+        let url = CSS.escape(urlInput.value)
+        let localName = CSS.escape(localNameInput.value)
+        injectTemporaryCustomFont(fontName, url, localName)
+        fontTest.style.fontFamily = fontName
     });
 }
 
-function addButtonOnClick() {
-    let fontName = fontNameInput.value;
-    let url = urlInput.value;
-    let localName = localNameInput.value;
+async function addButtonOnClick() {
+    let fontName = fontNameInput.value
+    let url = urlInput.value
+    let localName = localNameInput.value
 
-    if (fontName == "") fontName = null;
-    if (url == "") url = null;
-    if (localName == "") localName = null;
-
-    let isValid = true;
+    if (fontName == "") fontName = null
+    if (url == "") url = null
+    if (localName == "") localName = null
 
     if (!fontName) {
-        isValid = false;
-        infoLabel.style.display = "block";
-        infoLabel.innerText = "Font Name cannot be empty!";
-        return;
+        infoLabel.style.display = "block"
+        infoLabel.innerText = "Font Name cannot be empty!"
+        return
     }
     if (!url && !localName) {
-        isValid = false;
-        infoLabel.style.display = "block";
-        infoLabel.innerText = "URL and local cannot both be empty!";
-        return;
+        infoLabel.style.display = "block"
+        infoLabel.innerText = "URL and local cannot both be empty!"
+        return
     }
     if (displayedFonts.contains(fontName) || allWudoohFonts.contains(fontName)) {
-        isValid = false;
-        infoLabel.style.display = "block";
-        infoLabel.innerText = "A font with this Font Name already exists!";
-        return;
+        infoLabel.style.display = "block"
+        infoLabel.innerText = "A font with this Font Name already exists!"
+        return
     }
-    if (isValid) {
-        infoLabel.innerText = "";
-        let customFonts: Array<CustomFont>;
-        let customFont: CustomFont;
-        sync.get([keyCustomFonts]).then((storage: WudoohStorage) => {
-            customFonts = storage.customFonts;
-            customFont = new CustomFont(fontName, localName, url);
-            customFonts.push(customFont);
-            return sync.set({customFonts: customFonts});
-        }).then(() => {
-            displayFont(customFont);
-            displayedFonts.push(customFont.fontName);
-            notifyCustomFontsChanged(customFonts);
-            infoLabel.style.display = "none";
-            fontNameInput.value = "";
-            urlInput.value = "";
-            localNameInput.value = "";
-        });
-    }
+
+    // If we reached here then all is valid!
+    infoLabel.innerText = ""
+
+    const storage: WudoohStorage = await sync.get([keyCustomFonts])
+    const customFonts: Array<CustomFont> = storage.customFonts
+    const customFont: CustomFont = new CustomFont(fontName, localName, url)
+    customFonts.push(customFont)
+    await sync.set({customFonts: customFonts})
+
+    displayFont(customFont)
+    displayedFonts.push(customFont.fontName)
+    notifyAllTabsCustomFontsChanged(customFonts)
+    infoLabel.style.display = "none"
+    fontNameInput.value = ""
+    urlInput.value = ""
+    localNameInput.value = ""
 }
 
 function customFontsAddListeners() {
-    document.addEventListener("DOMContentLoaded", initializeCustomFonts);
+    function pressedEnter(event: KeyboardEvent) {
+        if (event.code === "Enter") addButton.click()
+    }
 
-    fontNameInput.onkeypress = pressedEnter;
-    localNameInput.onkeypress = pressedEnter;
-    urlInput.onkeypress = pressedEnter;
+    document.addEventListener("DOMContentLoaded", initializeCustomFonts)
 
-    fontNameInput.oninput = inputOnInput;
-    localNameInput.oninput = inputOnInput;
-    urlInput.oninput = inputOnInput;
+    fontNameInput.onkeypress = pressedEnter
+    localNameInput.onkeypress = pressedEnter
+    urlInput.onkeypress = pressedEnter
 
-    addButton.onclick = addButtonOnClick;
+    fontNameInput.oninput = inputOnInput
+    localNameInput.oninput = inputOnInput
+    urlInput.oninput = inputOnInput
+
+    addButton.onclick = addButtonOnClick
 }
 
-customFontsAddListeners();
+customFontsAddListeners()

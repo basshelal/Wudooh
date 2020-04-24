@@ -97,6 +97,19 @@ class CustomFont {
         this.localName = localName;
         this.url = url;
     }
+    static injectCSS(font) {
+        const stringArray = [];
+        stringArray.push(`@font-face { font-family: '${font.fontName}';`);
+        if (font.url || font.localName)
+            stringArray.push(`src: `);
+        if (font.url && font.localName)
+            stringArray.push(`local('${font.localName}'), url('${font.url}');}\n`);
+        else if (font.localName && !font.url)
+            stringArray.push(`local('${font.localName}');}\n`);
+        else if (font.url && !font.localName)
+            stringArray.push(`url('${font.url}');}\n`);
+        return stringArray.join("");
+    }
     static isFontInstalled(font) {
         var container = document.createElement('span');
         container.innerHTML = Array(100).join('wi');
@@ -122,15 +135,6 @@ class CustomFont {
     }
     static isFontUrlValid(fontUrl) {
         return fetch(fontUrl).then(response => response.ok);
-    }
-    isFontInstalled() {
-        return CustomFont.isFontInstalled(this.fontName);
-    }
-    isUrlValid() {
-        if (!this.url)
-            return Promise.resolve(false);
-        if (this.url)
-            return CustomFont.isFontUrlValid(this.url);
     }
     static isValidCustomFont(customFont) {
         const fontName = customFont.fontName;

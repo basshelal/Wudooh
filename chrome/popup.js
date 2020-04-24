@@ -20,12 +20,7 @@ async function addCustomFonts(customFonts) {
     fontsStyle.textContent = "";
     customFonts.forEach((customFont) => {
         const fontName = customFont.fontName;
-        const fontUrl = customFont.url;
-        let injectedCss = `@font-face { font-family: '${fontName}'; src: local('${fontName}')`;
-        if (fontUrl)
-            injectedCss = injectedCss.concat(`, url('${fontUrl}')`);
-        injectedCss = injectedCss.concat(`; }\n`);
-        fontsStyle.textContent = fontsStyle.textContent.concat(injectedCss);
+        fontsStyle.textContent = fontsStyle.textContent.concat(CustomFont.injectCSS(customFont));
         const option = document.createElement("option");
         option.style.fontFamily = fontName;
         option.value = fontName;

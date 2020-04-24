@@ -33,13 +33,8 @@ async function addCustomFonts(customFonts: Array<CustomFont>): Promise<void> {
     fontsStyle.textContent = ""
     customFonts.forEach((customFont: CustomFont) => {
         const fontName: string = customFont.fontName
-        const fontUrl: string = customFont.url
 
-        let injectedCss = `@font-face { font-family: '${fontName}'; src: local('${fontName}')`
-        if (fontUrl) injectedCss = injectedCss.concat(`, url('${fontUrl}')`)
-        injectedCss = injectedCss.concat(`; }\n`)
-
-        fontsStyle.textContent = fontsStyle.textContent.concat(injectedCss)
+        fontsStyle.textContent = fontsStyle.textContent.concat(CustomFont.injectCSS(customFont))
 
         const option: HTMLOptionElement = document.createElement("option")
         option.style.fontFamily = fontName

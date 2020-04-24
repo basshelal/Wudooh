@@ -3,7 +3,7 @@
 @import "fonts.css";
 
 /* The main parts of the HTML, but not the items */
-html, header, body, footer {
+header, body, footer {
     width: 300px;
     height: auto;
     background-color: #efefef;

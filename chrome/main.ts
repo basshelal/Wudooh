@@ -235,14 +235,8 @@ async function injectCustomFonts(customFonts: Array<CustomFont>) {
     customFontsStyle = document.createElement("style")
     customFontsStyle.id = "wudoohCustomFontsStyle"
     customFonts.forEach((customFont: CustomFont) => {
-        const fontName: string = customFont.fontName
-        const fontUrl: string = customFont.url
-
-        let injectedCss = `@font-face { font-family: '${fontName}'; src: local('${fontName}')`
-        if (fontUrl) injectedCss = injectedCss.concat(`, url('${fontUrl}')`)
-        injectedCss = injectedCss.concat(`; }\n`)
-
-        customFontsStyle.innerHTML = customFontsStyle.innerHTML.concat(injectedCss)
+        console.log(customFont)
+        customFontsStyle.innerHTML = customFontsStyle.innerHTML.concat(CustomFont.injectCSS(customFont))
     })
     document.head.append(customFontsStyle)
 }

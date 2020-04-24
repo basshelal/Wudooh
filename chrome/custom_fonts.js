@@ -8,7 +8,15 @@ const infoLabel = get("infoLabel");
 const fontTest = get("fontTest");
 const templateDiv = template.content.querySelector("div");
 let displayedFonts = [];
-function injectTemporaryCustomFont(fontName, url, localName) {
+async function initializeCustomFonts() {
+    const storage = await sync.get([keyCustomFonts]);
+    displayedFonts = [];
+    storage.customFonts.forEach((it) => {
+        displayFont(it);
+        displayedFonts.push(it.fontName);
+    });
+}
+async function injectTemporaryCustomFont(fontName, url, localName) {
     let customFontsStyle = get("wudoohCustomFontsStyle");
     if (!customFontsStyle) {
         customFontsStyle = document.createElement("style");
@@ -21,15 +29,14 @@ function injectTemporaryCustomFont(fontName, url, localName) {
     injectedCss = injectedCss.concat(`; }\n`);
     customFontsStyle.innerHTML = injectedCss;
 }
-function notifyCustomFontsChanged(customFonts) {
-    tabs.queryAllTabs().then((allTabs) => {
-        allTabs.forEach((tab) => {
-            let message = {
-                reason: reasonInjectCustomFonts,
-                customFonts: customFonts
-            };
-            tabs.sendMessage(tab.id, message);
-        });
+async function notifyAllTabsCustomFontsChanged(customFonts) {
+    const allTabs = await tabs.queryAllTabs();
+    allTabs.forEach((tab) => {
+        let message = {
+            reason: reasonInjectCustomFonts,
+            customFonts: customFonts
+        };
+        tabs.sendMessage(tab.id, message);
     });
 }
 function displayFont(customFont) {
@@ -60,26 +67,12 @@ function displayFont(customFont) {
                 customFonts = storage.customFonts.filter((it) => it.fontName !== font);
                 return sync.set({ customFonts: customFonts });
             }).then(() => {
-                notifyCustomFontsChanged(customFonts);
+                notifyAllTabsCustomFontsChanged(customFonts);
                 displayedFonts = customFonts.map(it => it.fontName);
                 rootDiv.parentNode.removeChild(rootDiv);
             });
         }
     };
-}
-function pressedEnter(event) {
-    if (event.code === "Enter")
-        addButton.click();
-}
-function initializeCustomFonts() {
-    sync.get([keyCustomFonts]).then((storage) => {
-        let customFonts = storage.customFonts;
-        displayedFonts = [];
-        customFonts.forEach((it) => {
-            displayFont(it);
-            displayedFonts.push(it.fontName);
-        });
-    });
 }
 function inputOnInput() {
     this.postDelayed(250, () => {
@@ -90,7 +83,7 @@ function inputOnInput() {
         fontTest.style.fontFamily = fontName;
     });
 }
-function addButtonOnClick() {
+async function addButtonOnClick() {
     let fontName = fontNameInput.value;
     let url = urlInput.value;
     let localName = localNameInput.value;
@@ -100,46 +93,40 @@ function addButtonOnClick() {
         url = null;
     if (localName == "")
         localName = null;
-    let isValid = true;
     if (!fontName) {
-        isValid = false;
         infoLabel.style.display = "block";
         infoLabel.innerText = "Font Name cannot be empty!";
         return;
     }
     if (!url && !localName) {
-        isValid = false;
         infoLabel.style.display = "block";
         infoLabel.innerText = "URL and local cannot both be empty!";
         return;
     }
     if (displayedFonts.contains(fontName) || allWudoohFonts.contains(fontName)) {
-        isValid = false;
         infoLabel.style.display = "block";
         infoLabel.innerText = "A font with this Font Name already exists!";
         return;
     }
-    if (isValid) {
-        infoLabel.innerText = "";
-        let customFonts;
-        let customFont;
-        sync.get([keyCustomFonts]).then((storage) => {
-            customFonts = storage.customFonts;
-            customFont = new CustomFont(fontName, localName, url);
-            customFonts.push(customFont);
-            return sync.set({ customFonts: customFonts });
-        }).then(() => {
-            displayFont(customFont);
-            displayedFonts.push(customFont.fontName);
-            notifyCustomFontsChanged(customFonts);
-            infoLabel.style.display = "none";
-            fontNameInput.value = "";
-            urlInput.value = "";
-            localNameInput.value = "";
-        });
-    }
+    infoLabel.innerText = "";
+    const storage = await sync.get([keyCustomFonts]);
+    const customFonts = storage.customFonts;
+    const customFont = new CustomFont(fontName, localName, url);
+    customFonts.push(customFont);
+    await sync.set({ customFonts: customFonts });
+    displayFont(customFont);
+    displayedFonts.push(customFont.fontName);
+    notifyAllTabsCustomFontsChanged(customFonts);
+    infoLabel.style.display = "none";
+    fontNameInput.value = "";
+    urlInput.value = "";
+    localNameInput.value = "";
 }
 function customFontsAddListeners() {
+    function pressedEnter(event) {
+        if (event.code === "Enter")
+            addButton.click();
+    }
     document.addEventListener("DOMContentLoaded", initializeCustomFonts);
     fontNameInput.onkeypress = pressedEnter;
     localNameInput.onkeypress = pressedEnter;

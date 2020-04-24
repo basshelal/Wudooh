@@ -163,6 +163,17 @@ class CustomFont {
         this.url = url;
     }
 
+    static injectCSS(font: CustomFont): string {
+        const stringArray: Array<string> = []
+        stringArray.push(`@font-face { font-family: '${font.fontName}';`)
+        if (font.url || font.localName) stringArray.push(`src: `)
+
+        if (font.url && font.localName) stringArray.push(`local('${font.localName}'), url('${font.url}');}\n`)
+        else if (font.localName && !font.url) stringArray.push(`local('${font.localName}');}\n`)
+        else if (font.url && !font.localName) stringArray.push(`url('${font.url}');}\n`)
+        return stringArray.join("")
+    }
+
     /**
      * Trick to make sure that a font is installed on the client's machine.
      * I found this somewhere online and they claimed it works 99% of the time,
@@ -199,15 +210,6 @@ class CustomFont {
 
     static isFontUrlValid(fontUrl: string): Promise<boolean> {
         return fetch(fontUrl).then(response => response.ok);
-    }
-
-    isFontInstalled(): boolean {
-        return CustomFont.isFontInstalled(this.fontName);
-    }
-
-    isUrlValid(): Promise<boolean> {
-        if (!this.url) return Promise.resolve(false);
-        if (this.url) return CustomFont.isFontUrlValid(this.url);
     }
 
     static isValidCustomFont(customFont: CustomFont): boolean {
