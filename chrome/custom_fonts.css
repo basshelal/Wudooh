@@ -8,7 +8,7 @@ html, header, body, footer {
     color: #222000;
     margin: 0;
     padding: 0;
-    font-family: "Roboto Light", sans-serif;
+    font-family: "Roboto", sans-serif;
     animation: fadeIn ease-in 500ms;
     -webkit-animation: fadeIn ease-in 500ms;
     -moz-animation: fadeIn ease-in 500ms;
@@ -28,9 +28,27 @@ header {
     width: initial;
 }
 
+#headerTitle {
+    font-size: 50px;
+    font-weight: 100;
+}
+
 h1 {
     font-size: 40px;
-    font-weight: 100;
+    font-weight: normal;
+}
+
+#disclaimerDiv, #disclaimerDiv > * {
+    font-size: 24px;
+    font-weight: normal;
+    background-color: #ffca28;
+    border-radius: 8px;
+}
+
+#betaDisclaimer {
+    font-size: 20px;
+    font-weight: normal;
+    border-radius: 16px;
 }
 
 .centered {
@@ -66,6 +84,7 @@ h1 {
 .material-icons {
     position: relative;
     bottom: 20px;
+    cursor: help;
 }
 
 .material-icons.green {
@@ -82,8 +101,20 @@ h1 {
     color: red;
 }
 
-#fontTest {
+.infoText {
+    font-size: 20px;
+    font-weight: normal;
+    margin-top: -18px;
+    margin-bottom: 26px;
+}
+
+.fontTest {
     /*noinspection CssNoGenericFontName*/
     font-family: "";
-    font-size: 3em;
+    font-size: 30px;
+}
+
+#guideDiv > * {
+    font-size: 16px;
+    font-weight: normal;
 }

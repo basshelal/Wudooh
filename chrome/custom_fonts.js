@@ -16,18 +16,14 @@ async function initializeCustomFonts() {
         displayedFonts.push(it.fontName);
     });
 }
-async function injectTemporaryCustomFont(fontName, url, localName) {
+async function injectTemporaryCustomFont(customFont) {
     let customFontsStyle = get("wudoohCustomFontsStyle");
     if (!customFontsStyle) {
         customFontsStyle = document.createElement("style");
         customFontsStyle.id = "wudoohCustomFontsStyle";
         document.head.append(customFontsStyle);
     }
-    let injectedCss = `@font-face { font-family: '${fontName}'; src: local('${localName}')`;
-    if (url)
-        injectedCss = injectedCss.concat(`, url('${url}')`);
-    injectedCss = injectedCss.concat(`; }\n`);
-    customFontsStyle.innerHTML = injectedCss;
+    customFontsStyle.innerHTML = CustomFont.injectCSS(customFont);
 }
 async function notifyAllTabsCustomFontsChanged(customFonts) {
     const allTabs = await tabs.queryAllTabs();
@@ -44,20 +40,23 @@ function displayFont(customFont) {
     const localName = customFont.localName;
     const fontUrl = customFont.url;
     const rootDiv = document.importNode(templateDiv, true);
+    const fontTitle = rootDiv.children.namedItem("templateFontTitle");
     const inputs = rootDiv.getElementsByTagName("input");
     const fontNameInput = inputs.namedItem("templateFontNameInput");
     const urlInput = inputs.namedItem("templateUrlInput");
     const localNameInput = inputs.namedItem("templateLocalNameInput");
     const deleteButton = rootDiv.children.namedItem("templateDeleteButton");
+    const checkIcon = rootDiv.children.namedItem("templateCheckIcon");
+    const errorIcon = rootDiv.children.namedItem("templateErrorIcon");
+    const infoText = rootDiv.children.namedItem("templateInfoText");
+    const allElements = [rootDiv, fontTitle, fontNameInput, urlInput, localNameInput, deleteButton, checkIcon, errorIcon, infoText];
+    checkIcon.style.display = "none";
+    errorIcon.style.display = "none";
     fontNameInput.value = fontName;
     urlInput.value = fontUrl;
     localNameInput.value = localName;
-    let idSuffix = `-${customFont.fontName}`;
-    rootDiv.id += idSuffix;
-    fontNameInput.id += idSuffix;
-    urlInput.id += idSuffix;
-    localNameInput.id += idSuffix;
-    deleteButton.id += idSuffix;
+    const idSuffix = `-${customFont.fontName}`;
+    allElements.forEach(element => element.id += idSuffix);
     fontsDiv.appendChild(rootDiv);
     deleteButton.onclick = () => {
         if (confirm(`Are you sure you want to delete ${fontNameInput.value}\nThis cannot be undone`)) {
@@ -76,10 +75,10 @@ function displayFont(customFont) {
 }
 function inputOnInput() {
     this.postDelayed(250, () => {
-        let fontName = CSS.escape(fontNameInput.value);
-        let url = CSS.escape(urlInput.value);
-        let localName = CSS.escape(localNameInput.value);
-        injectTemporaryCustomFont(fontName, url, localName);
+        const fontName = fontNameInput.value;
+        const url = urlInput.value;
+        const localName = localNameInput.value;
+        injectTemporaryCustomFont(new CustomFont(fontName, localName, url));
         fontTest.style.fontFamily = fontName;
     });
 }

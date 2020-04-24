@@ -12,13 +12,13 @@
 
 <header>
     <img alt="Wudooh Logo" id="wudoohLogo" src="assets/WudoohLogo.svg" width="350">
-    <h1>Custom Fonts</h1>
+    <h1 id="headerTitle">Custom Fonts</h1>
     <br>
 </header>
 
 <template id="template">
     <div id="rootDiv">
-        <span id="templateFontInfo" style="display: block">This is where information goes</span>
+        <div class="fontTest" id="templateFontTitle" wudooh="true"> تجربة الخط الجديد<br>New Font Test</div>
         <label class="material-text-field">
             <input id="templateFontNameInput" placeholder=" ">
             <span>Font Name (Required)</span>
@@ -33,8 +33,9 @@
         </label>
         <button class="material-button"
                 id="templateDeleteButton"><i class="material-icons" style="bottom: -5px">delete</i></button>
-        <span class="material-icons green" id="templateCheckIcon" style="display: inline">check</span>
-        <span class="material-icons red" id="templateErrorIcon" style="display: inline">error_outline</span>
+        <span class="material-icons green" id="templateCheckIcon" title="Font Success">check</span>
+        <span class="material-icons red" id="templateErrorIcon" title="Font Error">error_outline</span>
+        <div class="infoText" id="templateInfoText">Information goes here!</div>
     </div>
 </template>
 
@@ -43,17 +44,19 @@
 
 <div class="centered" id="main">
 
-    <h2>⚠️ Custom Fonts is in Beta ⚠️</h2>
-    <h2>Some things may not work as intended or be changed in the future</h2>
-
+    <div id="disclaimerDiv">
+        <h2>⚠️ <u>Custom Fonts is in Beta</u> ⚠️</h2>
+        <p id="betaDisclaimer">Some things may not work as intended or be changed in the future</p>
+    </div>
     <div id="fontsDiv"></div>
 
     <br>
+    <hr>
 
-    <h2>Add New Font</h2>
+    <h1>Add New Font</h1>
 
     <div class="centered" id="addNewFontDiv">
-        <h2 class="centered" id="infoLabel">This is where information goes</h2>
+        <div class="fontTest" id="fontTest" wudooh="true"> تجربة الخط الجديد<br>New Font Test</div>
         <label class="material-text-field">
             <input id="fontNameInput" placeholder=" ">
             <span>Font Name (Required)</span>
@@ -67,20 +70,20 @@
             <span>Local Name</span>
         </label>
         <button class="material-button" id="addButton"><i class="material-icons" style="bottom: -5px">add</i></button>
-        <span class="material-icons green" id="checkIcon" style="display: inline">check</span>
-        <span class="material-icons red" id="errorIcon" style="display: inline">error_outline</span>
-        <p id="fontTest" wudooh="true"> تجربة الخط الجديد<br>New Font Test</p>
+        <span class="material-icons green" id="checkIcon" style="display: none">check</span>
+        <span class="material-icons red" id="errorIcon" style="display: none">error_outline</span>
+        <div class="infoText" id="infoLabel">Information goes here!</div>
     </div>
 
     <br>
 
     <div class="centered" id="guideDiv">
-        <h3>Font Name: This is the name of the font that will be displayed in Wudooh</h3>
-        <h3>Font URL: The URL of the font, usually this will end in something like .woff2 or .ttf,
-            leave blank if font is locally installed</h3>
-        <h3>Local Name: The local name of the font exactly as named on your machine,
-            leave blank if using URL</h3>
-        <h3><a href="https://basshelal.github.io/Wudooh/" target="_blank">Help</a></h3>
+        <p>Font Name: This is the name of the font that will be displayed in Wudooh</p>
+        <p>Font URL: The URL of the font, usually this will end in something like .woff2 or .ttf,
+            leave blank if font is locally installed</p>
+        <p>Local Name: The local name of the font exactly as named on your machine,
+            leave blank if using URL</p>
+        <p><a href="https://basshelal.github.io/Wudooh/" target="_blank">Help</a></p>
     </div>
 </div>
 </body>

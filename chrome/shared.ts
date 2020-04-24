@@ -208,14 +208,14 @@ class CustomFont {
             serifWidth !== getWidth(font + ',serif');
     }
 
-    static isFontUrlValid(fontUrl: string): Promise<boolean> {
-        return fetch(fontUrl).then(response => response.ok);
+    static isFontUrlValid(url: string): Promise<boolean> {
+        return fetch(url).then(response => response.ok);
     }
 
-    static isValidCustomFont(customFont: CustomFont): boolean {
-        const fontName: string = customFont.fontName
-        const localName: string = customFont.localName
-        const url: string = customFont.url
+    static isValidCustomFont(font: CustomFont): boolean {
+        const fontName: string = font.fontName
+        const localName: string = font.localName
+        const url: string = font.url
 
         return !!fontName && typeof fontName === "string" &&
             !!localName && typeof localName === "string" &&

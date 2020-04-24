@@ -22,19 +22,14 @@ async function initializeCustomFonts() {
     })
 }
 
-async function injectTemporaryCustomFont(fontName: string, url: string, localName: string) {
+async function injectTemporaryCustomFont(customFont: CustomFont) {
     let customFontsStyle = get("wudoohCustomFontsStyle")
     if (!customFontsStyle) {
         customFontsStyle = document.createElement("style")
         customFontsStyle.id = "wudoohCustomFontsStyle"
         document.head.append(customFontsStyle)
     }
-
-    let injectedCss = `@font-face { font-family: '${fontName}'; src: local('${localName}')`
-    if (url) injectedCss = injectedCss.concat(`, url('${url}')`)
-    injectedCss = injectedCss.concat(`; }\n`)
-
-    customFontsStyle.innerHTML = injectedCss
+    customFontsStyle.innerHTML = CustomFont.injectCSS(customFont)
 }
 
 async function notifyAllTabsCustomFontsChanged(customFonts: Array<CustomFont>) {
@@ -44,32 +39,37 @@ async function notifyAllTabsCustomFontsChanged(customFonts: Array<CustomFont>) {
             reason: reasonInjectCustomFonts,
             customFonts: customFonts
         }
-        tabs.sendMessage(tab.id, message);
+        tabs.sendMessage(tab.id, message)
     })
 }
 
 function displayFont(customFont: CustomFont) {
-    const fontName: string = customFont.fontName;
-    const localName: string = customFont.localName;
-    const fontUrl: string = customFont.url;
+    const fontName: string = customFont.fontName
+    const localName: string = customFont.localName
+    const fontUrl: string = customFont.url
 
-    const rootDiv = document.importNode(templateDiv, true);
-    const inputs = rootDiv.getElementsByTagName("input");
-    const fontNameInput = inputs.namedItem("templateFontNameInput") as HTMLInputElement;
-    const urlInput = inputs.namedItem("templateUrlInput") as HTMLInputElement;
-    const localNameInput = inputs.namedItem("templateLocalNameInput") as HTMLInputElement;
-    const deleteButton = rootDiv.children.namedItem("templateDeleteButton") as HTMLButtonElement;
+    const rootDiv = document.importNode(templateDiv, true)
+    const fontTitle = rootDiv.children.namedItem("templateFontTitle") as HTMLDivElement
+    const inputs = rootDiv.getElementsByTagName("input")
+    const fontNameInput = inputs.namedItem("templateFontNameInput") as HTMLInputElement
+    const urlInput = inputs.namedItem("templateUrlInput") as HTMLInputElement
+    const localNameInput = inputs.namedItem("templateLocalNameInput") as HTMLInputElement
+    const deleteButton = rootDiv.children.namedItem("templateDeleteButton") as HTMLButtonElement
+    const checkIcon = rootDiv.children.namedItem("templateCheckIcon") as HTMLSpanElement
+    const errorIcon = rootDiv.children.namedItem("templateErrorIcon") as HTMLSpanElement
+    const infoText = rootDiv.children.namedItem("templateInfoText") as HTMLDivElement
+    const allElements: Array<HTMLElement> =
+        [rootDiv, fontTitle, fontNameInput, urlInput, localNameInput, deleteButton, checkIcon, errorIcon, infoText]
 
-    fontNameInput.value = fontName;
-    urlInput.value = fontUrl;
-    localNameInput.value = localName;
+    checkIcon.style.display = "none"
+    errorIcon.style.display = "none"
 
-    let idSuffix = `-${customFont.fontName}`;
-    rootDiv.id += idSuffix;
-    fontNameInput.id += idSuffix;
-    urlInput.id += idSuffix;
-    localNameInput.id += idSuffix;
-    deleteButton.id += idSuffix;
+    fontNameInput.value = fontName
+    urlInput.value = fontUrl
+    localNameInput.value = localName
+
+    const idSuffix = `-${customFont.fontName}`
+    allElements.forEach(element => element.id += idSuffix)
 
     fontsDiv.appendChild(rootDiv);
 
@@ -91,10 +91,10 @@ function displayFont(customFont: CustomFont) {
 
 function inputOnInput() {
     this.postDelayed(250, () => {
-        let fontName = CSS.escape(fontNameInput.value)
-        let url = CSS.escape(urlInput.value)
-        let localName = CSS.escape(localNameInput.value)
-        injectTemporaryCustomFont(fontName, url, localName)
+        const fontName = fontNameInput.value
+        const url = urlInput.value
+        const localName = localNameInput.value
+        injectTemporaryCustomFont(new CustomFont(fontName, localName, url))
         fontTest.style.fontFamily = fontName
     });
 }

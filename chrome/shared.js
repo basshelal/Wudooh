@@ -133,13 +133,13 @@ class CustomFont {
             sansWidth !== getWidth(font + ',sans-serif') ||
             serifWidth !== getWidth(font + ',serif');
     }
-    static isFontUrlValid(fontUrl) {
-        return fetch(fontUrl).then(response => response.ok);
+    static isFontUrlValid(url) {
+        return fetch(url).then(response => response.ok);
     }
-    static isValidCustomFont(customFont) {
-        const fontName = customFont.fontName;
-        const localName = customFont.localName;
-        const url = customFont.url;
+    static isValidCustomFont(font) {
+        const fontName = font.fontName;
+        const localName = font.localName;
+        const url = font.url;
         return !!fontName && typeof fontName === "string" &&
             !!localName && typeof localName === "string" &&
             !!url && typeof url === "string";
