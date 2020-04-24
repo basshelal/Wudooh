@@ -1,4 +1,7 @@
 # Wudooh وضوح
+
+[![Wudooh Banner](https://raw.githubusercontent.com/basshelal/Wudooh/master/pics/GitHubPromo.png)](https://basshelal.github.io/Wudooh/)
+
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/nigfaloeeeakmmgndbdcijjegolpjfhn.svg)](https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn)
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/users/nigfaloeeeakmmgndbdcijjegolpjfhn.svg)](https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn)
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/stars/nigfaloeeeakmmgndbdcijjegolpjfhn.svg)](https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn/reviews)
@@ -11,27 +14,21 @@
 [![Chrome](https://img.shields.io/badge/-Download%20on%20Chrome-yellow?style=flat&logo=Google%20Chrome&logoColor=blue)](https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn)
 [![Firefox](https://img.shields.io/badge/-Download%20on%20Firefox-blue?style=flat&logo=Mozilla%20Firefox&logoColor=orange)](https://addons.mozilla.org/en-US/firefox/addon/wudooh/)
 
-[![Wudooh Banner](https://github.com/basshelal/Wudooh/blob/master/pics/GitHubPromo.png)](https://basshelal.github.io/Wudooh/)
-
-[![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/P5P5XSTN)
-
-* [Current Features](#current-features)
-    * [On Off Switch](#on-off-switch)
-    * [Change Font](#change-font)
-    * [Change Font Size](#change-font-size)
-    * [Change Line Height](#change-line-height)
-    * [Whitelist](#whitelist)
-    * [Live Updates](#live-updates)
-    * [Safe Editables](#safe-editables)
-* [Future Features](#future-features)
-* [Known Issues](#known-issues)
-    * [Quran.com](#qurancom)
-    * [YouTube](#youtube)
-* [Contributing](#contributing)
-* [All Fonts](#all-fonts)
-* [Thanks](#thanks)
-
-![User Testimonial](https://github.com/basshelal/Wudooh/blob/master/pics/Testimonial.png)
+- [Wudooh وضوح](#wudooh-%d9%88%d8%b6%d9%88%d8%ad)
+  - [Current Features](#current-features)
+    - [On Off Switch](#on-off-switch)
+    - [Change Font](#change-font)
+    - [Change Font Size](#change-font-size)
+    - [Change Line Height](#change-line-height)
+    - [Whitelist](#whitelist)
+    - [Live Updates](#live-updates)
+    - [Safe Editables](#safe-editables)
+  - [Known Issues](#known-issues)
+    - [Quran.com](#qurancom)
+    - [YouTube](#youtube)
+  - [Contributing](#contributing)
+  - [All Fonts](#all-fonts)
+  - [Thanks](#thanks)
 
 Wudooh [(clarity in Arabic and Persian)](https://en.wiktionary.org/wiki/%D9%88%D8%B6%D9%88%D8%AD)
  is a simple browser extension that makes reading Arabic script text clearer and more pleasant.
@@ -43,11 +40,11 @@ This project is based on and is the successor to
 
 Without Wudooh:
 
-![](https://github.com/basshelal/Wudooh/blob/master/pics/Without.PNG)
+![](https://raw.githubusercontent.com/basshelal/Wudooh/master/pics/Without.PNG)
 
 With Wudooh:
 
-![](https://github.com/basshelal/Wudooh/blob/master/pics/With.PNG)
+![](https://raw.githubusercontent.com/basshelal/Wudooh/master/pics/With.PNG)
 
 ## Current Features
 
@@ -63,7 +60,7 @@ for Persian, Urdu and any other
 
 Wudooh popup:
 
-![](https://github.com/basshelal/Wudooh/blob/master/pics/Wudooh.PNG)
+![](https://raw.githubusercontent.com/basshelal/Wudooh/master/pics/Wudooh.PNG)
 
 ### On Off Switch
 
@@ -81,11 +78,11 @@ A list of all currently supported fonts can be found [here](#all-fonts).
 
 Without Wudooh:
 
-![](https://github.com/basshelal/Wudooh/blob/master/pics/ImranKhanBefore.PNG)
+![](https://raw.githubusercontent.com/basshelal/Wudooh/master/pics/ImranKhanBefore.PNG)
 
 With Wudooh:
 
-![](https://github.com/basshelal/Wudooh/blob/master/pics/ImranKhanAfter.PNG)
+![](https://raw.githubusercontent.com/basshelal/Wudooh/master/pics/ImranKhanAfter.PNG)
 
 ### Change Font Size
 
@@ -107,7 +104,7 @@ Quran.com or websites with already clear Arabic text.
 
 Quran.com whitelisted:
 
-![](https://github.com/basshelal/Wudooh/blob/master/pics/Whitelisted.PNG)
+![](https://raw.githubusercontent.com/basshelal/Wudooh/master/pics/Whitelisted.PNG)
 
 ### Live Updates
 
@@ -121,7 +118,7 @@ however, as some empty spacing may be different.
 
 YouTube comments clarified by Wudooh, using Noto Sans Arabic font:
 
-![](https://github.com/basshelal/Wudooh/blob/master/pics/YoutubeComments.gif)
+![](https://raw.githubusercontent.com/basshelal/Wudooh/master/pics/YoutubeComments.gif)
 
 ### Safe Editables
 
@@ -130,12 +127,7 @@ This was a major problem in Huruf that has been solved in Wudooh.
 
 Wudooh safely ignores editable fields:
 
-![](https://github.com/basshelal/Wudooh/blob/master/pics/Editables.PNG)
-
-## Future Features
-
-* Allow for custom settings for each site
-* Export and import settings (including whitelist) to be used across browsers
+![](https://raw.githubusercontent.com/basshelal/Wudooh/master/pics/Editables.PNG)
 
 ## Known Issues
 
@@ -146,11 +138,11 @@ Wudooh safely ignores editable fields:
  
 Quran.com with Wudooh:
 
-![](https://github.com/basshelal/Wudooh/blob/master/pics/Quran.PNG)
+![](https://raw.githubusercontent.com/basshelal/Wudooh/master/pics/Quran.PNG)
 
 Quran.com whitelisted:
 
-![](https://github.com/basshelal/Wudooh/blob/master/pics/Whitelisted.PNG)
+![](https://raw.githubusercontent.com/basshelal/Wudooh/master/pics/Whitelisted.PNG)
  
 ### YouTube
 
@@ -161,16 +153,16 @@ A page refresh will always fix this issue.
 
 Initial page in Arabic:
 
-![](https://github.com/basshelal/Wudooh/blob/master/pics/Youtube1.PNG)
+![](https://raw.githubusercontent.com/basshelal/Wudooh/master/pics/Youtube1.PNG)
 
 After visiting another playlist that contains no Arabic:
 
-![](https://github.com/basshelal/Wudooh/blob/master/pics/Youtube2.PNG)
+![](https://raw.githubusercontent.com/basshelal/Wudooh/master/pics/Youtube2.PNG)
 
 After playing Arabic videos after another, the text circled in red is the correct title of the video,
 note it is not clarified, the clarified text on the right is from the previous video:
 
-![](https://github.com/basshelal/Wudooh/blob/master/pics/Youtube3.PNG)
+![](https://raw.githubusercontent.com/basshelal/Wudooh/master/pics/Youtube3.PNG)
 
 All of these problems can be fixed by a page refresh.
 
