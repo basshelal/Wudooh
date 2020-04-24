@@ -16,22 +16,18 @@ const exportButton = get("exportButton");
 const exportAnchor = get("exportAnchor");
 const importButton = get("importButton");
 const importInput = get("importInput");
-async function addCustomFonts(customFonts) {
-    fontsStyle.textContent = "";
-    customFonts.forEach((customFont) => {
+async function initializeUI() {
+    const storage = await sync.get(keys);
+    const currentTabs = await tabs.queryCurrentTab();
+    const injectedFonts = await injectCustomFonts(storage.customFonts);
+    injectedFonts.forEach((customFont) => {
         const fontName = customFont.fontName;
-        fontsStyle.textContent = fontsStyle.textContent.concat(CustomFont.injectCSS(customFont));
         const option = document.createElement("option");
         option.style.fontFamily = fontName;
         option.value = fontName;
         option.textContent = fontName;
         fontSelect.add(option);
     });
-}
-async function initializeUI() {
-    const storage = await sync.get(keys);
-    const currentTabs = await tabs.queryCurrentTab();
-    addCustomFonts(storage.customFonts);
     onOffSwitch.checked = storage.onOff;
     if (storage.onOff)
         mainDiv.style.maxHeight = "100%";
@@ -303,11 +299,11 @@ function popupAddListeners() {
     fontSelect.oninput = () => changeFont();
     sizeSlider.oninput = () => {
         sizeValue.textContent = sizeSlider.value + '%';
-        sizeSlider.postDelayed(250, updateTextSize);
+        sizeSlider.postDelayed(defaultDelay, updateTextSize);
     };
     heightSlider.oninput = () => {
         heightValue.textContent = heightSlider.value + '%';
-        heightSlider.postDelayed(250, updateLineHeight);
+        heightSlider.postDelayed(defaultDelay, updateLineHeight);
     };
     whiteListSwitch.onclick = () => toggleWhitelist();
     overrideSiteSwitch.onclick = () => toggleOverrideSiteSettings();

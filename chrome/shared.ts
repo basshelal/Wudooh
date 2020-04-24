@@ -54,6 +54,7 @@ const defaultTextSize: number = 125;
 const defaultLineHeight: number = 145;
 const defaultColor: string = "#880E4F";
 const homePage: string = "http://basshelal.github.io/Wudooh";
+const defaultDelay: number = 250;
 
 // Message Reasons
 const reasonUpdateAllText = "updateAllText";
@@ -208,8 +209,18 @@ class CustomFont {
             serifWidth !== getWidth(font + ',serif');
     }
 
-    static isFontUrlValid(url: string): Promise<boolean> {
-        return fetch(url).then(response => response.ok);
+    static async isFontUrlValid(url: string): Promise<boolean> {
+        return fetch(url).then(response => response.ok).catch(() => false)
+    }
+
+    static async isFontValid(customFont: CustomFont): Promise<boolean> {
+        let isFontInstalled: boolean = true
+        let isFontUrlValid: boolean = true
+        if (customFont.localName) isFontInstalled = CustomFont.isFontInstalled(customFont.localName)
+        if (customFont.url) isFontUrlValid = (await CustomFont.isFontUrlValid(customFont.url))
+        // TODO this doesn't actually check if the font is readable, if the font is broken it will silently fail
+        //  example of broken font: https://arbfonts.com/font_files/reqa3/symbol/MCS%20Rikaa%20E_U%20normal..ttf
+        return isFontInstalled && isFontUrlValid
     }
 
     static isValidCustomFont(font: CustomFont): boolean {
@@ -283,6 +294,22 @@ var tabs = {
         chrome.tabs.sendMessage(tabId, message);
     }
 };
+
+async function injectCustomFonts(customFonts: Array<CustomFont>): Promise<Array<CustomFont>> {
+    let customFontsStyle = get("wudoohCustomFontsStyle")
+    if (customFontsStyle) {
+        customFontsStyle.textContent = ""
+        document.head.removeChild(customFontsStyle)
+        customFontsStyle = null
+    }
+    customFontsStyle = document.createElement("style")
+    customFontsStyle.id = "wudoohCustomFontsStyle"
+    customFonts.forEach((customFont: CustomFont) => {
+        customFontsStyle.textContent = customFontsStyle.textContent.concat(CustomFont.injectCSS(customFont))
+    })
+    document.head.append(customFontsStyle)
+    return customFonts
+}
 
 /**
  * Shorthand for {@linkcode document.getElementById}, automatically casts to T, a HTMLElement

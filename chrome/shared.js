@@ -20,6 +20,7 @@ const defaultTextSize = 125;
 const defaultLineHeight = 145;
 const defaultColor = "#880E4F";
 const homePage = "http://basshelal.github.io/Wudooh";
+const defaultDelay = 250;
 const reasonUpdateAllText = "updateAllText";
 const reasonInjectCustomFonts = "injectCustomFonts";
 const reasonToggleOff = "toggleOff";
@@ -133,8 +134,17 @@ class CustomFont {
             sansWidth !== getWidth(font + ',sans-serif') ||
             serifWidth !== getWidth(font + ',serif');
     }
-    static isFontUrlValid(url) {
-        return fetch(url).then(response => response.ok);
+    static async isFontUrlValid(url) {
+        return fetch(url).then(response => response.ok).catch(() => false);
+    }
+    static async isFontValid(customFont) {
+        let isFontInstalled = true;
+        let isFontUrlValid = true;
+        if (customFont.localName)
+            isFontInstalled = CustomFont.isFontInstalled(customFont.localName);
+        if (customFont.url)
+            isFontUrlValid = (await CustomFont.isFontUrlValid(customFont.url));
+        return isFontInstalled && isFontUrlValid;
     }
     static isValidCustomFont(font) {
         const fontName = font.fontName;
@@ -177,6 +187,21 @@ var tabs = {
         chrome.tabs.sendMessage(tabId, message);
     }
 };
+async function injectCustomFonts(customFonts) {
+    let customFontsStyle = get("wudoohCustomFontsStyle");
+    if (customFontsStyle) {
+        customFontsStyle.textContent = "";
+        document.head.removeChild(customFontsStyle);
+        customFontsStyle = null;
+    }
+    customFontsStyle = document.createElement("style");
+    customFontsStyle.id = "wudoohCustomFontsStyle";
+    customFonts.forEach((customFont) => {
+        customFontsStyle.textContent = customFontsStyle.textContent.concat(CustomFont.injectCSS(customFont));
+    });
+    document.head.append(customFontsStyle);
+    return customFonts;
+}
 function get(elementId) {
     return document.getElementById(elementId);
 }

@@ -29,27 +29,19 @@ const exportAnchor = get<HTMLAnchorElement>("exportAnchor")
 const importButton = get<HTMLButtonElement>("importButton")
 const importInput = get<HTMLInputElement>("importInput")
 
-async function addCustomFonts(customFonts: Array<CustomFont>): Promise<void> {
-    fontsStyle.textContent = ""
-    customFonts.forEach((customFont: CustomFont) => {
-        const fontName: string = customFont.fontName
-
-        fontsStyle.textContent = fontsStyle.textContent.concat(CustomFont.injectCSS(customFont))
-
-        const option: HTMLOptionElement = document.createElement("option")
-        option.style.fontFamily = fontName
-        option.value = fontName
-        option.textContent = fontName
-
-        fontSelect.add(option)
-    })
-}
-
 async function initializeUI() {
     const storage: WudoohStorage = await sync.get(keys)
     const currentTabs: Array<Tab> = await tabs.queryCurrentTab()
 
-    addCustomFonts(storage.customFonts)
+    const injectedFonts: Array<CustomFont> = await injectCustomFonts(storage.customFonts)
+    injectedFonts.forEach((customFont: CustomFont) => {
+        const fontName: string = customFont.fontName
+        const option: HTMLOptionElement = document.createElement("option")
+        option.style.fontFamily = fontName
+        option.value = fontName
+        option.textContent = fontName
+        fontSelect.add(option)
+    })
 
     // If the extension is off then hide the main div
     onOffSwitch.checked = storage.onOff
@@ -343,11 +335,11 @@ function popupAddListeners() {
 
     sizeSlider.oninput = () => {
         sizeValue.textContent = sizeSlider.value + '%'
-        sizeSlider.postDelayed(250, updateTextSize)
+        sizeSlider.postDelayed(defaultDelay, updateTextSize)
     }
     heightSlider.oninput = () => {
         heightValue.textContent = heightSlider.value + '%'
-        heightSlider.postDelayed(250, updateLineHeight)
+        heightSlider.postDelayed(defaultDelay, updateLineHeight)
     }
 
     whiteListSwitch.onclick = () => toggleWhitelist()

@@ -225,22 +225,6 @@ async function notifyDocument() {
     }
 }
 
-async function injectCustomFonts(customFonts: Array<CustomFont>) {
-    let customFontsStyle = get("wudoohCustomFontsStyle")
-    if (customFontsStyle) {
-        customFontsStyle.innerHTML = ""
-        document.head.removeChild(customFontsStyle)
-        customFontsStyle = null
-    }
-    customFontsStyle = document.createElement("style")
-    customFontsStyle.id = "wudoohCustomFontsStyle"
-    customFonts.forEach((customFont: CustomFont) => {
-        console.log(customFont)
-        customFontsStyle.innerHTML = customFontsStyle.innerHTML.concat(CustomFont.injectCSS(customFont))
-    })
-    document.head.append(customFontsStyle)
-}
-
 async function toggleOff() {
     observer.disconnect()
     observer = null

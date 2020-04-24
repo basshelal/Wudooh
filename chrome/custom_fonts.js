@@ -8,24 +8,26 @@ const infoLabel = get("infoLabel");
 const fontTest = get("fontTest");
 const templateDiv = template.content.querySelector("div");
 let displayedFonts = [];
-async function initializeCustomFonts() {
+async function initializeCustomFontsPage() {
     const storage = await sync.get([keyCustomFonts]);
     displayedFonts = [];
-    storage.customFonts.forEach((it) => {
+    const customFonts = await injectCustomFonts(storage.customFonts);
+    customFonts.forEach((it) => {
         displayFont(it);
         displayedFonts.push(it.fontName);
     });
 }
 async function injectTemporaryCustomFont(customFont) {
-    let customFontsStyle = get("wudoohCustomFontsStyle");
-    if (!customFontsStyle) {
-        customFontsStyle = document.createElement("style");
-        customFontsStyle.id = "wudoohCustomFontsStyle";
-        document.head.append(customFontsStyle);
+    let tempCustomFontsStyle = get("wudoohTempCustomFontsStyle");
+    if (!tempCustomFontsStyle) {
+        tempCustomFontsStyle = document.createElement("style");
+        tempCustomFontsStyle.id = "wudoohTempCustomFontsStyle";
+        document.head.append(tempCustomFontsStyle);
     }
-    customFontsStyle.innerHTML = CustomFont.injectCSS(customFont);
+    tempCustomFontsStyle.innerHTML = CustomFont.injectCSS(customFont);
 }
 async function notifyAllTabsCustomFontsChanged(customFonts) {
+    injectCustomFonts(customFonts);
     const allTabs = await tabs.queryAllTabs();
     allTabs.forEach((tab) => {
         let message = {
@@ -50,6 +52,13 @@ function displayFont(customFont) {
     const errorIcon = rootDiv.children.namedItem("templateErrorIcon");
     const infoText = rootDiv.children.namedItem("templateInfoText");
     const allElements = [rootDiv, fontTitle, fontNameInput, urlInput, localNameInput, deleteButton, checkIcon, errorIcon, infoText];
+    saveFontName(fontName);
+    function saveFontName(name) {
+        rootDiv.setAttribute("fontName", name);
+    }
+    function savedFontName() {
+        return rootDiv.getAttribute("fontName");
+    }
     checkIcon.style.display = "none";
     errorIcon.style.display = "none";
     fontNameInput.value = fontName;
@@ -57,29 +66,48 @@ function displayFont(customFont) {
     localNameInput.value = localName;
     const idSuffix = `-${customFont.fontName}`;
     allElements.forEach(element => element.id += idSuffix);
-    fontsDiv.appendChild(rootDiv);
-    deleteButton.onclick = () => {
-        if (confirm(`Are you sure you want to delete ${fontNameInput.value}\nThis cannot be undone`)) {
-            let font = fontNameInput.value;
-            let customFonts;
-            sync.get([keyCustomFonts]).then((storage) => {
-                customFonts = storage.customFonts.filter((it) => it.fontName !== font);
-                return sync.set({ customFonts: customFonts });
-            }).then(() => {
-                notifyAllTabsCustomFontsChanged(customFonts);
-                displayedFonts = customFonts.map(it => it.fontName);
-                rootDiv.parentNode.removeChild(rootDiv);
-            });
+    fontTitle.style.fontFamily = fontName;
+    async function editCustomFont(propertyToChange, newValue) {
+        const storage = await sync.get([keyCustomFonts]);
+        const customFonts = storage.customFonts;
+        const syncFont = customFonts.find(it => it.fontName === savedFontName());
+        syncFont[propertyToChange] = newValue;
+        customFonts[customFonts.indexOf(syncFont)] = syncFont;
+        await sync.set({ customFonts: customFonts });
+        saveFontName(syncFont.fontName);
+        notifyAllTabsCustomFontsChanged(customFonts);
+        fontTitle.style.fontFamily = syncFont.fontName;
+    }
+    fontNameInput.oninput = () => fontNameInput.postDelayed(defaultDelay, () => {
+        editCustomFont("fontName", fontNameInput.value);
+    });
+    urlInput.oninput = () => urlInput.postDelayed(defaultDelay, () => {
+        editCustomFont("url", urlInput.value);
+    });
+    localNameInput.oninput = () => localNameInput.postDelayed(defaultDelay, () => {
+        editCustomFont("localName", localNameInput.value);
+    });
+    deleteButton.onclick = async () => {
+        if (confirm(`Are you sure you want to delete font ${fontNameInput.value}\nThis cannot be undone`)) {
+            const font = fontNameInput.value;
+            const storage = await sync.get([keyCustomFonts]);
+            const customFonts = storage.customFonts.filter((it) => it.fontName !== font);
+            await sync.set({ customFonts: customFonts });
+            notifyAllTabsCustomFontsChanged(customFonts);
+            displayedFonts = customFonts.map(it => it.fontName);
+            rootDiv.parentNode.removeChild(rootDiv);
         }
     };
+    fontsDiv.appendChild(rootDiv);
 }
 function inputOnInput() {
-    this.postDelayed(250, () => {
+    this.postDelayed(defaultDelay, () => {
         const fontName = fontNameInput.value;
         const url = urlInput.value;
         const localName = localNameInput.value;
         injectTemporaryCustomFont(new CustomFont(fontName, localName, url));
         fontTest.style.fontFamily = fontName;
+        console.error(runtime.lastError.message);
     });
 }
 async function addButtonOnClick() {
@@ -126,7 +154,7 @@ function customFontsAddListeners() {
         if (event.code === "Enter")
             addButton.click();
     }
-    document.addEventListener("DOMContentLoaded", initializeCustomFonts);
+    document.addEventListener("DOMContentLoaded", initializeCustomFontsPage);
     fontNameInput.onkeypress = pressedEnter;
     localNameInput.onkeypress = pressedEnter;
     urlInput.onkeypress = pressedEnter;

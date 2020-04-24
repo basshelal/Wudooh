@@ -141,21 +141,6 @@ async function notifyDocument() {
         document.head.appendChild(meta);
     }
 }
-async function injectCustomFonts(customFonts) {
-    let customFontsStyle = get("wudoohCustomFontsStyle");
-    if (customFontsStyle) {
-        customFontsStyle.innerHTML = "";
-        document.head.removeChild(customFontsStyle);
-        customFontsStyle = null;
-    }
-    customFontsStyle = document.createElement("style");
-    customFontsStyle.id = "wudoohCustomFontsStyle";
-    customFonts.forEach((customFont) => {
-        console.log(customFont);
-        customFontsStyle.innerHTML = customFontsStyle.innerHTML.concat(CustomFont.injectCSS(customFont));
-    });
-    document.head.append(customFontsStyle);
-}
 async function toggleOff() {
     observer.disconnect();
     observer = null;
