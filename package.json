@@ -4,12 +4,13 @@
   "description": "",
   "main": "",
   "scripts": {
-    "minifyChromeMain": "uglifyjs -c -m --output chrome/main.min.js -- chrome/main.js",
-    "minifyChromePopup": "uglifyjs -c -m --output chrome/popup.min.js -- chrome/popup.js",
-    "minifyChromeShared": "uglifyjs -c -m --output chrome/shared.min.js -- chrome/shared.js",
-    "minifyChromeBackground": "uglifyjs -c -m --output chrome/background.min.js -- chrome/background.js",
-    "minifyChromeCustomFonts": "uglifyjs -c -m --output chrome/custom_fonts.min.js -- chrome/custom_fonts.js",
-    "build": "run-p minifyChromeMain minifyChromePopup minifyChromeShared minifyChromeBackground minifyChromeCustomFonts",
+    "minifyMain": "uglifyjs -c -m --output src/main.min.js -- src/main.js",
+    "minifyPopup": "uglifyjs -c -m --output src/popup.min.js -- src/popup.js",
+    "minifyShared": "uglifyjs -c -m --output src/shared.min.js -- src/shared.js",
+    "minifyBackground": "uglifyjs -c -m --output src/background.min.js -- src/background.js",
+    "minifyCustomFonts": "uglifyjs -c -m --output src/custom_fonts.min.js -- src/custom_fonts.js",
+    "build": "run-p minifyMain minifyPopup minifyShared minifyBackground minifyCustomFonts",
+    "zip": "",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

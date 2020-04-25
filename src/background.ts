@@ -6,8 +6,6 @@
 
 ///<reference path="./shared.ts"/>
 
-import InstalledDetails = chrome.runtime.InstalledDetails;
-
 function launchSite(path: string = "") {
     tabs.create(homePage + path);
 }
@@ -16,7 +14,7 @@ function launchSite(path: string = "") {
  * Runs on install or update to check if the storage has initialized all its values correctly.
  * If some key has not been initialized then it will create it and set it to its default value
  */
-runtime.onInstalled.addListener((details: InstalledDetails) => {
+runtime.onInstalled.addListener(details => {
     let storage: WudoohStorage;
     sync.get(keys).then((storage: WudoohStorage) => {
         // User has just installed extension

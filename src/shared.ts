@@ -99,10 +99,6 @@ const allWudoohFonts: Array<string> = [
     "Original"
 ];
 
-// Differences between browsers:
-// Chrome & Edge are identical
-// Firefox is nearly identical but uses browser namespace instead of chrome and uses Promises instead of callbacks
-// Opera does not support chrome.storage.sync
 type Browser = "chrome" | "firefox" | "edge" | "opera"
 
 const browserName: Browser = ((): Browser => {
@@ -273,10 +269,8 @@ interface WudoohStorage {
 }
 
 const runtime: any = (() => {
-    if (browserName === "chrome" || browserName === "edge" || browserName === "opera")
-        return chrome.runtime
-    else if (browserName === "firefox")
-        return browser.runtime
+    if (isChromium) return chrome.runtime
+    else return browser.runtime
 })()
 
 /**
@@ -285,22 +279,14 @@ const runtime: any = (() => {
 const sync = {
     async get(keys: Array<string> = null): Promise<WudoohStorage> {
         return new Promise<WudoohStorage>(resolve => {
-            if (browserName === "chrome" || browserName === "edge")
-                chrome.storage.sync.get(keys, storage => resolve(storage as WudoohStorage))
-            else if (browserName === "opera")
-                chrome.storage.local.get(keys, storage => resolve(storage as WudoohStorage))
-            else if (browserName === "firefox")
-                browser.storage.sync.get(keys).then(storage => resolve(storage as WudoohStorage))
+            if (isChromium) chrome.storage.sync.get(keys, storage => resolve(storage as WudoohStorage))
+            else browser.storage.sync.get(keys).then(storage => resolve(storage as WudoohStorage))
         });
     },
     async set(wudoohStorage: WudoohStorage): Promise<void> {
         return new Promise<void>(resolve => {
-            if (browserName === "chrome" || browserName === "edge")
-                chrome.storage.sync.set(wudoohStorage, () => resolve())
-            else if (browserName === "opera")
-                chrome.storage.local.set(wudoohStorage, () => resolve())
-            else if (browserName === "firefox")
-                browser.storage.sync.set(wudoohStorage).then(() => resolve())
+            if (isChromium) chrome.storage.sync.set(wudoohStorage, () => resolve())
+            else browser.storage.sync.set(wudoohStorage).then(() => resolve())
         });
     }
 };
@@ -311,35 +297,25 @@ const sync = {
 const tabs = {
     async create(url: string): Promise<Tab> {
         return new Promise<Tab>(resolve => {
-            if (browserName === "chrome" || browserName === "edge" || browserName === "opera")
-                chrome.tabs.create({url: url}, tab => resolve(tab))
-            else if (browserName === "firefox")
-                browser.tabs.create({url: url}).then(tab => resolve(tab))
+            if (isChromium) chrome.tabs.create({url: url}, tab => resolve(tab))
+            else browser.tabs.create({url: url}).then(tab => resolve(tab))
         })
     },
     async queryAllTabs(): Promise<Array<Tab>> {
         return new Promise<Array<Tab>>(resolve => {
-            if (browserName === "chrome" || browserName === "edge" || browserName === "opera")
-                chrome.tabs.query({}, (tabs: Array<Tab>) => resolve(tabs))
-            else if (browserName === "firefox")
-                browser.tabs.query({}).then(tabs => resolve(tabs))
-
+            if (isChromium) chrome.tabs.query({}, tabs => resolve(tabs))
+            else browser.tabs.query({}).then(tabs => resolve(tabs))
         });
     },
     async queryCurrentTab(): Promise<Array<Tab>> {
         return new Promise<Array<Tab>>(resolve => {
-            if (browserName === "chrome" || browserName === "edge" || browserName === "opera")
-                chrome.tabs.query({active: true, currentWindow: true},
-                    (tabs: Array<Tab>) => resolve(tabs))
-            else if (browserName === "firefox")
-                browser.tabs.query({active: true, currentWindow: true}).then(tabs => resolve(tabs))
+            if (isChromium) chrome.tabs.query({active: true, currentWindow: true}, tabs => resolve(tabs))
+            else browser.tabs.query({active: true, currentWindow: true}).then(tabs => resolve(tabs))
         })
     },
     sendMessage(tabId: number, message: any) {
-        if (browserName === "chrome" || browserName === "edge" || browserName === "opera")
-            chrome.tabs.sendMessage(tabId, message)
-        else if (browserName === "firefox")
-            browser.tabs.sendMessage(tabId, message)
+        if (isChromium) chrome.tabs.sendMessage(tabId, message)
+        else browser.tabs.sendMessage(tabId, message)
     }
 };
 
