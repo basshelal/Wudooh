@@ -8,13 +8,7 @@
  */
 
 // Import Types
-// noinspection ES6UnusedImports
-import Tab = chrome.tabs.Tab;
-// noinspection ES6UnusedImports
-import InstalledDetails = chrome.runtime.InstalledDetails;
-
-// Declare Browser APIs
-const runtime = chrome.runtime;
+type Tab = chrome.tabs.Tab | browser.tabs.Tab
 
 /** The font size percent, between 100 and 300 */
 const keyTextSize: string = "textSize";
@@ -104,6 +98,25 @@ const allWudoohFonts: Array<string> = [
     "Calibri",
     "Original"
 ];
+
+// Differences between browsers:
+// Chrome & Edge are identical
+// Firefox is nearly identical but uses browser namespace instead of chrome and uses Promises instead of callbacks
+// Opera does not support chrome.storage.sync
+type Browser = "chrome" | "firefox" | "edge" | "opera"
+
+const browserName: Browser = ((): Browser => {
+    const agent = navigator.userAgent.toLowerCase()
+    if (agent.includes("firefox")) return "firefox"
+    if (agent.includes("edg")) return "edge"
+    if (agent.includes("opr") || agent.includes("opera")) return "opera"
+    if (agent.includes("chrome")) return "chrome"
+    return null
+})()
+
+const isChromium: boolean = ((): boolean => {
+    return browserName === "chrome" || browserName === "edge" || browserName === "opera"
+})()
 
 /**
  * Represents a site that uses different settings from the global settings
@@ -213,13 +226,14 @@ class CustomFont {
         return fetch(url).then(response => response.ok).catch(() => false)
     }
 
+    // TODO this doesn't actually check if the font is readable, if the font is broken it will silently fail
+    //  example of broken font: https://arbfonts.com/font_files/reqa3/symbol/MCS%20Rikaa%20E_U%20normal..ttf
+    //  I can't figure out a way to fix this at all!
     static async isFontValid(customFont: CustomFont): Promise<boolean> {
         let isFontInstalled: boolean = true
         let isFontUrlValid: boolean = true
         if (customFont.localName) isFontInstalled = CustomFont.isFontInstalled(customFont.localName)
         if (customFont.url) isFontUrlValid = (await CustomFont.isFontUrlValid(customFont.url))
-        // TODO this doesn't actually check if the font is readable, if the font is broken it will silently fail
-        //  example of broken font: https://arbfonts.com/font_files/reqa3/symbol/MCS%20Rikaa%20E_U%20normal..ttf
         return isFontInstalled && isFontUrlValid
     }
 
@@ -258,40 +272,74 @@ interface WudoohStorage {
     readonly customFonts?: Array<CustomFont>;
 }
 
+const runtime: any = (() => {
+    if (browserName === "chrome" || browserName === "edge" || browserName === "opera")
+        return chrome.runtime
+    else if (browserName === "firefox")
+        return browser.runtime
+})()
+
 /**
  * An abstraction and simplification of the storage.sync API to make it use Promises
  */
-var sync = {
+const sync = {
     async get(keys: Array<string> = null): Promise<WudoohStorage> {
         return new Promise<WudoohStorage>(resolve => {
-            chrome.storage.sync.get(keys, storage => resolve(storage as WudoohStorage));
+            if (browserName === "chrome" || browserName === "edge")
+                chrome.storage.sync.get(keys, storage => resolve(storage as WudoohStorage))
+            else if (browserName === "opera")
+                chrome.storage.local.get(keys, storage => resolve(storage as WudoohStorage))
+            else if (browserName === "firefox")
+                browser.storage.sync.get(keys).then(storage => resolve(storage as WudoohStorage))
         });
     },
     async set(wudoohStorage: WudoohStorage): Promise<void> {
-        return new Promise<void>(resolve => chrome.storage.sync.set(wudoohStorage, () => resolve()));
+        return new Promise<void>(resolve => {
+            if (browserName === "chrome" || browserName === "edge")
+                chrome.storage.sync.set(wudoohStorage, () => resolve())
+            else if (browserName === "opera")
+                chrome.storage.local.set(wudoohStorage, () => resolve())
+            else if (browserName === "firefox")
+                browser.storage.sync.set(wudoohStorage).then(() => resolve())
+        });
     }
 };
 
 /**
  * An abstraction and simplification of the tabs API to make it use Promises
  */
-var tabs = {
+const tabs = {
     async create(url: string): Promise<Tab> {
-        return new Promise<Tab>(resolve =>
-            chrome.tabs.create({url: url}, tab => resolve(tab)));
+        return new Promise<Tab>(resolve => {
+            if (browserName === "chrome" || browserName === "edge" || browserName === "opera")
+                chrome.tabs.create({url: url}, tab => resolve(tab))
+            else if (browserName === "firefox")
+                browser.tabs.create({url: url}).then(tab => resolve(tab))
+        })
     },
     async queryAllTabs(): Promise<Array<Tab>> {
-        return new Promise<Array<Tab>>(resolve =>
-            chrome.tabs.query({}, (tabs: Array<Tab>) => resolve(tabs))
-        );
+        return new Promise<Array<Tab>>(resolve => {
+            if (browserName === "chrome" || browserName === "edge" || browserName === "opera")
+                chrome.tabs.query({}, (tabs: Array<Tab>) => resolve(tabs))
+            else if (browserName === "firefox")
+                browser.tabs.query({}).then(tabs => resolve(tabs))
+
+        });
     },
     async queryCurrentTab(): Promise<Array<Tab>> {
-        return new Promise<Array<Tab>>(resolve =>
-            chrome.tabs.query({active: true, currentWindow: true},
-                (tabs: Array<Tab>) => resolve(tabs)));
+        return new Promise<Array<Tab>>(resolve => {
+            if (browserName === "chrome" || browserName === "edge" || browserName === "opera")
+                chrome.tabs.query({active: true, currentWindow: true},
+                    (tabs: Array<Tab>) => resolve(tabs))
+            else if (browserName === "firefox")
+                browser.tabs.query({active: true, currentWindow: true}).then(tabs => resolve(tabs))
+        })
     },
     sendMessage(tabId: number, message: any) {
-        chrome.tabs.sendMessage(tabId, message);
+        if (browserName === "chrome" || browserName === "edge" || browserName === "opera")
+            chrome.tabs.sendMessage(tabId, message)
+        else if (browserName === "firefox")
+            browser.tabs.sendMessage(tabId, message)
     }
 };
 

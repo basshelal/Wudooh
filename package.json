@@ -9,7 +9,7 @@
     "minifyChromeShared": "uglifyjs -c -m --output chrome/shared.min.js -- chrome/shared.js",
     "minifyChromeBackground": "uglifyjs -c -m --output chrome/background.min.js -- chrome/background.js",
     "minifyChromeCustomFonts": "uglifyjs -c -m --output chrome/custom_fonts.min.js -- chrome/custom_fonts.js",
-    "build": "npm-run-all minifyChromeMain minifyChromePopup minifyChromeShared minifyChromeBackground minifyChromeCustomFonts",
+    "build": "run-p minifyChromeMain minifyChromePopup minifyChromeShared minifyChromeBackground minifyChromeCustomFonts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

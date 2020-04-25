@@ -6,6 +6,8 @@
 
 ///<reference path="./shared.ts"/>
 
+import InstalledDetails = chrome.runtime.InstalledDetails;
+
 function launchSite(path: string = "") {
     tabs.create(homePage + path);
 }

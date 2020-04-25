@@ -1,4 +1,3 @@
-const runtime = chrome.runtime;
 const keyTextSize = "textSize";
 const keyLineHeight = "lineHeight";
 const keyOnOff = "onOff";
@@ -66,6 +65,21 @@ const allWudoohFonts = [
     "Calibri",
     "Original"
 ];
+const browserName = (() => {
+    const agent = navigator.userAgent.toLowerCase();
+    if (agent.includes("firefox"))
+        return "firefox";
+    if (agent.includes("edg"))
+        return "edge";
+    if (agent.includes("opr") || agent.includes("opera"))
+        return "opera";
+    if (agent.includes("chrome"))
+        return "chrome";
+    return null;
+})();
+const isChromium = (() => {
+    return browserName === "chrome" || browserName === "edge" || browserName === "opera";
+})();
 class CustomSettings {
     constructor(url, textSize, lineHeight, font) {
         this.url = url;
@@ -163,28 +177,64 @@ class CustomFont {
         return array.length === 0 || array.every((obj) => this.isCustomFont(obj));
     }
 }
-var sync = {
+const runtime = (() => {
+    if (browserName === "chrome" || browserName === "edge" || browserName === "opera")
+        return chrome.runtime;
+    else if (browserName === "firefox")
+        return browser.runtime;
+})();
+const sync = {
     async get(keys = null) {
         return new Promise(resolve => {
-            chrome.storage.sync.get(keys, storage => resolve(storage));
+            if (browserName === "chrome" || browserName === "edge")
+                chrome.storage.sync.get(keys, storage => resolve(storage));
+            else if (browserName === "opera")
+                chrome.storage.local.get(keys, storage => resolve(storage));
+            else if (browserName === "firefox")
+                browser.storage.sync.get(keys).then(storage => resolve(storage));
         });
     },
     async set(wudoohStorage) {
-        return new Promise(resolve => chrome.storage.sync.set(wudoohStorage, () => resolve()));
+        return new Promise(resolve => {
+            if (browserName === "chrome" || browserName === "edge")
+                chrome.storage.sync.set(wudoohStorage, () => resolve());
+            else if (browserName === "opera")
+                chrome.storage.local.set(wudoohStorage, () => resolve());
+            else if (browserName === "firefox")
+                browser.storage.sync.set(wudoohStorage).then(() => resolve());
+        });
     }
 };
-var tabs = {
+const tabs = {
     async create(url) {
-        return new Promise(resolve => chrome.tabs.create({ url: url }, tab => resolve(tab)));
+        return new Promise(resolve => {
+            if (browserName === "chrome" || browserName === "edge" || browserName === "opera")
+                chrome.tabs.create({ url: url }, tab => resolve(tab));
+            else if (browserName === "firefox")
+                browser.tabs.create({ url: url }).then(tab => resolve(tab));
+        });
     },
     async queryAllTabs() {
-        return new Promise(resolve => chrome.tabs.query({}, (tabs) => resolve(tabs)));
+        return new Promise(resolve => {
+            if (browserName === "chrome" || browserName === "edge" || browserName === "opera")
+                chrome.tabs.query({}, (tabs) => resolve(tabs));
+            else if (browserName === "firefox")
+                browser.tabs.query({}).then(tabs => resolve(tabs));
+        });
     },
     async queryCurrentTab() {
-        return new Promise(resolve => chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => resolve(tabs)));
+        return new Promise(resolve => {
+            if (browserName === "chrome" || browserName === "edge" || browserName === "opera")
+                chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => resolve(tabs));
+            else if (browserName === "firefox")
+                browser.tabs.query({ active: true, currentWindow: true }).then(tabs => resolve(tabs));
+        });
     },
     sendMessage(tabId, message) {
-        chrome.tabs.sendMessage(tabId, message);
+        if (browserName === "chrome" || browserName === "edge" || browserName === "opera")
+            chrome.tabs.sendMessage(tabId, message);
+        else if (browserName === "firefox")
+            browser.tabs.sendMessage(tabId, message);
     }
 };
 async function injectCustomFonts(customFonts) {
