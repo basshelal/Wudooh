@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", {value: true});
 var path = require("path");
 var fs = require("fs-extra");
 var czip = require("cross-zip");
-
 function zip(outName) {
     var srcPath = path.join(__dirname, "../src");
     var tmpPath = path.join(__dirname, "./tmp");
@@ -26,5 +25,4 @@ function zip(outName) {
     fs.removeSync(tmpPath);
     console.log("Done zipping!");
 }
-
 exports.default = zip;
