@@ -178,29 +178,25 @@ class CustomFont {
     }
 }
 const runtime = (() => {
-    if (browserName === "chrome" || browserName === "edge" || browserName === "opera")
+    if (isChromium)
         return chrome.runtime;
-    else if (browserName === "firefox")
+    else
         return browser.runtime;
 })();
 const sync = {
     async get(keys = null) {
         return new Promise(resolve => {
-            if (browserName === "chrome" || browserName === "edge")
+            if (isChromium)
                 chrome.storage.sync.get(keys, storage => resolve(storage));
-            else if (browserName === "opera")
-                chrome.storage.local.get(keys, storage => resolve(storage));
-            else if (browserName === "firefox")
+            else
                 browser.storage.sync.get(keys).then(storage => resolve(storage));
         });
     },
     async set(wudoohStorage) {
         return new Promise(resolve => {
-            if (browserName === "chrome" || browserName === "edge")
+            if (isChromium)
                 chrome.storage.sync.set(wudoohStorage, () => resolve());
-            else if (browserName === "opera")
-                chrome.storage.local.set(wudoohStorage, () => resolve());
-            else if (browserName === "firefox")
+            else
                 browser.storage.sync.set(wudoohStorage).then(() => resolve());
         });
     }
@@ -208,32 +204,32 @@ const sync = {
 const tabs = {
     async create(url) {
         return new Promise(resolve => {
-            if (browserName === "chrome" || browserName === "edge" || browserName === "opera")
-                chrome.tabs.create({ url: url }, tab => resolve(tab));
-            else if (browserName === "firefox")
-                browser.tabs.create({ url: url }).then(tab => resolve(tab));
+            if (isChromium)
+                chrome.tabs.create({url: url}, tab => resolve(tab));
+            else
+                browser.tabs.create({url: url}).then(tab => resolve(tab));
         });
     },
     async queryAllTabs() {
         return new Promise(resolve => {
-            if (browserName === "chrome" || browserName === "edge" || browserName === "opera")
-                chrome.tabs.query({}, (tabs) => resolve(tabs));
-            else if (browserName === "firefox")
+            if (isChromium)
+                chrome.tabs.query({}, tabs => resolve(tabs));
+            else
                 browser.tabs.query({}).then(tabs => resolve(tabs));
         });
     },
     async queryCurrentTab() {
         return new Promise(resolve => {
-            if (browserName === "chrome" || browserName === "edge" || browserName === "opera")
-                chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => resolve(tabs));
-            else if (browserName === "firefox")
-                browser.tabs.query({ active: true, currentWindow: true }).then(tabs => resolve(tabs));
+            if (isChromium)
+                chrome.tabs.query({active: true, currentWindow: true}, tabs => resolve(tabs));
+            else
+                browser.tabs.query({active: true, currentWindow: true}).then(tabs => resolve(tabs));
         });
     },
     sendMessage(tabId, message) {
-        if (browserName === "chrome" || browserName === "edge" || browserName === "opera")
+        if (isChromium)
             chrome.tabs.sendMessage(tabId, message);
-        else if (browserName === "firefox")
+        else
             browser.tabs.sendMessage(tabId, message);
     }
 };

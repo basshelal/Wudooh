@@ -1,7 +1,7 @@
 function launchSite(path = "") {
     tabs.create(homePage + path);
 }
-runtime.onInstalled.addListener((details) => {
+runtime.onInstalled.addListener(details => {
     let storage;
     sync.get(keys).then((storage) => {
         if (details.reason == "install") {

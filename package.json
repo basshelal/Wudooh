@@ -9,8 +9,11 @@
     "minifyShared": "uglifyjs -c -m --output src/shared.min.js -- src/shared.js",
     "minifyBackground": "uglifyjs -c -m --output src/background.min.js -- src/background.js",
     "minifyCustomFonts": "uglifyjs -c -m --output src/custom_fonts.min.js -- src/custom_fonts.js",
-    "build": "run-p minifyMain minifyPopup minifyShared minifyBackground minifyCustomFonts",
-    "zip": "",
+    "minifyAll": "run-p minifyMain minifyPopup minifyShared minifyBackground minifyCustomFonts",
+    "firefox": "node scripts/firefox",
+    "zip": "node scripts/zip",
+    "build": "run-s minifyAll zip",
+    "buildFirefox": "run-s minifyAll firefox zip",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -27,6 +30,8 @@
     "@types/chrome": "0.0.104",
     "@types/firefox-webext-browser": "^70.0.1",
     "@types/materialize-css": "^1.0.7",
+    "@types/node": "^13.13.4",
+    "cross-zip": "^3.0.0",
     "npm-run-all": "^4.1.5"
   }
 }
