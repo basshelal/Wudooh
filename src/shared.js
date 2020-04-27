@@ -205,9 +205,9 @@ const tabs = {
     async create(url) {
         return new Promise(resolve => {
             if (isChromium)
-                chrome.tabs.create({url: url}, tab => resolve(tab));
+                chrome.tabs.create({ url: url }, tab => resolve(tab));
             else
-                browser.tabs.create({url: url}).then(tab => resolve(tab));
+                browser.tabs.create({ url: url }).then(tab => resolve(tab));
         });
     },
     async queryAllTabs() {
@@ -221,9 +221,9 @@ const tabs = {
     async queryCurrentTab() {
         return new Promise(resolve => {
             if (isChromium)
-                chrome.tabs.query({active: true, currentWindow: true}, tabs => resolve(tabs));
+                chrome.tabs.query({ active: true, currentWindow: true }, tabs => resolve(tabs));
             else
-                browser.tabs.query({active: true, currentWindow: true}).then(tabs => resolve(tabs));
+                browser.tabs.query({ active: true, currentWindow: true }).then(tabs => resolve(tabs));
         });
     },
     sendMessage(tabId, message) {

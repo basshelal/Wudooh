@@ -1,10 +1,30 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", {value: true});
 var path = require("path");
-var zip = require("cross-zip");
-// We should only zip the minimum necessary files, these are the minified js files.
-// No js or ts files
-// We do this by making a new temp directory containing all the files we want and removing
-//  those we don't want then when it's time to zip, we zip the temp directory and when done
-//  zipping, delete the temp directory
-var inPath = path.join(__dirname, "../src");
-var outPath = path.join(__dirname, '../dist/myFile.zip');
-zip.zipSync(inPath, outPath);
+var fs = require("fs-extra");
+var czip = require("cross-zip");
+
+function zip(outName) {
+    var srcPath = path.join(__dirname, "../src");
+    var tmpPath = path.join(__dirname, "./tmp");
+    var outZipPath = path.join(__dirname, "../dist/" + outName + ".zip");
+    console.log("Zipping src " + srcPath + " to " + outZipPath);
+    var srcScripts = ["background", "custom_fonts", "main", "popup", "shared"];
+    var excludedFiles = [];
+    srcScripts.forEach(function (fileName) {
+        excludedFiles.push(tmpPath + "/" + fileName + ".ts");
+        excludedFiles.push(tmpPath + "/" + fileName + ".js");
+    });
+    fs.copySync(srcPath, tmpPath);
+    excludedFiles.forEach(function (file) {
+        fs.removeSync(file);
+        console.log("Excluding " + file);
+    });
+    console.log("Zipping to " + outZipPath);
+    czip.zipSync(tmpPath, outZipPath);
+    console.log("Removing tmp " + tmpPath);
+    fs.removeSync(tmpPath);
+    console.log("Done zipping!");
+}
+
+exports.default = zip;
