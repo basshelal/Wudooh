@@ -11,8 +11,9 @@
     "minifyCustomFonts": "uglifyjs -c -m --output src/custom_fonts.min.js -- src/custom_fonts.js",
     "minifyAll": "run-p minifyMain minifyPopup minifyShared minifyBackground minifyCustomFonts",
     "firefox": "node scripts/firefox",
+    "chrome": "node scripts/chrome",
     "zip": "node scripts/zip",
-    "build": "run-s minifyAll zip",
+    "build": "run-s minifyAll chrome zip",
     "buildFirefox": "run-s minifyAll firefox zip",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -32,6 +33,7 @@
     "@types/materialize-css": "^1.0.7",
     "@types/node": "^13.13.4",
     "cross-zip": "^3.0.0",
-    "npm-run-all": "^4.1.5"
+    "npm-run-all": "^4.1.5",
+    "replace-in-file": "^6.0.0"
   }
 }
