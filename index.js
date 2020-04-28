@@ -20,7 +20,7 @@ async function index() {
     indexElements.forEach((element) => {
         element.innerHTML = translator.get(element.id);
     });
-    anchorElements.forEach((it) => it.href += langQueryParamPrefix + lang);
+    anchorElements.forEach((it) => it.href += langQueryParam);
 }
 function specifics() {
     switch (lang) {

@@ -25,7 +25,7 @@ async function index() {
     indexElements.forEach((element: HTMLElement) => {
         element.innerHTML = translator.get(element.id)
     })
-    anchorElements.forEach((it: HTMLAnchorElement) => it.href += langQueryParamPrefix + lang)
+    anchorElements.forEach((it: HTMLAnchorElement) => it.href += langQueryParam)
 }
 
 function specifics() {
