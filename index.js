@@ -1,16 +1,16 @@
-const shortBlurb = get("shortBlurb");
-const download = get("download");
-const comingSoon = get("comingSoon");
-const pages = get("pages");
-const faq = get("faq");
-const fonts = get("fonts");
-const changelog = get("changelog");
-const totalUsers = get("totalUsers");
-const features = get("features");
-const guides = get("guides");
-const textElements = [shortBlurb, download, comingSoon, pages, faq, fonts, changelog, totalUsers, features, guides];
-const anchorElements = [faq, fonts, changelog];
-const indexElements = [].concat(textElements).concat(anchorElements);
+const anchorElements = [
+    get("features"),
+    get("faq"),
+    get("changelog"),
+    get("guides"),
+    get("fonts"),
+];
+const textElements = anchorElements.concat([
+    get("shortBlurb"),
+    get("download"),
+    get("pages"),
+    get("totalUsers"),
+]);
 const translator = new Translator(lang, langs);
 async function index() {
     document.documentElement.lang = lang;
@@ -19,7 +19,7 @@ async function index() {
     else
         document.dir = "ltr";
     await translator.initialize();
-    indexElements.forEach((element) => {
+    textElements.forEach((element) => {
         element.innerHTML = translator.get(element.id);
     });
     anchorElements.forEach((it) => it.href += langQueryParam);
@@ -45,22 +45,19 @@ function specifics() {
         }
     }
 }
-function displayTotalUsers() {
-    $.getJSON(`https://api.allorigins.win/get?url=${encodeURIComponent("https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn")}`).then(response => {
-        const chromeUsers = parseInt(("" + response.contents.match(/<span class="e-f-ih" title="([\d]*?) users">([\d]*?) users<\/span>/)).split(",")[2]);
-        $.getJSON(`https://api.allorigins.win/get?url=${encodeURIComponent("https://addons.mozilla.org/en-US/firefox/addon/wudooh/")}`).then(response => {
-            const firefoxUsers = parseInt(("" + response.contents.match(/<dd class="MetadataCard-content">([\d]*?)<\/dd>/)).match(/\d+/g)[0]);
-            const totalUsers = chromeUsers + firefoxUsers;
-            let text = "...";
-            if (isNaN(totalUsers)) {
-                displayTotalUsers();
-            }
-            else
-                text = totalUsers.toString();
-            get("numUsers").innerHTML = text;
-        });
-    });
+async function displayTotalUsers() {
+    const chromeResponse = await (await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent("https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn")}`)).json();
+    const chromeUsers = parseInt(("" + chromeResponse.contents.match(/<span class="e-f-ih" title="([\d]*?) users">([\d]*?) users<\/span>/)).split(",")[2]);
+    const firefoxResponse = await (await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent("https://addons.mozilla.org/en-US/firefox/addon/wudooh/")}`)).json();
+    const firefoxUsers = parseInt(("" + firefoxResponse.contents.match(/<dd class="MetadataCard-content">([\d]*?)<\/dd>/)).match(/\d+/g)[0]);
+    const totalUsers = chromeUsers + firefoxUsers;
+    let text = "...";
+    if (isNaN(totalUsers))
+        displayTotalUsers();
+    else
+        text = totalUsers.toString();
+    get("numUsers").innerHTML = text;
 }
-index();
 specifics();
+index();
 displayTotalUsers();
