@@ -72,7 +72,7 @@ class Translator {
         this.currentLocaleId = currentLocale
         this.localeIds = locales
         this.localeIds.forEach(locale => {
-            const file = `./pages/_locales/${locale}.json`
+            const file = `./pages/locales/${locale}.json`
             const promise = fetch(file).then(r => r.json()).then(json => {
                 this.locales.push(json)
                 this.currentLocale = this.locales.find(it => it["__locale"] == this.currentLocaleId)
