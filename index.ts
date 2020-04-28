@@ -9,7 +9,9 @@ const faq = get<HTMLAnchorElement>("faq")
 const fonts = get<HTMLAnchorElement>("fonts")
 const changelog = get<HTMLAnchorElement>("changelog")
 const totalUsers = get<HTMLHeadingElement>("totalUsers")
-const textElements: Array<HTMLElement> = [shortBlurb, download, comingSoon, pages, faq, fonts, changelog, totalUsers]
+const features = get<HTMLHeadingElement>("features")
+const guides = get<HTMLHeadingElement>("guides")
+const textElements: Array<HTMLElement> = [shortBlurb, download, comingSoon, pages, faq, fonts, changelog, totalUsers, features, guides]
 const anchorElements: Array<HTMLAnchorElement> = [faq, fonts, changelog]
 const indexElements: Array<HTMLElement> = [].concat(textElements).concat(anchorElements)
 
