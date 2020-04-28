@@ -107,7 +107,6 @@ function inputOnInput() {
         const localName = localNameInput.value;
         injectTemporaryCustomFont(new CustomFont(fontName, localName, url));
         fontTest.style.fontFamily = fontName;
-        console.error(runtime.lastError.message);
     });
 }
 async function addButtonOnClick() {

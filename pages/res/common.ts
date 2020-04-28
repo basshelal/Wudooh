@@ -2,6 +2,7 @@
 
 interface Array<T> {
     findFirst(predicate: (element: T, index: number) => boolean): T | null;
+
     contains(element: T): boolean;
 }
 
@@ -24,20 +25,8 @@ Array.prototype.contains = function <T>(element: T): boolean {
 
 // endregion Extensions
 
-function include(path: string, onload: () => any = () => {
-}) {
-    let script: HTMLScriptElement = document.createElement("script");
-    script.src = path;
-    script.defer = true;
-
-    document.head.appendChild(script);
-
-    console.log(`Added script: ${script.src}`);
-
-    script.onload = () => {
-        console.log(`Loaded script: ${script.src}`);
-        onload();
-    };
+function get<T extends HTMLElement>(elementId: string): T | null {
+    return document.getElementById(elementId) as T
 }
 
 const urlParams: URLSearchParams = new URLSearchParams(window.location.search);
@@ -54,33 +43,51 @@ const en: string = "en";
 const ar: string = "ar";
 const fa: string = "fa";
 
+const arabicFont: string = "Droid Arabic Naskh";
+const farsiFont: string = "Droid Arabic Naskh";
+
+const langEn: string = "?lang=en";
+const langAr: string = "?lang=ar";
+const langFa: string = "?lang=fa";
+
+const bannerImageAnchor = get<HTMLAnchorElement>("bannerImageAnchor");
+
 const langs = [en, ar, fa];
 const arLangs = [ar, fa];
 
 const isArScript: boolean = arLangs.contains(lang);
 
-// @ts-ignore
-// Key is Language, Value is Translation
-type Translations = Map<string, string>;
+class Translator {
 
-class ElementTranslationMapping {
-    element: HTMLElement;
-    translations: Translations;
+    public currentLocaleId: string
+    public defaultLocaleId: string = "en"
+    public localeIds: Array<string> = []
+    private locales: Array<any> = []
+    private currentLocale: any
+    private defaultLocale: any
+    private isInitialized: Promise<any>
 
-    constructor(element: HTMLElement, translations: Array<object>) {
-        this.element = element;
-        // @ts-ignore
-        this.translations = new Map<string, string>();
-        translations.forEach((it) => {
-            this.addTranslation(it["lang"], it["translation"]);
-        });
+    constructor(currentLocale: string, locales: Array<string>) {
+        const promises: Array<Promise<any>> = []
+        this.currentLocaleId = currentLocale
+        this.localeIds = locales
+        this.localeIds.forEach(locale => {
+            const file = `./pages/_locales/${locale}.json`
+            const promise = fetch(file).then(r => r.json()).then(json => {
+                this.locales.push(json)
+                this.currentLocale = this.locales.find(it => it["__locale"] == this.currentLocaleId)
+                this.defaultLocale = this.locales.find(it => it["__locale"] == this.defaultLocaleId)
+            })
+            promises.push(promise)
+        })
+        this.isInitialized = Promise.all(promises)
     }
 
-    addTranslation(lang: string, translation: string) {
-        this.translations.set(lang, translation);
+    async initialize() {
+        await this.isInitialized
     }
-}
 
-function translation(element: HTMLElement, translations: Array<object>): ElementTranslationMapping {
-    return new ElementTranslationMapping(element, translations)
+    get(id: string): string {
+        return this.currentLocale[id] || this.defaultLocale[id]
+    }
 }
