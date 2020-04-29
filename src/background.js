@@ -1,6 +1,6 @@
 runtime.onInstalled.addListener(async (details) => {
     if (details.reason == "update") {
-        tabs.create("https://github.com/basshelal/Wudooh/wiki/Features#version-20");
+        tabs.create("https://wudooh.app/updated");
     }
     let storage = await sync.get(keys);
     let promises = [];
