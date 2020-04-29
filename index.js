@@ -1,16 +1,8 @@
-const anchorElements = [
-    get("features"),
-    get("faq"),
-    get("changelog"),
-    get("guides"),
-    get("fonts"),
-];
-const textElements = anchorElements.concat([
+const textElements = [
     get("shortBlurb"),
     get("download"),
-    get("pages"),
     get("totalUsers"),
-]);
+];
 const translator = new Translator(lang, langs);
 async function index() {
     document.documentElement.lang = lang;
@@ -22,7 +14,6 @@ async function index() {
     textElements.forEach((element) => {
         element.innerHTML = translator.get(element.id);
     });
-    anchorElements.forEach((it) => it.href += langQueryParam);
 }
 function specifics() {
     switch (lang) {

@@ -17,8 +17,6 @@ const keys = [
 const defaultFont = "Droid Arabic Naskh";
 const defaultTextSize = 125;
 const defaultLineHeight = 145;
-const defaultColor = "#880E4F";
-const homePage = "http://basshelal.github.io/Wudooh";
 const defaultDelay = 250;
 const reasonUpdateAllText = "updateAllText";
 const reasonInjectCustomFonts = "injectCustomFonts";
@@ -80,14 +78,14 @@ const browserName = (() => {
 const isChromium = (() => {
     return browserName === "chrome" || browserName === "edge" || browserName === "opera";
 })();
-class CustomSettings {
+class CustomSetting {
     constructor(url, textSize, lineHeight, font) {
         this.url = url;
         this.textSize = textSize;
         this.lineHeight = lineHeight;
         this.font = font;
     }
-    static isValidCustomSettings(customSettings) {
+    static isValidCustomSetting(customSettings) {
         const url = customSettings.url;
         const textSize = customSettings.textSize;
         const lineHeight = customSettings.lineHeight;
@@ -97,13 +95,13 @@ class CustomSettings {
             !!lineHeight && typeof lineHeight === "number" && lineHeight >= 100 && lineHeight <= 300 &&
             !!font && typeof font === "string";
     }
-    static isCustomSettings(obj) {
+    static isCustomSetting(obj) {
         return !!obj && obj.hasOwnProperty("url") && obj.hasOwnProperty("textSize") &&
             obj.hasOwnProperty("lineHeight") && obj.hasOwnProperty("font") &&
-            this.isValidCustomSettings(obj);
+            this.isValidCustomSetting(obj);
     }
     static isCustomSettingsArray(array) {
-        return array.length === 0 || array.every((obj) => this.isCustomSettings(obj));
+        return array.length === 0 || array.every((obj) => this.isCustomSetting(obj));
     }
 }
 class CustomFont {

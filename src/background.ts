@@ -6,24 +6,15 @@
 
 ///<reference path="./shared.ts"/>
 
-function launchSite(path: string = "") {
-    tabs.create(homePage + path)
-}
-
 /**
  * Runs on install or update to check if the storage has initialized all its values correctly.
  * If some key has not been initialized then it will create it and set it to its default value
  */
 runtime.onInstalled.addListener(async details => {
-    let storage: WudoohStorage = await sync.get(keys)
-    if (details.reason == "install") {
-
-    }
     if (details.reason == "update") {
-        let oldVersion: string = details.previousVersion // string of previous version if we need it
-        let newVersion: string = runtime.getManifest().version // string of newly updated version
-        launchSite()
+        tabs.create("https://github.com/basshelal/Wudooh/wiki/Features#version-20")
     }
+    let storage: WudoohStorage = await sync.get(keys)
     let promises: Array<Promise<void>> = []
     if (storage.textSize == null) promises.push(sync.set({textSize: defaultTextSize}))
     if (storage.lineHeight == null) promises.push(sync.set({lineHeight: defaultLineHeight}))

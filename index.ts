@@ -1,19 +1,11 @@
 ///<reference path="../../.WebStorm2019.3/config/javascript/extLibs/global-types/node_modules/@types/jquery/misc.d.ts"/>
 ///<reference path="pages/res/common.ts"/>
 
-const anchorElements: Array<HTMLAnchorElement> = [
-    get("features"),
-    get("faq"),
-    get("changelog"),
-    get("guides"),
-    get("fonts"),
-]
-const textElements: Array<HTMLElement> = anchorElements.concat([
+const textElements: Array<HTMLElement> = [
     get("shortBlurb"),
     get("download"),
-    get("pages"),
     get("totalUsers"),
-])
+]
 
 const translator = new Translator(lang, langs)
 
@@ -27,7 +19,6 @@ async function index() {
     textElements.forEach((element: HTMLElement) => {
         element.innerHTML = translator.get(element.id)
     })
-    anchorElements.forEach((it: HTMLAnchorElement) => it.href += langQueryParam)
 }
 
 function specifics() {

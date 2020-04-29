@@ -46,8 +46,6 @@ const keys: Array<string> = [
 const defaultFont: string = "Droid Arabic Naskh";
 const defaultTextSize: number = 125;
 const defaultLineHeight: number = 145;
-const defaultColor: string = "#880E4F";
-const homePage: string = "http://basshelal.github.io/Wudooh";
 const defaultDelay: number = 250;
 
 // Message Reasons
@@ -118,7 +116,7 @@ const isChromium: boolean = ((): boolean => {
  * Represents a site that uses different settings from the global settings
  * The settings themselves may be the same as the global but they will change independently
  */
-class CustomSettings {
+class CustomSetting {
     /** The hostname url of this web site */
     url: string;
     /** The font size percent to use on this site */
@@ -136,7 +134,7 @@ class CustomSettings {
         this.font = font;
     }
 
-    static isValidCustomSettings(customSettings: CustomSettings): boolean {
+    static isValidCustomSetting(customSettings: CustomSetting): boolean {
         const url: string = customSettings.url;
         const textSize: number = customSettings.textSize;
         const lineHeight: number = customSettings.lineHeight;
@@ -148,14 +146,14 @@ class CustomSettings {
             !!font && typeof font === "string"
     }
 
-    static isCustomSettings(obj: any): boolean {
+    static isCustomSetting(obj: any): boolean {
         return !!obj && obj.hasOwnProperty("url") && obj.hasOwnProperty("textSize") &&
             obj.hasOwnProperty("lineHeight") && obj.hasOwnProperty("font") &&
-            this.isValidCustomSettings(obj as CustomSettings)
+            this.isValidCustomSetting(obj as CustomSetting)
     }
 
     static isCustomSettingsArray(array: Array<any>): boolean {
-        return array.length === 0 || array.every((obj: any) => this.isCustomSettings(obj))
+        return array.length === 0 || array.every((obj: any) => this.isCustomSetting(obj))
     }
 }
 
@@ -264,7 +262,7 @@ interface WudoohStorage {
     readonly onOff?: boolean;
     readonly font?: string;
     readonly whitelisted?: Array<string>;
-    readonly customSettings?: Array<CustomSettings>;
+    readonly customSettings?: Array<CustomSetting>;
     readonly customFonts?: Array<CustomFont>;
 }
 

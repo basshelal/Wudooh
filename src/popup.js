@@ -152,7 +152,7 @@ async function toggleOverrideSiteSettings() {
     let wudoohStorage = await sync.get([keyCustomSettings]);
     let customSettings = wudoohStorage.customSettings;
     if (overrideSiteSwitch.checked) {
-        customSettings.push(new CustomSettings(thisURL, parseInt(sizeSlider.value), parseInt(heightSlider.value), fontSelect.value));
+        customSettings.push(new CustomSetting(thisURL, parseInt(sizeSlider.value), parseInt(heightSlider.value), fontSelect.value));
         overrideSettingsValue.textContent = "Using site specific settings";
     }
     else {
@@ -262,10 +262,10 @@ async function importSettings() {
             errorMessages.push("Field \"whitelisted\" must be an array of strings");
         }
         if (customSettings === null) {
-            errorMessages.push("Field \"customSettings\" is missing! It must be an array of CustomSettings objects");
+            errorMessages.push("Field \"customSettings\" is missing! It must be an array of CustomSetting objects");
         }
-        else if (!Array.isArray(customSettings) || !CustomSettings.isCustomSettingsArray(customSettings)) {
-            errorMessages.push("Field \"customSettings\" must be an array of CustomSettings objects");
+        else if (!Array.isArray(customSettings) || !CustomSetting.isCustomSettingsArray(customSettings)) {
+            errorMessages.push("Field \"customSettings\" must be an array of CustomSetting objects");
         }
         if (customFonts === null) {
             errorMessages.push("Field \"customFonts\" is missing! It must be an array of CustomFont objects");

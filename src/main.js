@@ -142,8 +142,10 @@ async function notifyDocument() {
     }
 }
 async function toggleOff() {
-    observer.disconnect();
-    observer = null;
+    if (!!observer) {
+        observer.disconnect();
+        observer = null;
+    }
     getArabicTextNodesIn(document.body).forEach((node) => {
         node.parentElement.style.fontSize = null;
         node.parentElement.style.lineHeight = null;

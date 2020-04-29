@@ -1,15 +1,8 @@
-function launchSite(path = "") {
-    tabs.create(homePage + path);
-}
 runtime.onInstalled.addListener(async (details) => {
-    let storage = await sync.get(keys);
-    if (details.reason == "install") {
-    }
     if (details.reason == "update") {
-        let oldVersion = details.previousVersion;
-        let newVersion = runtime.getManifest().version;
-        launchSite();
+        tabs.create("https://github.com/basshelal/Wudooh/wiki/Features#version-20");
     }
+    let storage = await sync.get(keys);
     let promises = [];
     if (storage.textSize == null)
         promises.push(sync.set({ textSize: defaultTextSize }));

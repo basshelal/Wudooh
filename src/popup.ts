@@ -51,9 +51,9 @@ async function initializeUI() {
     const thisTab: Tab = currentTabs[0]
     const thisURL: string = new URL(thisTab.url).hostname
 
-    const customSettings: Array<CustomSettings> = storage.customSettings as Array<CustomSettings>
+    const customSettings: Array<CustomSetting> = storage.customSettings as Array<CustomSetting>
     const whiteListed: Array<string> = storage.whitelisted as Array<string>
-    const custom: CustomSettings = customSettings.find((custom: CustomSettings) => custom.url === thisURL)
+    const custom: CustomSetting = customSettings.find((custom: CustomSetting) => custom.url === thisURL)
     const isCustom: boolean = !!custom
 
     let textSize: number
@@ -119,8 +119,8 @@ async function updateTextSize() {
     const wudoohStorage: WudoohStorage = await sync.get([keyCustomSettings])
 
     const thisURL: string = new URL(currentTabs[0].url).hostname
-    const customSettings: Array<CustomSettings> = wudoohStorage.customSettings
-    const custom: CustomSettings = customSettings.find((custom: CustomSettings) => custom.url === thisURL)
+    const customSettings: Array<CustomSetting> = wudoohStorage.customSettings
+    const custom: CustomSetting = customSettings.find((custom: CustomSetting) => custom.url === thisURL)
 
     if (!!custom) {
         custom.textSize = newSize
@@ -138,8 +138,8 @@ async function updateLineHeight() {
     const wudoohStorage: WudoohStorage = await sync.get([keyCustomSettings])
 
     const thisURL: string = new URL(currentTabs[0].url).hostname
-    const customSettings: Array<CustomSettings> = wudoohStorage.customSettings
-    const custom: CustomSettings = customSettings.find((custom: CustomSettings) => custom.url === thisURL)
+    const customSettings: Array<CustomSetting> = wudoohStorage.customSettings
+    const custom: CustomSetting = customSettings.find((custom: CustomSetting) => custom.url === thisURL)
 
     if (!!custom) {
         custom.lineHeight = newHeight
@@ -157,8 +157,8 @@ async function changeFont() {
     const wudoohStorage: WudoohStorage = await sync.get([keyCustomSettings])
 
     const thisURL: string = new URL(currentTabs[0].url).hostname
-    const customSettings: Array<CustomSettings> = wudoohStorage.customSettings
-    const custom: CustomSettings = customSettings.find((custom: CustomSettings) => custom.url === thisURL)
+    const customSettings: Array<CustomSetting> = wudoohStorage.customSettings
+    const custom: CustomSetting = customSettings.find((custom: CustomSetting) => custom.url === thisURL)
 
     fontSelect.style.fontFamily = newFont
     if (!!custom) {
@@ -175,26 +175,26 @@ async function toggleOverrideSiteSettings() {
     const currentTabs = await tabs.queryCurrentTab()
     const thisURL: string = new URL(currentTabs[0].url).hostname
     let wudoohStorage: WudoohStorage = await sync.get([keyCustomSettings])
-    let customSettings: Array<CustomSettings> = wudoohStorage.customSettings
+    let customSettings: Array<CustomSetting> = wudoohStorage.customSettings
 
     if (overrideSiteSwitch.checked) {
-        customSettings.push(new CustomSettings(
+        customSettings.push(new CustomSetting(
             thisURL, parseInt(sizeSlider.value), parseInt(heightSlider.value), fontSelect.value)
         )
         overrideSettingsValue.textContent = "Using site specific settings"
     } else {
-        customSettings = customSettings.filter((it: CustomSettings) => it.url !== thisURL)
+        customSettings = customSettings.filter((it: CustomSetting) => it.url !== thisURL)
         overrideSettingsValue.textContent = "Using global settings"
     }
 
     await sync.set({customSettings: customSettings})
     wudoohStorage = await sync.get([keyTextSize, keyLineHeight, keyFont, keyCustomSettings])
-    customSettings = wudoohStorage.customSettings as Array<CustomSettings>
+    customSettings = wudoohStorage.customSettings as Array<CustomSetting>
 
     let textSize: number
     let lineHeight: number
     let font: string
-    let custom = customSettings.find((custom: CustomSettings) => custom.url === thisURL)
+    let custom = customSettings.find((custom: CustomSetting) => custom.url === thisURL)
     if (!!custom) {
         textSize = custom.textSize
         lineHeight = custom.lineHeight
@@ -264,7 +264,7 @@ async function importSettings() {
         const onOff: boolean = result[keyOnOff]
         const font: string = result[keyFont]
         const whitelisted: Array<string> = result[keyWhitelisted]
-        const customSettings: Array<CustomSettings> = result[keyCustomSettings]
+        const customSettings: Array<CustomSetting> = result[keyCustomSettings]
         const customFonts: Array<CustomFont> = result[keyCustomFonts]
 
         if (textSize === null) {
@@ -293,9 +293,9 @@ async function importSettings() {
             errorMessages.push("Field \"whitelisted\" must be an array of strings")
         }
         if (customSettings === null) {
-            errorMessages.push("Field \"customSettings\" is missing! It must be an array of CustomSettings objects")
-        } else if (!Array.isArray(customSettings) || !CustomSettings.isCustomSettingsArray(customSettings)) {
-            errorMessages.push("Field \"customSettings\" must be an array of CustomSettings objects")
+            errorMessages.push("Field \"customSettings\" is missing! It must be an array of CustomSetting objects")
+        } else if (!Array.isArray(customSettings) || !CustomSetting.isCustomSettingsArray(customSettings)) {
+            errorMessages.push("Field \"customSettings\" must be an array of CustomSetting objects")
         }
         if (customFonts === null) {
             errorMessages.push("Field \"customFonts\" is missing! It must be an array of CustomFont objects")

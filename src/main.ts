@@ -226,8 +226,10 @@ async function notifyDocument() {
 }
 
 async function toggleOff() {
-    observer.disconnect()
-    observer = null
+    if (!!observer) {
+        observer.disconnect()
+        observer = null
+    }
     getArabicTextNodesIn(document.body).forEach((node: Node) => {
         node.parentElement.style.fontSize = null
         node.parentElement.style.lineHeight = null
@@ -257,13 +259,13 @@ async function main() {
     let font: string = storage.font
     const isOn: boolean = storage.onOff
     const whitelisted: Array<string> = storage.whitelisted
-    const customSettings: Array<CustomSettings> = storage.customSettings
+    const customSettings: Array<CustomSetting> = storage.customSettings
     const customFonts: Array<CustomFont> = storage.customFonts
 
     const thisURL: string = new URL(document.URL).hostname
     const isWhitelisted: boolean = !!whitelisted.find((it) => it === thisURL)
 
-    const customSite: CustomSettings = customSettings.find((custom: CustomSettings) => custom.url === thisURL)
+    const customSite: CustomSetting = customSettings.find((custom: CustomSetting) => custom.url === thisURL)
 
     // Only do anything if the switch is on and this site is not whitelisted
     if (isOn && !isWhitelisted) {
