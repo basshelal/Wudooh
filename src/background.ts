@@ -10,12 +10,12 @@
  * Runs on install or update to check if the storage has initialized all its values correctly.
  * If some key has not been initialized then it will create it and set it to its default value
  */
-runtime.onInstalled.addListener(async details => {
+const onInstalled = async (details) => {
     if (details.reason == "update") {
         tabs.create("https://wudooh.app/updated")
     }
     let storage: WudoohStorage = await sync.get(keys)
-    let promises: Array<Promise<void>> = []
+    const promises: Array<Promise<void>> = []
     if (storage.textSize == null) promises.push(sync.set({textSize: defaultTextSize}))
     if (storage.lineHeight == null) promises.push(sync.set({lineHeight: defaultLineHeight}))
     if (storage.onOff == null) promises.push(sync.set({onOff: true}))
@@ -32,4 +32,7 @@ runtime.onInstalled.addListener(async details => {
             tabs.sendMessage(tab.id, message)
         }
     })
-})
+}
+
+if (!runtime.onInstalled.hasListener(onInstalled))
+    runtime.onInstalled.addListener(onInstalled)

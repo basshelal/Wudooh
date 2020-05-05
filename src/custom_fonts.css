@@ -84,7 +84,6 @@ h1 {
 .material-icons {
     position: relative;
     bottom: 20px;
-    cursor: help;
 }
 
 .material-icons.green {
@@ -98,7 +97,7 @@ h1 {
     position: relative;
     bottom: 10px;
     font-size: 36px;
-    color: red;
+    color: #e53935;
 }
 
 .infoText {
@@ -106,6 +105,7 @@ h1 {
     font-weight: normal;
     margin-top: -18px;
     margin-bottom: 26px;
+    color: #e53935;
 }
 
 .fontTest {

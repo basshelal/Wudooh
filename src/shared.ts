@@ -53,50 +53,6 @@ const reasonUpdateAllText = "updateAllText";
 const reasonInjectCustomFonts = "injectCustomFonts";
 const reasonToggleOff = "toggleOff";
 
-const htmlEditables = ["textarea", "input", "text", "email", "number", "search", "tel", "url", "password"];
-
-const allWudoohFonts: Array<string> = [
-    "Droid Arabic Naskh",
-    "Noto Naskh Arabic",
-    "Arabic Typesetting",
-    "Simplified Arabic",
-    "Traditional Arabic",
-    "Noto Sans Arabic",
-    "Noto Kufi Arabic",
-    "Aldhabi",
-    "Amiri",
-    "Amiri Quran",
-    "Andalus",
-    "Reem Kufi Regular",
-    "Scheherazade",
-    "Urdu Typesetting",
-    "Noto Nastaliq Urdu",
-    "Aref Ruqaa",
-    "Cairo",
-    "Lemonada",
-    "Lalezar",
-    "Tajawal",
-    "Changa",
-    "El Messiri",
-    "Lateef",
-    "Mada",
-    "Markazi Text",
-    "Mirza",
-    "Harmattan",
-    "Rakkas",
-    "Katibeh",
-    "Jomhuria",
-    "Shakstah",
-    "Mehr Nastaliq",
-    "Rooznameh",
-    "DecoType Naskh",
-    "sans-serif",
-    "Times New Roman",
-    "Arial",
-    "Calibri",
-    "Original"
-];
-
 type Browser = "chrome" | "firefox" | "edge" | "opera"
 
 const browserName: Browser = ((): Browser => {
@@ -266,7 +222,7 @@ interface WudoohStorage {
     readonly customFonts?: Array<CustomFont>;
 }
 
-const runtime: any = (() => {
+const runtime: (typeof chrome.runtime | typeof browser.runtime) = (() => {
     if (isChromium) return chrome.runtime
     else return browser.runtime
 })()

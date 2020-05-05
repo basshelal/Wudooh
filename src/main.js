@@ -1,5 +1,6 @@
 const arabicRegex = new RegExp("([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\]+([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\\W\\d]+)*)", "g");
 const arabicNumbersRegex = new RegExp("([\u0660-\u0669\u06F0-\u06F9]+)", "g");
+const htmlEditables = ["textarea", "input", "text", "email", "number", "search", "tel", "url", "password"];
 let observer;
 function hasNodeBeenUpdated(node) {
     return node.parentElement && node.parentElement.getAttribute("wudooh") === "true";

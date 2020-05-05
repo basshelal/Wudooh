@@ -1,9 +1,9 @@
-runtime.onInstalled.addListener(async (details) => {
+const onInstalled = async (details) => {
     if (details.reason == "update") {
         tabs.create("https://wudooh.app/updated");
     }
     let storage = await sync.get(keys);
-    let promises = [];
+    const promises = [];
     if (storage.textSize == null)
         promises.push(sync.set({ textSize: defaultTextSize }));
     if (storage.lineHeight == null)
@@ -27,4 +27,6 @@ runtime.onInstalled.addListener(async (details) => {
             tabs.sendMessage(tab.id, message);
         }
     });
-});
+};
+if (!runtime.onInstalled.hasListener(onInstalled))
+    runtime.onInstalled.addListener(onInstalled);
