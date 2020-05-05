@@ -289,6 +289,19 @@ async function injectCustomFonts(customFonts: Array<CustomFont>): Promise<Array<
     return customFonts
 }
 
+function analytics() {
+    const analyticsScript = document.createElement("script")
+    analyticsScript.type = "text/javascript"
+    analyticsScript.async = true
+    analyticsScript.src = "https://www.googletagmanager.com/gtag/js?id=UA-164482478-2"
+    const firstScript = document.getElementsByTagName('script')[0]
+    firstScript.parentNode.insertBefore(analyticsScript, firstScript)
+
+    window["dataLayer"] = window["dataLayer"] || []
+    window["dataLayer"].push('js', new Date())
+    window["dataLayer"].push('config', 'UA-164482478-2')
+}
+
 /**
  * Shorthand for {@linkcode document.getElementById}, automatically casts to T, a HTMLElement
  *

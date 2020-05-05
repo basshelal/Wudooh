@@ -28,8 +28,8 @@
       "all_frames": true,
       "run_at": "document_idle",
       "js": [
-        "shared.js",
-        "main.js"
+        "shared.min.js",
+        "main.min.js"
       ],
       "css": [
         "fonts.css"
@@ -38,12 +38,13 @@
   ],
   "background": {
     "scripts": [
-      "shared.js",
-      "background.js"
+      "shared.min.js",
+      "background.min.js"
     ],
     "persistent": false
   },
   "web_accessible_resources": [
     "fonts/*"
-  ]
+  ],
+  "content_security_policy": "script-src 'self' https://www.googletagmanager.com; object-src 'self'"
 }

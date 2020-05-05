@@ -286,4 +286,5 @@ function customFontsAddListeners() {
     addButton.onclick = addButtonOnClick
 }
 
+analytics()
 customFontsAddListeners()

@@ -356,4 +356,5 @@ function popupAddListeners() {
 
 }
 
+analytics()
 popupAddListeners()
