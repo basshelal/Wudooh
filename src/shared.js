@@ -14,7 +14,7 @@ const keys = [
     keyCustomSettings,
     keyCustomFonts
 ];
-const defaultFont = "Droid Arabic Naskh";
+const defaultFont = "Sahl Naskh";
 const defaultTextSize = 125;
 const defaultLineHeight = 145;
 const defaultDelay = 250;

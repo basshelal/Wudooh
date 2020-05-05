@@ -43,7 +43,7 @@ const keys: Array<string> = [
 ];
 
 // Defaults
-const defaultFont: string = "Droid Arabic Naskh";
+const defaultFont: string = "Sahl Naskh";
 const defaultTextSize: number = 125;
 const defaultLineHeight: number = 145;
 const defaultDelay: number = 250;
