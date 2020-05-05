@@ -1,19 +1,52 @@
 /** Roboto (for popup UI elements) */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700&display=swap');
-/** Droid Arabic Naskh */
+
+/** Aldhabi */
 @font-face {
-    font-family: 'Droid Arabic Naskh';
+    font-family: 'Aldhabi';
     font-style: normal;
     font-weight: normal;
-    src: local('Droid Arabic Naskh'), url('chrome-extension://__MSG_@@extension_id__/fonts/DroidNaskh.woff2') format('woff2');
+    src: local('Aldhabi'), url('chrome-extension://__MSG_@@extension_id__/fonts/Aldhabi.woff2') format('woff2');
 }
 
-/** Noto Nastaliq Urdu */
+/** Almarai */
 @font-face {
-    font-family: 'Noto Nastaliq Urdu';
+    font-family: 'Almarai';
     font-style: normal;
     font-weight: normal;
-    src: local('Noto Nastaliq Urdu'), url('chrome-extension://__MSG_@@extension_id__/fonts/NotoNastaliqUrdu.woff2') format('woff2');
+    src: local('Almarai'), url('chrome-extension://__MSG_@@extension_id__/fonts/Almarai.woff2') format('woff2');
+}
+
+/** Amiri */
+@font-face {
+    font-family: 'Amiri';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Amiri'), url('chrome-extension://__MSG_@@extension_id__/fonts/Amiri.woff2') format('woff2');
+}
+
+/** Amiri Quran */
+@font-face {
+    font-family: 'Amiri Quran';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Amiri Quran'), url('chrome-extension://__MSG_@@extension_id__/fonts/AmiriQuran.woff2') format('woff2');
+}
+
+/** Andalus */
+@font-face {
+    font-family: 'Andalus';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Andalus'), url('chrome-extension://__MSG_@@extension_id__/fonts/Andalus.woff2') format('woff2');
+}
+
+/** Arabic Typesetting */
+@font-face {
+    font-family: 'Arabic Typesetting';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Arabic Typesetting'), url('chrome-extension://__MSG_@@extension_id__/fonts/ArabicTypesetting.woff2') format('woff2');
 }
 
 /** Aref Ruqaa */
@@ -32,12 +65,60 @@
     src: local('Cairo'), url('chrome-extension://__MSG_@@extension_id__/fonts/Cairo.woff2') format('woff2');
 }
 
-/** Lemonada */
+/** Changa */
 @font-face {
-    font-family: 'Lemonada';
+    font-family: 'Changa';
     font-style: normal;
     font-weight: normal;
-    src: local('Lemonada'), url('chrome-extension://__MSG_@@extension_id__/fonts/Lemonada.woff2') format('woff2');
+    src: local('Changa'), url('chrome-extension://__MSG_@@extension_id__/fonts/Changa.woff2') format('woff2');
+}
+
+/** Droid Arabic Naskh */
+@font-face {
+    font-family: 'Droid Arabic Naskh';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Droid Arabic Naskh'), url('chrome-extension://__MSG_@@extension_id__/fonts/DroidArabicNaskh.woff2') format('woff2');
+}
+
+/** Dubai */
+@font-face {
+    font-family: 'Dubai';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Dubai'), url('chrome-extension://__MSG_@@extension_id__/fonts/Dubai.woff2') format('woff2');
+}
+
+/** El Messiri */
+@font-face {
+    font-family: 'El Messiri';
+    font-style: normal;
+    font-weight: normal;
+    src: local('El Messiri'), url('chrome-extension://__MSG_@@extension_id__/fonts/ElMessiri.woff2') format('woff2');
+}
+
+/** Harmattan */
+@font-face {
+    font-family: 'Harmattan';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Harmattan'), url('chrome-extension://__MSG_@@extension_id__/fonts/Harmattan.woff2') format('woff2');
+}
+
+/** Jomhuria */
+@font-face {
+    font-family: 'Jomhuria';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Jomhuria'), url('chrome-extension://__MSG_@@extension_id__/fonts/Jomhuria.woff2') format('woff2');
+}
+
+/** Katibeh */
+@font-face {
+    font-family: 'Katibeh';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Katibeh-Regular'), url('chrome-extension://__MSG_@@extension_id__/fonts/Katibeh.woff2') format('woff2');
 }
 
 /** Lalezar */
@@ -48,36 +129,20 @@
     src: local('Lalezar'), url('chrome-extension://__MSG_@@extension_id__/fonts/Lalezar.woff2') format('woff2');
 }
 
-/** Tajawal */
-@font-face {
-    font-family: 'Tajawal';
-    font-style: normal;
-    font-weight: normal;
-    src: local('Tajawal'), url('chrome-extension://__MSG_@@extension_id__/fonts/Tajawal.woff2') format('woff2');
-}
-
-/** Changa */
-@font-face {
-    font-family: 'Changa';
-    font-style: normal;
-    font-weight: normal;
-    src: local('Changa'), url('chrome-extension://__MSG_@@extension_id__/fonts/Changa.woff2') format('woff2');
-}
-
-/** El Messiri */
-@font-face {
-    font-family: 'El Messiri';
-    font-style: normal;
-    font-weight: normal;
-    src: local('El Messiri'), url('chrome-extension://__MSG_@@extension_id__/fonts/El-Messiri.woff2') format('woff2');
-}
-
 /** Lateef */
 @font-face {
     font-family: 'Lateef';
     font-style: normal;
     font-weight: normal;
     src: local('Lateef'), url('chrome-extension://__MSG_@@extension_id__/fonts/Lateef.woff2') format('woff2');
+}
+
+/** Lemonada */
+@font-face {
+    font-family: 'Lemonada';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Lemonada'), url('chrome-extension://__MSG_@@extension_id__/fonts/Lemonada.woff2') format('woff2');
 }
 
 /** Mada */
@@ -93,55 +158,7 @@
     font-family: 'Markazi Text';
     font-style: normal;
     font-weight: normal;
-    src: local('Markazi Text'), url('chrome-extension://__MSG_@@extension_id__/fonts/Markazi-Text.woff2') format('woff2');
-}
-
-/** Mirza */
-@font-face {
-    font-family: 'Mirza';
-    font-style: normal;
-    font-weight: normal;
-    src: local('Mirza'), url('chrome-extension://__MSG_@@extension_id__/fonts/Mirza.woff2') format('woff2');
-}
-
-/** Harmattan */
-@font-face {
-    font-family: 'Harmattan';
-    font-style: normal;
-    font-weight: normal;
-    src: local('Harmattan'), url('chrome-extension://__MSG_@@extension_id__/fonts/Harmattan.woff2') format('woff2');
-}
-
-/** Rakkas */
-@font-face {
-    font-family: 'Rakkas';
-    font-style: normal;
-    font-weight: normal;
-    src: local('Rakkas'), url('chrome-extension://__MSG_@@extension_id__/fonts/Rakkas.woff2') format('woff2');
-}
-
-/** Katibeh */
-@font-face {
-    font-family: 'Katibeh';
-    font-style: normal;
-    font-weight: normal;
-    src: local('Katibeh-Regular'), url('chrome-extension://__MSG_@@extension_id__/fonts/Katibeh.woff2') format('woff2');
-}
-
-/** Jomhuria */
-@font-face {
-    font-family: 'Jomhuria';
-    font-style: normal;
-    font-weight: normal;
-    src: local('Jomhuria'), url('chrome-extension://__MSG_@@extension_id__/fonts/Jomhuria.woff2') format('woff2');
-}
-
-/** Shakstah */
-@font-face {
-    font-family: 'Shakstah';
-    font-style: normal;
-    font-weight: normal;
-    src: local('Shakstah'), url('chrome-extension://__MSG_@@extension_id__/fonts/Shakstah.woff2') format('woff2');
+    src: local('Markazi Text'), url('chrome-extension://__MSG_@@extension_id__/fonts/MarkaziText.woff2') format('woff2');
 }
 
 /** Mehr Nastaliq */
@@ -152,10 +169,130 @@
     src: local('Mehr Nastaliq'), url('chrome-extension://__MSG_@@extension_id__/fonts/MehrNastaliq.woff2') format('woff2');
 }
 
+/** Mirza */
+@font-face {
+    font-family: 'Mirza';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Mirza'), url('chrome-extension://__MSG_@@extension_id__/fonts/Mirza.woff2') format('woff2');
+}
+
+/** Neo Sans Arabic */
+@font-face {
+    font-family: 'Neo Sans Arabic';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Neo Sans Arabic'), url('chrome-extension://__MSG_@@extension_id__/fonts/NeoSansArabic.woff2') format('woff2');
+}
+
+/** Noto Kufi Arabic */
+@font-face {
+    font-family: 'Noto Kufi Arabic';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Noto Kufi Arabic'), url('chrome-extension://__MSG_@@extension_id__/fonts/NotoKufiArabic.woff2') format('woff2');
+}
+
+/** Noto Naskh Arabic */
+@font-face {
+    font-family: 'Noto Naskh Arabic';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Noto Naskh Arabic'), url('chrome-extension://__MSG_@@extension_id__/fonts/NotoNaskhArabic.woff2') format('woff2');
+}
+
+/** Noto Nastaliq Urdu */
+@font-face {
+    font-family: 'Noto Nastaliq Urdu';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Noto Nastaliq Urdu'), url('chrome-extension://__MSG_@@extension_id__/fonts/NotoNastaliqUrdu.woff2') format('woff2');
+}
+
+/** Noto Sans Arabic */
+@font-face {
+    font-family: 'Noto Sans Arabic';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Noto Sans Arabic'), url('chrome-extension://__MSG_@@extension_id__/fonts/NotoSansArabic.woff2') format('woff2');
+}
+
+/** Rakkas */
+@font-face {
+    font-family: 'Rakkas';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Rakkas'), url('chrome-extension://__MSG_@@extension_id__/fonts/Rakkas.woff2') format('woff2');
+}
+
+/** Reem Kufi */
+@font-face {
+    font-family: 'Reem Kufi';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Reem Kufi'), url('chrome-extension://__MSG_@@extension_id__/fonts/ReemKufi.woff2') format('woff2');
+}
+
 /** Rooznameh */
 @font-face {
     font-family: 'Rooznameh';
     font-style: normal;
     font-weight: normal;
     src: local('Rooznameh'), url('chrome-extension://__MSG_@@extension_id__/fonts/Rooznameh.woff2') format('woff2');
+}
+
+/** Sahl Naskh */
+@font-face {
+    font-family: 'Sahl Naskh';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Sahl Naskh'), url('chrome-extension://__MSG_@@extension_id__/fonts/SahlNaskh.woff2') format('woff2');
+}
+
+/** Scheherazade */
+@font-face {
+    font-family: 'Scheherazade';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Scheherazade'), url('chrome-extension://__MSG_@@extension_id__/fonts/Scheherazade.woff2') format('woff2');
+}
+
+/** Shakstah */
+@font-face {
+    font-family: 'Shakstah';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Shakstah'), url('chrome-extension://__MSG_@@extension_id__/fonts/Shakstah.woff2') format('woff2');
+}
+
+/** Simplified Arabic */
+@font-face {
+    font-family: 'Simplified Arabic';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Simplified Arabic'), url('chrome-extension://__MSG_@@extension_id__/fonts/SimplifiedArabic.woff2') format('woff2');
+}
+
+/** Tajawal */
+@font-face {
+    font-family: 'Tajawal';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Tajawal'), url('chrome-extension://__MSG_@@extension_id__/fonts/Tajawal.woff2') format('woff2');
+}
+
+/** Traditional Arabic */
+@font-face {
+    font-family: 'Traditional Arabic';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Traditional Arabic'), url('chrome-extension://__MSG_@@extension_id__/fonts/TraditionalArabic.woff2') format('woff2');
+}
+
+/** Urdu Typesetting */
+@font-face {
+    font-family: 'Urdu Typesetting';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Urdu Typesetting'), url('chrome-extension://__MSG_@@extension_id__/fonts/UrduTypesetting.woff2') format('woff2');
 }
