@@ -13,7 +13,7 @@
 
 [![Chrome](https://img.shields.io/badge/Chrome-4086F4?style=flat-square&logo=Google-Chrome&logoColor=FFCE3E)](https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn)
 [![Firefox](https://img.shields.io/badge/Firefox-845DF8?style=flat-square&logo=Mozilla-Firefox&logoColor=FFC247)](https://addons.mozilla.org/en-US/firefox/addon/wudooh/)
-[![Edge](https://img.shields.io/badge/Edge-105094?style=flat-square&logo=Microsoft-Edge&logoColor=2DC5C8)](https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn)
+[![Edge](https://img.shields.io/badge/Edge-105094?style=flat-square&logo=Microsoft-Edge&logoColor=2DC5C8)](https://microsoftedge.microsoft.com/addons/detail/nkcephhacigcmeejlmbijdnabfdihhdc)
 [![Opera](https://img.shields.io/badge/Opera-424242?style=flat-square&logo=Opera&logoColor=E01224)](https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn)
 
 Wudooh [(clarity in Arabic and Persian)](https://en.wiktionary.org/wiki/%D9%88%D8%B6%D9%88%D8%AD)
