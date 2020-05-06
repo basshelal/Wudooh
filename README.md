@@ -1,6 +1,6 @@
 # Wudooh وضوح
 
-[![Wudooh Banner](https://raw.githubusercontent.com/basshelal/Wudooh/master/pics/WudoohLogoFilled.png)](https://wudooh.app)
+[![Wudooh Banner](https://raw.githubusercontent.com/basshelal/Wudooh/master/pics/WudoohLogo1400x560.png)](https://wudooh.app)
 
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/nigfaloeeeakmmgndbdcijjegolpjfhn.svg)](https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn)
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/users/nigfaloeeeakmmgndbdcijjegolpjfhn.svg)](https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn)
