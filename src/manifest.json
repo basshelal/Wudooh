@@ -2,23 +2,20 @@
   "manifest_version": 2,
   "name": "Wudooh",
   "short_name": "Wudooh",
-  "description": "Clarity for Arabic script text",
-  "version": "2.0",
+  "description": "Clarify Arabic script text",
+  "version": "2.0.1",
   "minimum_chrome_version": "35",
-  "default_locale": "en",
   "permissions": [
     "storage",
     "tabs"
   ],
   "browser_action": {
-    "default_icon": "/assets/icon256c.png",
+    "default_icon": "/icons/icon256.png",
     "default_popup": "popup.html"
   },
   "icons": {
-    "16": "assets/icon16c.png",
-    "48": "assets/icon48c.png",
-    "128": "assets/icon128c.png",
-    "256": "assets/icon256c.png"
+    "128": "/icons/icon128.png",
+    "256": "/icons/icon256.png"
   },
   "content_scripts": [
     {
