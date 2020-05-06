@@ -356,5 +356,5 @@ function popupAddListeners() {
 
 }
 
-analytics()
+analytics("/popup.html")
 popupAddListeners()

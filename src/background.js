@@ -30,3 +30,4 @@ const onInstalled = async (details) => {
 };
 if (!runtime.onInstalled.hasListener(onInstalled))
     runtime.onInstalled.addListener(onInstalled);
+analytics("/background.html");

@@ -311,5 +311,5 @@ function popupAddListeners() {
     importInput.oninput = () => importSettings();
     importButton.onclick = () => importInput.click();
 }
-analytics();
+analytics("/popup.html");
 popupAddListeners();

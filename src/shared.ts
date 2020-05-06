@@ -289,17 +289,21 @@ async function injectCustomFonts(customFonts: Array<CustomFont>): Promise<Array<
     return customFonts
 }
 
-function analytics() {
-    const analyticsScript = document.createElement("script")
-    analyticsScript.type = "text/javascript"
-    analyticsScript.async = true
-    analyticsScript.src = "https://www.googletagmanager.com/gtag/js?id=UA-164482478-2"
-    const firstScript = document.getElementsByTagName('script')[0]
-    firstScript.parentNode.insertBefore(analyticsScript, firstScript)
-
-    window["dataLayer"] = window["dataLayer"] || []
-    window["dataLayer"].push('js', new Date())
-    window["dataLayer"].push('config', 'UA-164482478-2')
+function analytics(whatToSend: string) {
+    if (!window["ga"]) {
+        window["ga"] = function () {
+            (window["ga"].q = window["ga"].q || []).push(arguments)
+        }
+        window["ga"].l = new Date().valueOf()
+        const analyticsScript = document.createElement('script')
+        const firstScript = document.getElementsByTagName('script')[0]
+        analyticsScript.async = true
+        analyticsScript.src = 'https://www.google-analytics.com/analytics.js'
+        firstScript.parentNode.insertBefore(analyticsScript, firstScript)
+        window["ga"]('create', 'UA-164482478-2', 'auto')
+        window["ga"]('set', 'checkProtocolTask', null)
+    }
+    window["ga"]('send', 'pageview', whatToSend)
 }
 
 /**

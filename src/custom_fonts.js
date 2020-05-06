@@ -243,5 +243,5 @@ function customFontsAddListeners() {
     urlInput.oninput = inputOnInput;
     addButton.onclick = addButtonOnClick;
 }
-analytics();
+analytics("/custom_fonts.html");
 customFontsAddListeners();
