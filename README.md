@@ -11,13 +11,10 @@
 [![Mozilla Add-on](https://img.shields.io/amo/users/wudooh.svg)](https://addons.mozilla.org/en-US/firefox/addon/wudooh/)
 [![Mozilla Add-on](https://img.shields.io/amo/stars/wudooh)](https://addons.mozilla.org/en-US/firefox/addon/wudooh/reviews)
 
-[![Chrome](https://raw.githubusercontent.com/basshelal/Wudooh/master/pics/Chrome.png)](https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn)
-
-[![Firefox](https://raw.githubusercontent.com/basshelal/Wudooh/master/pics/Firefox.png)](https://addons.mozilla.org/en-US/firefox/addon/wudooh/)
-
-[![Edge](https://raw.githubusercontent.com/basshelal/Wudooh/master/pics/Edge.png)](https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn)
-
-[![Opera](https://raw.githubusercontent.com/basshelal/Wudooh/master/pics/Opera.png)](https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn)
+[![Chrome](https://img.shields.io/badge/Chrome-4086F4?style=flat-square&logo=Google-Chrome&logoColor=FFCE3E)](https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn)
+[![Firefox](https://img.shields.io/badge/Firefox-845DF8?style=flat-square&logo=Mozilla-Firefox&logoColor=FFC247)](https://addons.mozilla.org/en-US/firefox/addon/wudooh/)
+[![Edge](https://img.shields.io/badge/Edge-105094?style=flat-square&logo=Microsoft-Edge&logoColor=2DC5C8)](https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn)
+[![Opera](https://img.shields.io/badge/Opera-424242?style=flat-square&logo=Opera&logoColor=E01224)](https://chrome.google.com/webstore/detail/wudooh/nigfaloeeeakmmgndbdcijjegolpjfhn)
 
 Wudooh [(clarity in Arabic and Persian)](https://en.wiktionary.org/wiki/%D9%88%D8%B6%D9%88%D8%AD)
  is a simple browser extension that makes reading Arabic script text clearer and more pleasant.
