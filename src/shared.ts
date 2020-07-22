@@ -319,6 +319,10 @@ function wait(millis: number, func: Function): number {
     return setTimeout(func, millis);
 }
 
+function onDOMContentLoaded(listener: EventListenerOrEventListenerObject) {
+    document.addEventListener("DOMContentLoaded", listener)
+}
+
 // region Extensions
 
 interface Array<T> {

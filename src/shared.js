@@ -226,6 +226,9 @@ function get(elementId) {
 function wait(millis, func) {
     return setTimeout(func, millis);
 }
+function onDOMContentLoaded(listener) {
+    document.addEventListener("DOMContentLoaded", listener);
+}
 Array.prototype.contains = function (element) {
     return this.indexOf(element) !== -1;
 };
