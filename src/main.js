@@ -188,6 +188,8 @@ async function main() {
             font = customSite.font;
         }
         updateAll(textSize, lineHeight, font);
+        document.addEventListener("DOMContentLoaded", () => wait(1000, () => updateAll(textSize, lineHeight, font)));
+        wait(1000, () => updateAll(textSize, lineHeight, font));
         startObserver(textSize, lineHeight, font);
         notifyDocument();
     }
