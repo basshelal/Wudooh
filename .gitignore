@@ -1,4 +1,8 @@
 node_modules
 scripts/tmp
 
+.idea/
+package-lock.json
+
 src/*.js
+scripts/*.js
