@@ -1,2 +1,4 @@
 node_modules
 scripts/tmp
+
+src/*.js

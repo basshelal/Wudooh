@@ -2,61 +2,80 @@
  * This file contains common shared code that is used by all three main TypeScript files
  * These are background.ts, main.ts, and popup.ts.
  *
- * This trick is done by loading this script before any others when they are requested and
- * then adding the following line at the top of the file for support from WebStorm IDE.
- * ///<reference path="./shared.ts"/>
+ * This trick is done by loading this script before any others when they are requested
  */
 
 // Import Types
 type Tab = chrome.tabs.Tab | browser.tabs.Tab
 
-/** The font size percent, between 100 and 300 */
-const keyTextSize: string = "textSize";
+type WudoohKeysType =
+    "textSize" |
+    "lineHeight" |
+    "onOff" |
+    "font" |
+    "whitelisted" |
+    "customSettings" |
+    "customFonts"
 
-/** The line height percent, between 100 and 300 */
-const keyLineHeight: string = "lineHeight";
+interface WudoohKeysInterface {
+    textSize: WudoohKeysType;
+    customSettings: WudoohKeysType;
+    customFonts: WudoohKeysType;
+    lineHeight: WudoohKeysType;
+    whitelisted: WudoohKeysType;
+    onOff: WudoohKeysType;
+    font: WudoohKeysType;
+    all(): Array<WudoohKeysType>
+}
 
-/** Determines whether the extension is on or off, true is on */
-const keyOnOff: string = "onOff";
+const WudoohKeys: WudoohKeysInterface = {
+    /** The font size percent, between 100 and 300 */
+    textSize: "textSize",
+    /** The line height percent, between 100 and 300 */
+    lineHeight: "lineHeight",
+    /** Determines whether the extension is on or off, true is on */
+    onOff: "onOff",
+    /** The font to update to, this is a string */
+    font: "font",
+    /** The array of strings of whitelisted websites, this contains their hostnames in the format example.com */
+    whitelisted: "whitelisted",
+    /** The array of {@linkcode CustomSettings} that represents the sites with custom settings */
+    customSettings: "customSettings",
+    /** The array of {@linkcode CustomFont}s, this is used in {@linkcode chrome.storage.local} */
+    customFonts: "customFonts",
+    /** All keys in this object in an array */
+    all(): Array<WudoohKeysType> {
+        return [
+            WudoohKeys.textSize,
+            WudoohKeys.lineHeight,
+            WudoohKeys.onOff,
+            WudoohKeys.font,
+            WudoohKeys.whitelisted,
+            WudoohKeys.customSettings,
+            WudoohKeys.customFonts
+        ]
+    }
+}
 
-/** The font to update to, this is a string */
-const keyFont: string = "font";
+const defaultDelay: number = 250
 
-/** The array of strings of whitelisted websites, this contains their hostnames in the format example.com */
-const keyWhitelisted: string = "whitelisted";
+type MessageReasonType = "updateAllText" | "injectCustomFonts" | "toggleOff"
 
-/** The array of {@linkcode CustomSettings} that represents the sites with custom settings */
-const keyCustomSettings: string = "customSettings";
+const MessageReasons: { updateAllText: MessageReasonType, injectCustomFonts: MessageReasonType, toggleOff: MessageReasonType } = {
+    updateAllText: "updateAllText",
+    injectCustomFonts: "injectCustomFonts",
+    toggleOff: "toggleOff"
+}
 
-/** The array of {@linkcode CustomFont}s, this is used in {@linkcode chrome.storage.local} */
-const keyCustomFonts: string = "customFonts";
-
-/** The keys of the {@linkcode chrome.storage.sync} */
-const keys: Array<string> = [
-    keyTextSize,
-    keyLineHeight,
-    keyOnOff,
-    keyFont,
-    keyWhitelisted,
-    keyCustomSettings,
-    keyCustomFonts
-];
-
-// Defaults
-const defaultFont: string = "Sahl Naskh";
-const defaultTextSize: number = 125;
-const defaultLineHeight: number = 145;
-const defaultDelay: number = 250;
-
-// Message Reasons
-const reasonUpdateAllText = "updateAllText";
-const reasonInjectCustomFonts = "injectCustomFonts";
-const reasonToggleOff = "toggleOff";
+interface Message {
+    reason: MessageReasonType,
+    data?: any
+}
 
 type Browser = "chrome" | "firefox" | "edge" | "opera"
 
 const browserName: Browser = ((): Browser => {
-    const agent = navigator.userAgent.toLowerCase()
+    const agent: string = navigator.userAgent.toLowerCase()
     if (agent.includes("firefox")) return "firefox"
     if (agent.includes("edg")) return "edge"
     if (agent.includes("opr") || agent.includes("opera")) return "opera"
@@ -74,27 +93,27 @@ const isChromium: boolean = ((): boolean => {
  */
 class CustomSetting {
     /** The hostname url of this web site */
-    url: string;
+    url: string
     /** The font size percent to use on this site */
-    textSize: number;
+    textSize: number
     /** The line height percent to use on this site */
-    lineHeight: number;
+    lineHeight: number
     /** The font to use on this site */
-    font: string;
+    font: string
 
     constructor(url: string, textSize: number,
                 lineHeight: number, font: string) {
-        this.url = url;
-        this.textSize = textSize;
-        this.lineHeight = lineHeight;
-        this.font = font;
+        this.url = url
+        this.textSize = textSize
+        this.lineHeight = lineHeight
+        this.font = font
     }
 
     static isValidCustomSetting(customSettings: CustomSetting): boolean {
-        const url: string = customSettings.url;
-        const textSize: number = customSettings.textSize;
-        const lineHeight: number = customSettings.lineHeight;
-        const font: string = customSettings.font;
+        const url: string = customSettings.url
+        const textSize: number = customSettings.textSize
+        const lineHeight: number = customSettings.lineHeight
+        const font: string = customSettings.font
 
         return !!url && typeof url === "string" &&
             !!textSize && typeof textSize === "number" && textSize >= 100 && textSize <= 300 &&
@@ -115,16 +134,16 @@ class CustomSetting {
 
 class CustomFont {
 
-    fontName: string;
+    fontName: string
 
-    localName: string;
+    localName: string
 
-    url: string;
+    url: string
 
     constructor(fontName: string, localName: string, url: string) {
-        this.fontName = fontName;
-        this.localName = localName;
-        this.url = url;
+        this.fontName = fontName
+        this.localName = localName
+        this.url = url
     }
 
     static injectCSS(font: CustomFont): string {
@@ -144,32 +163,32 @@ class CustomFont {
      * it's worked perfectly for me so far
      */
     static isFontInstalled(font: string): boolean {
-        var container = document.createElement('span');
-        container.innerHTML = Array(100).join('wi');
+        var container = document.createElement("span")
+        container.innerHTML = Array(100).join("wi")
         container.style.cssText = [
-            'position:absolute',
-            'width:auto',
-            'font-size:128px',
-            'left:-99999px'
-        ].join(' !important;');
+            "position:absolute",
+            "width:auto",
+            "font-size:128px",
+            "left:-99999px"
+        ].join(" !important;")
 
         function getWidth(fontFamily: string) {
-            container.style.fontFamily = fontFamily;
-            document.body.appendChild(container);
-            let width = container.clientWidth;
-            document.body.removeChild(container);
-            return width;
+            container.style.fontFamily = fontFamily
+            document.body.appendChild(container)
+            let width = container.clientWidth
+            document.body.removeChild(container)
+            return width
         }
 
         // Pre compute the widths of monospace, serif & sans-serif
         // to improve performance.
-        var monoWidth = getWidth('monospace');
-        var serifWidth = getWidth('serif');
-        var sansWidth = getWidth('sans-serif');
+        var monoWidth = getWidth("monospace")
+        var serifWidth = getWidth("serif")
+        var sansWidth = getWidth("sans-serif")
 
-        return monoWidth !== getWidth(font + ',monospace') ||
-            sansWidth !== getWidth(font + ',sans-serif') ||
-            serifWidth !== getWidth(font + ',serif');
+        return monoWidth !== getWidth(font + ",monospace") ||
+            sansWidth !== getWidth(font + ",sans-serif") ||
+            serifWidth !== getWidth(font + ",serif")
     }
 
     static async isFontUrlValid(url: string): Promise<boolean> {
@@ -222,28 +241,35 @@ interface WudoohStorage {
     readonly customFonts?: Array<CustomFont>;
 }
 
-const runtime: (typeof chrome.runtime | typeof browser.runtime) = (() => {
-    if (isChromium) return chrome.runtime
-    else return browser.runtime
-})()
+const DefaultWudoohStorage: WudoohStorage = {
+    textSize: 125,
+    lineHeight: 145,
+    onOff: true,
+    font: "Sahl Naskh",
+    whitelisted: [],
+    customSettings: [],
+    customFonts: []
+}
+
+const runtime: (typeof chrome.runtime | typeof browser.runtime) = (() => isChromium ? chrome.runtime : browser.runtime)()
 
 /**
  * An abstraction and simplification of the storage.sync API to make it use Promises
  */
 const sync = {
-    async get(keys: Array<string> = null): Promise<WudoohStorage> {
+    async get(keys: Array<WudoohKeysType> | WudoohKeysType = null): Promise<WudoohStorage> {
         return new Promise<WudoohStorage>(resolve => {
             if (isChromium) chrome.storage.sync.get(keys, storage => resolve(storage as WudoohStorage))
             else browser.storage.sync.get(keys).then(storage => resolve(storage as WudoohStorage))
-        });
+        })
     },
     async set(wudoohStorage: WudoohStorage): Promise<void> {
         return new Promise<void>(resolve => {
             if (isChromium) chrome.storage.sync.set(wudoohStorage, () => resolve())
             else browser.storage.sync.set(wudoohStorage).then(() => resolve())
-        });
+        })
     }
-};
+}
 
 /**
  * An abstraction and simplification of the tabs API to make it use Promises
@@ -259,7 +285,7 @@ const tabs = {
         return new Promise<Array<Tab>>(resolve => {
             if (isChromium) chrome.tabs.query({}, tabs => resolve(tabs))
             else browser.tabs.query({}).then(tabs => resolve(tabs))
-        });
+        })
     },
     async queryCurrentTab(): Promise<Array<Tab>> {
         return new Promise<Array<Tab>>(resolve => {
@@ -267,14 +293,17 @@ const tabs = {
             else browser.tabs.query({active: true, currentWindow: true}).then(tabs => resolve(tabs))
         })
     },
-    sendMessage(tabId: number, message: any) {
+    sendMessage(tabId: number, message: Message): void {
         if (isChromium) chrome.tabs.sendMessage(tabId, message)
         else browser.tabs.sendMessage(tabId, message)
+    },
+    async sendMessageAllTabs(message: Message): Promise<void> {
+        (await this.queryAllTabs()).forEach((tab: Tab) => this.sendMessage(tab.id, message))
     }
-};
+}
 
 async function injectCustomFonts(customFonts: Array<CustomFont>): Promise<Array<CustomFont>> {
-    let customFontsStyle = get("wudoohCustomFontsStyle")
+    let customFontsStyle: HTMLElement = get("wudoohCustomFontsStyle")
     if (customFontsStyle) {
         customFontsStyle.textContent = ""
         document.head.removeChild(customFontsStyle)
@@ -289,23 +318,6 @@ async function injectCustomFonts(customFonts: Array<CustomFont>): Promise<Array<
     return customFonts
 }
 
-function analytics(whatToSend: string) {
-    if (!window["ga"]) {
-        window["ga"] = function () {
-            (window["ga"].q = window["ga"].q || []).push(arguments)
-        }
-        window["ga"].l = new Date().valueOf()
-        const analyticsScript = document.createElement('script')
-        const firstScript = document.getElementsByTagName('script')[0]
-        analyticsScript.async = true
-        analyticsScript.src = 'https://www.google-analytics.com/analytics.js'
-        firstScript.parentNode.insertBefore(analyticsScript, firstScript)
-        window["ga"]('create', 'UA-164482478-2', 'auto')
-        window["ga"]('set', 'checkProtocolTask', null)
-    }
-    window["ga"]('send', 'pageview', whatToSend)
-}
-
 /**
  * Shorthand for {@linkcode document.getElementById}, automatically casts to T, a HTMLElement
  *
@@ -316,7 +328,7 @@ function get<T extends HTMLElement>(elementId: string): T | null {
 }
 
 function wait(millis: number, func: Function): number {
-    return setTimeout(func, millis);
+    return setTimeout(func, millis)
 }
 
 function onDOMContentLoaded(listener: EventListenerOrEventListenerObject) {
@@ -330,16 +342,16 @@ interface Array<T> {
 }
 
 Array.prototype.contains = function <T>(element: T): boolean {
-    return this.indexOf(element) !== -1;
-};
+    return this.indexOf(element) !== -1
+}
 
 interface String {
     contains(string: string): boolean
 }
 
 String.prototype.contains = function (string: string) {
-    return this.indexOf(string) !== -1;
-};
+    return this.indexOf(string) !== -1
+}
 
 interface Element {
     currentTask: number;
@@ -349,9 +361,9 @@ interface Element {
 
 Element.prototype.postDelayed = function (millis: number, func: Function) {
     let localTask = wait(millis, () => {
-        if (localTask === this.currentTask) func.call(this);
-    });
-    this.currentTask = localTask;
-};
+        if (localTask === this.currentTask) func.call(this)
+    })
+    this.currentTask = localTask
+}
 
 // endregion Extensions

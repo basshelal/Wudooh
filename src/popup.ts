@@ -1,36 +1,34 @@
-///<reference path="./shared.ts"/>
-
-const mainDiv = get<HTMLDivElement>("main")
+const mainDiv: HTMLDivElement = get<HTMLDivElement>("main")
 
 // Custom Fonts
-const fontsStyle = get<HTMLStyleElement>("wudoohCustomFontsStyle")
+const fontsStyle: HTMLStyleElement = get<HTMLStyleElement>("wudoohCustomFontsStyle")
 
 // Inputs
-const sizeSlider = get<HTMLInputElement>("size")
-const heightSlider = get<HTMLInputElement>("height")
-const onOffSwitch = get<HTMLInputElement>("onOffSwitch")
-const fontSelect = get<HTMLSelectElement>("font-select")
-const overrideSiteSwitch = get<HTMLInputElement>("overrideSettingsSwitch")
-const whiteListSwitch = get<HTMLInputElement>("whitelistSwitch")
+const sizeSlider: HTMLInputElement = get<HTMLInputElement>("size")
+const heightSlider: HTMLInputElement = get<HTMLInputElement>("height")
+const onOffSwitch: HTMLInputElement = get<HTMLInputElement>("onOffSwitch")
+const fontSelect: HTMLSelectElement = get<HTMLSelectElement>("font-select")
+const overrideSiteSwitch: HTMLInputElement = get<HTMLInputElement>("overrideSettingsSwitch")
+const whiteListSwitch: HTMLInputElement = get<HTMLInputElement>("whitelistSwitch")
 
 // Labels
-const sizeValue = get<HTMLLabelElement>("sizeValue")
-const heightValue = get<HTMLLabelElement>("heightValue")
-const overrideSettingsValue = get<HTMLLabelElement>("overrideSettingsLabel")
-const whitelistedValue = get<HTMLLabelElement>("whitelistedLabel")
+const sizeValue: HTMLLabelElement = get<HTMLLabelElement>("sizeValue")
+const heightValue: HTMLLabelElement = get<HTMLLabelElement>("heightValue")
+const overrideSettingsValue: HTMLLabelElement = get<HTMLLabelElement>("overrideSettingsLabel")
+const whitelistedValue: HTMLLabelElement = get<HTMLLabelElement>("whitelistedLabel")
 
 // Website Info
-const websiteText = get<HTMLHeadingElement>("website")
-const websiteIcon = get<HTMLImageElement>("websiteIcon")
+const websiteText: HTMLHeadingElement = get<HTMLHeadingElement>("website")
+const websiteIcon: HTMLImageElement = get<HTMLImageElement>("websiteIcon")
 
 // Import / Export
-const exportButton = get<HTMLButtonElement>("exportButton")
-const exportAnchor = get<HTMLAnchorElement>("exportAnchor")
-const importButton = get<HTMLButtonElement>("importButton")
-const importInput = get<HTMLInputElement>("importInput")
+const exportButton: HTMLButtonElement = get<HTMLButtonElement>("exportButton")
+const exportAnchor: HTMLAnchorElement = get<HTMLAnchorElement>("exportAnchor")
+const importButton: HTMLButtonElement = get<HTMLButtonElement>("importButton")
+const importInput: HTMLInputElement = get<HTMLInputElement>("importInput")
 
-async function initializeUI() {
-    const storage: WudoohStorage = await sync.get(keys)
+async function initializeUI(): Promise<void> {
+    const storage: WudoohStorage = await sync.get(WudoohKeys.all())
     const currentTabs: Array<Tab> = await tabs.queryCurrentTab()
 
     const injectedFonts: Array<CustomFont> = await injectCustomFonts(storage.customFonts)
@@ -71,9 +69,9 @@ async function initializeUI() {
 
     // Initialize all the HTMLElements to the values from storage
     sizeSlider.value = textSize.toString()
-    sizeValue.innerHTML = textSize.toString() + '%'
+    sizeValue.innerHTML = textSize.toString() + "%"
     heightSlider.value = lineHeight.toString()
-    heightValue.innerHTML = lineHeight.toString() + '%'
+    heightValue.innerHTML = lineHeight.toString() + "%"
     fontSelect.value = font
     fontSelect.style.fontFamily = font
     websiteText.innerText = thisURL
@@ -94,29 +92,25 @@ async function initializeUI() {
     else overrideSettingsValue.innerText = "Using global settings"
 }
 
-async function updateAllTabsText() {
-    const allTabs = await tabs.queryAllTabs()
-    allTabs.forEach((tab: Tab) =>
-        tabs.sendMessage(tab.id, {reason: reasonUpdateAllText}))
+async function updateAllTabsText(): Promise<void> {
+    tabs.sendMessageAllTabs({reason: MessageReasons.updateAllText})
 }
 
-async function toggleOnOff() {
+async function toggleOnOff(): Promise<void> {
     await sync.set({onOff: onOffSwitch.checked})
     if (onOffSwitch.checked) {
         mainDiv.style.maxHeight = "100%"
         updateAllTabsText()
     } else {
         mainDiv.style.maxHeight = "0"
-        const allTabs: Array<Tab> = await tabs.queryAllTabs()
-        allTabs.forEach((tab: Tab) =>
-            tabs.sendMessage(tab.id, {reason: reasonToggleOff}))
+        tabs.sendMessageAllTabs({reason: MessageReasons.toggleOff})
     }
 }
 
-async function updateTextSize() {
+async function updateTextSize(): Promise<void> {
     const newSize: number = parseInt(sizeSlider.value)
     const currentTabs = await tabs.queryCurrentTab()
-    const wudoohStorage: WudoohStorage = await sync.get([keyCustomSettings])
+    const wudoohStorage: WudoohStorage = await sync.get(WudoohKeys.customSettings)
 
     const thisURL: string = new URL(currentTabs[0].url).hostname
     const customSettings: Array<CustomSetting> = wudoohStorage.customSettings
@@ -132,10 +126,10 @@ async function updateTextSize() {
     updateAllTabsText()
 }
 
-async function updateLineHeight() {
+async function updateLineHeight(): Promise<void> {
     const newHeight: number = parseInt(heightSlider.value)
     const currentTabs = await tabs.queryCurrentTab()
-    const wudoohStorage: WudoohStorage = await sync.get([keyCustomSettings])
+    const wudoohStorage: WudoohStorage = await sync.get(WudoohKeys.customSettings)
 
     const thisURL: string = new URL(currentTabs[0].url).hostname
     const customSettings: Array<CustomSetting> = wudoohStorage.customSettings
@@ -151,10 +145,10 @@ async function updateLineHeight() {
     updateAllTabsText()
 }
 
-async function changeFont() {
+async function changeFont(): Promise<void> {
     const newFont: string = fontSelect.value
     const currentTabs = await tabs.queryCurrentTab()
-    const wudoohStorage: WudoohStorage = await sync.get([keyCustomSettings])
+    const wudoohStorage: WudoohStorage = await sync.get(WudoohKeys.customSettings)
 
     const thisURL: string = new URL(currentTabs[0].url).hostname
     const customSettings: Array<CustomSetting> = wudoohStorage.customSettings
@@ -171,10 +165,10 @@ async function changeFont() {
     updateAllTabsText()
 }
 
-async function toggleOverrideSiteSettings() {
+async function toggleOverrideSiteSettings(): Promise<void> {
     const currentTabs = await tabs.queryCurrentTab()
     const thisURL: string = new URL(currentTabs[0].url).hostname
-    let wudoohStorage: WudoohStorage = await sync.get([keyCustomSettings])
+    let wudoohStorage: WudoohStorage = await sync.get(WudoohKeys.customSettings)
     let customSettings: Array<CustomSetting> = wudoohStorage.customSettings
 
     if (overrideSiteSwitch.checked) {
@@ -188,13 +182,13 @@ async function toggleOverrideSiteSettings() {
     }
 
     await sync.set({customSettings: customSettings})
-    wudoohStorage = await sync.get([keyTextSize, keyLineHeight, keyFont, keyCustomSettings])
+    wudoohStorage = await sync.get([WudoohKeys.textSize, WudoohKeys.lineHeight, WudoohKeys.font, WudoohKeys.customSettings])
     customSettings = wudoohStorage.customSettings as Array<CustomSetting>
 
     let textSize: number
     let lineHeight: number
     let font: string
-    let custom = customSettings.find((custom: CustomSetting) => custom.url === thisURL)
+    let custom: CustomSetting = customSettings.find((custom: CustomSetting) => custom.url === thisURL)
     if (!!custom) {
         textSize = custom.textSize
         lineHeight = custom.lineHeight
@@ -206,18 +200,18 @@ async function toggleOverrideSiteSettings() {
     }
 
     sizeSlider.value = textSize.toString()
-    sizeValue.innerHTML = textSize.toString() + '%'
+    sizeValue.innerHTML = textSize.toString() + "%"
     heightSlider.value = lineHeight.toString()
-    heightValue.innerHTML = lineHeight.toString() + '%'
+    heightValue.innerHTML = lineHeight.toString() + "%"
     fontSelect.value = font
     fontSelect.style.fontFamily = font
     updateAllTabsText()
 }
 
 async function toggleWhitelist() {
-    const currentTabs = await tabs.queryCurrentTab()
+    const currentTabs: Array<Tab> = await tabs.queryCurrentTab()
     const thisURL: string = new URL(currentTabs[0].url).hostname
-    const wudoohStorage: WudoohStorage = await sync.get([keyWhitelisted])
+    const wudoohStorage: WudoohStorage = await sync.get(WudoohKeys.whitelisted)
     let whitelisted: Array<string> = wudoohStorage.whitelisted
 
     if (whiteListSwitch.checked) {
@@ -232,15 +226,15 @@ async function toggleWhitelist() {
     updateAllTabsText()
 }
 
-async function exportSettings() {
-    const wudoohStorage: WudoohStorage = await sync.get(keys)
+async function exportSettings(): Promise<void> {
+    const wudoohStorage: WudoohStorage = await sync.get(WudoohKeys.all())
     const json: string = JSON.stringify(wudoohStorage, null, 4)
     exportAnchor.href = "data:application/octet-stream," + encodeURIComponent(json)
     exportAnchor.download = "wudooh.settings.json"
     exportAnchor.click()
 }
 
-async function importSettings() {
+async function importSettings(): Promise<void> {
     const file: File = importInput.files[0]
     const reader: FileReader = new FileReader()
     reader.onload = async (event: ProgressEvent) => {
@@ -259,13 +253,13 @@ async function importSettings() {
 
         const errorMessages: Array<string> = []
 
-        const textSize: number = result[keyTextSize]
-        const lineHeight: number = result[keyLineHeight]
-        const onOff: boolean = result[keyOnOff]
-        const font: string = result[keyFont]
-        const whitelisted: Array<string> = result[keyWhitelisted]
-        const customSettings: Array<CustomSetting> = result[keyCustomSettings]
-        const customFonts: Array<CustomFont> = result[keyCustomFonts]
+        const textSize: number = result[WudoohKeys.textSize]
+        const lineHeight: number = result[WudoohKeys.lineHeight]
+        const onOff: boolean = result[WudoohKeys.onOff]
+        const font: string = result[WudoohKeys.font]
+        const whitelisted: Array<string> = result[WudoohKeys.whitelisted]
+        const customSettings: Array<CustomSetting> = result[WudoohKeys.customSettings]
+        const customFonts: Array<CustomFont> = result[WudoohKeys.customFonts]
 
         if (textSize === null) {
             errorMessages.push("Field \"textSize\" is missing! It must be a number between 100 and 300")
@@ -326,7 +320,7 @@ async function importSettings() {
     importInput.value = null
 }
 
-function popupAddListeners() {
+function popupAddListeners(): void {
     document.addEventListener("DOMContentLoaded", initializeUI)
 
     onOffSwitch.onclick = () => toggleOnOff()
@@ -334,11 +328,11 @@ function popupAddListeners() {
     fontSelect.oninput = () => changeFont()
 
     sizeSlider.oninput = () => {
-        sizeValue.textContent = sizeSlider.value + '%'
+        sizeValue.textContent = sizeSlider.value + "%"
         sizeSlider.postDelayed(defaultDelay, updateTextSize)
     }
     heightSlider.oninput = () => {
-        heightValue.textContent = heightSlider.value + '%'
+        heightValue.textContent = heightSlider.value + "%"
         heightSlider.postDelayed(defaultDelay, updateLineHeight)
     }
 
@@ -356,5 +350,4 @@ function popupAddListeners() {
 
 }
 
-analytics("/popup.html")
 popupAddListeners()

@@ -4,37 +4,29 @@
  * Here we only run code that will execute when the extension is installed or updated.
  */
 
-///<reference path="./shared.ts"/>
-
 /**
  * Runs on install or update to check if the storage has initialized all its values correctly.
  * If some key has not been initialized then it will create it and set it to its default value
  */
-const onInstalled = async (details) => {
-    if (details.reason == "update") {
+const onInstalled = async (details): Promise<void> => {
+    if (details.reason == "update" && runtime.getManifest().version > details.previousVersion) {
         tabs.create("https://wudooh.app/updated")
     }
-    let storage: WudoohStorage = await sync.get(keys)
+    let storage: WudoohStorage = await sync.get(WudoohKeys.all())
     const promises: Array<Promise<void>> = []
-    if (storage.textSize == null) promises.push(sync.set({textSize: defaultTextSize}))
-    if (storage.lineHeight == null) promises.push(sync.set({lineHeight: defaultLineHeight}))
-    if (storage.onOff == null) promises.push(sync.set({onOff: true}))
-    if (storage.font == null) promises.push(sync.set({font: defaultFont}))
-    if (storage.whitelisted == null) promises.push(sync.set({whitelisted: []}))
-    if (storage.customSettings == null) promises.push(sync.set({customSettings: []}))
-    if (storage.customFonts == null) promises.push(sync.set({customFonts: []}))
+    if (storage.textSize == null) promises.push(sync.set({textSize: DefaultWudoohStorage.textSize}))
+    if (storage.lineHeight == null) promises.push(sync.set({lineHeight: DefaultWudoohStorage.lineHeight}))
+    if (storage.onOff == null) promises.push(sync.set({onOff: DefaultWudoohStorage.onOff}))
+    if (storage.font == null) promises.push(sync.set({font: DefaultWudoohStorage.font}))
+    if (storage.whitelisted == null) promises.push(sync.set({whitelisted: DefaultWudoohStorage.whitelisted}))
+    if (storage.customSettings == null) promises.push(sync.set({customSettings: DefaultWudoohStorage.customSettings}))
+    if (storage.customFonts == null) promises.push(sync.set({customFonts: DefaultWudoohStorage.customFonts}))
     await Promise.all(promises)
-    storage = await sync.get(keys)
-    const allTabs = await tabs.queryAllTabs()
-    allTabs.forEach((tab: Tab) => {
-        if (storage.onOff) {
-            const message = {reason: reasonUpdateAllText}
-            tabs.sendMessage(tab.id, message)
-        }
-    })
+    storage = await sync.get(WudoohKeys.all())
+    if (storage.onOff) {
+        tabs.sendMessageAllTabs({reason: MessageReasons.updateAllText})
+    }
 }
 
 if (!runtime.onInstalled.hasListener(onInstalled))
     runtime.onInstalled.addListener(onInstalled)
-
-analytics("/background.html")

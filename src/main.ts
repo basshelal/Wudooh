@@ -1,17 +1,18 @@
-///<reference path="./shared.ts"/>
-
 /**
  * This Arabic regex allows and accepts any non Arabic symbols next to Arabic symbols,
  * this means that it accepts anything as long as it has some Arabic symbol in it
  */
-const arabicRegex = new RegExp("([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\]+([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\\W\\d]+)*)", "g")
+const arabicRegex: RegExp = new RegExp("([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\]+([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\\W\\d]+)*)", "g")
 
-const arabicNumbersRegex = new RegExp("([\u0660-\u0669\u06F0-\u06F9]+)", "g")
+const arabicNumbersRegex: RegExp = new RegExp("([\u0660-\u0669\u06F0-\u06F9]+)", "g")
 
-const htmlEditables = ["textarea", "input", "text", "email", "number", "search", "tel", "url", "password"]
+const htmlEditables: Array<string> = ["textarea", "input", "text", "email", "number", "search", "tel", "url", "password"]
 
 /** The observer used in {@linkcode startObserver} to dynamically update any newly added Nodes */
 let observer: MutationObserver
+
+// TODO: Add "plugins" system that allows a callbacks before, during and after node updates to have custom behavior
+//  for sites (such as YouTube)
 
 /**
  * Returns true if the passed in Node has been updated by Wudooh and false otherwise
@@ -22,7 +23,7 @@ function hasNodeBeenUpdated(node: Node): boolean {
 
 /**
  * Returns true if this document has already been updated by Wudooh before,
- * this is done in {@linkcode notifyDocument()}
+ * this is done in {@linkcode notifyDocumentHasUpdated}
  */
 function hasDocumentBeenUpdated(): boolean {
     return document.getElementById("wudoohMetaElement") !== null
@@ -102,7 +103,7 @@ function getArabicTextNodesIn(rootNode: Node): Array<Node> {
  * @param lineHeight the height to update the line to
  * @param font the name of the font to update the text to
  */
-async function updateNode(node: Node, textSize: number, lineHeight: number, font: string) {
+async function updateNode(node: Node, textSize: number, lineHeight: number, font: string): Promise<void> {
     let newSize: number = textSize / 100
     let newHeight: number = lineHeight / 100
 
@@ -112,7 +113,7 @@ async function updateNode(node: Node, textSize: number, lineHeight: number, font
     }
 }
 
-async function updateByAdding(node: Node, textSize: number, lineHeight: number, font: string) {
+async function updateByAdding(node: Node, textSize: number, lineHeight: number, font: string): Promise<void> {
     const parent: Node = node.parentNode
     // return if parent or node are null
     if (!parent || !node) return
@@ -124,13 +125,13 @@ async function updateByAdding(node: Node, textSize: number, lineHeight: number, 
         newHTML = "<span wudooh='true' style='" +
             "font-size:" + textSize + "em;" +
             "line-height:" + lineHeight + "em;" +
-            "'>$&</span>";
+            "'>$&</span>"
     } else {
         newHTML = "<span wudooh='true' style='" +
             "font-size:" + textSize + "em;" +
             "line-height:" + lineHeight + "em;" +
             "font-family:" + "\"" + font + "\";" +
-            "'>$&</span>";
+            "'>$&</span>"
     }
 
     let text: string = node.nodeValue.replace(arabicRegex, newHTML)
@@ -148,7 +149,7 @@ async function updateByAdding(node: Node, textSize: number, lineHeight: number, 
     parent.removeChild(node)
 }
 
-async function updateByChanging(node: Node, textSize: number, lineHeight: number, font: string) {
+async function updateByChanging(node: Node, textSize: number, lineHeight: number, font: string): Promise<void> {
     node.parentElement.style.fontSize = textSize + "em"
     node.parentElement.style.lineHeight = lineHeight + "em"
     if (font === "Original") node.parentElement.style.fontFamily = ""
@@ -162,7 +163,7 @@ async function updateByChanging(node: Node, textSize: number, lineHeight: number
  * @param lineHeight the height to update the line to
  * @param font the name of the font to update the text to
  */
-async function updateAll(textSize: number, lineHeight: number, font: string) {
+async function updateAll(textSize: number, lineHeight: number, font: string): Promise<void> {
     getArabicTextNodesIn(document.body).forEach((it: Node) => updateNode(it, textSize, lineHeight, font))
 }
 
@@ -173,7 +174,7 @@ async function updateAll(textSize: number, lineHeight: number, font: string) {
  * @param lineHeight the height to update the line to
  * @param font the name of the font to update the text to
  */
-async function startObserver(textSize: number, lineHeight: number, font: string) {
+async function startObserver(textSize: number, lineHeight: number, font: string): Promise<void> {
     // If observer was existing then disconnect it and delete it
     if (!!observer) {
         observer.disconnect()
@@ -187,7 +188,7 @@ async function startObserver(textSize: number, lineHeight: number, font: string)
             characterData: true, // we get notified of any changes to character data
             characterDataOldValue: true, // we keep the old value
             childList: true, // we get notified about changes to a node's children
-            subtree: true, // we get notified about any changes to any of a node's descendants
+            subtree: true // we get notified about any changes to any of a node's descendants
         }
 
         const callback: MutationCallback = (mutationsList: Array<MutationRecord>) => {
@@ -218,16 +219,21 @@ async function startObserver(textSize: number, lineHeight: number, font: string)
     }
 }
 
-async function notifyDocument() {
+/**
+ * Adds an element to this document to notify that Wudooh (this ts file) has been run on it,
+ * if this has been called then {@link notifyDocumentHasUpdated} will return `true`
+ * Multiple calls to this do nothing after the first
+ */
+async function notifyDocumentHasUpdated(): Promise<void> {
     if (!hasDocumentBeenUpdated()) {
-        let meta = document.createElement("meta")
+        let meta: HTMLMetaElement = document.createElement("meta")
         meta.id = "wudoohMetaElement"
         meta.setAttribute("wudooh", "true")
         document.head.appendChild(meta)
     }
 }
 
-async function toggleOff() {
+async function toggleOff(): Promise<void> {
     if (!!observer) {
         observer.disconnect()
         observer = null
@@ -239,23 +245,23 @@ async function toggleOff() {
     })
 }
 
-async function addMessageListener() {
-    runtime.onMessage.addListener((message: any) => {
+async function addMessageListener(): Promise<void> {
+    runtime.onMessage.addListener((message: Message) => {
         if (message.reason == null) return
-        if (message.reason === reasonUpdateAllText) {
+        if (message.reason === MessageReasons.updateAllText) {
             main()
         }
-        if (message.reason === reasonInjectCustomFonts) {
-            injectCustomFonts(message.customFonts)
+        if (message.reason === MessageReasons.injectCustomFonts) {
+            injectCustomFonts(message.data)
         }
-        if (message.reason === reasonToggleOff) {
+        if (message.reason === MessageReasons.toggleOff) {
             toggleOff()
         }
     })
 }
 
-async function main() {
-    const storage: WudoohStorage = await sync.get(keys)
+async function main(): Promise<void> {
+    const storage: WudoohStorage = await sync.get(WudoohKeys.all())
     let textSize: number = storage.textSize
     let lineHeight: number = storage.lineHeight
     let font: string = storage.font
@@ -280,10 +286,12 @@ async function main() {
         }
         updateAll(textSize, lineHeight, font)
         // Force a second attempt for pesky websites
-        onDOMContentLoaded(() => wait(1000, () => updateAll(textSize, lineHeight, font)))
+        onDOMContentLoaded(() => wait(1000, () =>
+            updateAll(textSize, lineHeight, font))
+        )
         wait(1000, () => updateAll(textSize, lineHeight, font))
         startObserver(textSize, lineHeight, font)
-        notifyDocument()
+        notifyDocumentHasUpdated()
     }
     // We've been updated and now we've become whitelisted
     if (hasDocumentBeenUpdated() && isWhitelisted) {

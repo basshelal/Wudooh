@@ -1,5 +1,3 @@
-///<reference path="./shared.ts"/>
-
 // TODO code is kind of messy here, need to clean up after Beta
 
 const template = get<HTMLTemplateElement>("template")
@@ -61,7 +59,7 @@ const allWudoohFonts: Array<string> = [
 ]
 
 async function initializeCustomFontsPage() {
-    const storage: WudoohStorage = await sync.get([keyCustomFonts])
+    const storage: WudoohStorage = await sync.get(WudoohKeys.customFonts)
     displayedFonts = []
     const customFonts: Array<CustomFont> = await injectCustomFonts(storage.customFonts)
     customFonts.forEach((it: CustomFont) => {
@@ -82,14 +80,7 @@ async function injectTemporaryCustomFont(customFont: CustomFont) {
 
 async function notifyAllTabsCustomFontsChanged(customFonts: Array<CustomFont>) {
     injectCustomFonts(customFonts)
-    const allTabs = await tabs.queryAllTabs()
-    allTabs.forEach((tab: Tab) => {
-        let message = {
-            reason: reasonInjectCustomFonts,
-            customFonts: customFonts
-        }
-        tabs.sendMessage(tab.id, message)
-    })
+    tabs.sendMessageAllTabs({reason: MessageReasons.injectCustomFonts, data: customFonts})
 }
 
 function displayFont(customFont: CustomFont) {
@@ -135,7 +126,7 @@ function displayFont(customFont: CustomFont) {
     fontTitle.style.fontFamily = fontName
 
     async function editCustomFont(propertyToChange: string, newValue: string) {
-        const storage: WudoohStorage = await sync.get([keyCustomFonts])
+        const storage: WudoohStorage = await sync.get(WudoohKeys.customFonts)
         const customFonts: Array<CustomFont> = storage.customFonts
         const syncFont: CustomFont = customFonts.find(it => it.fontName === savedFontName())
 
@@ -186,7 +177,7 @@ function displayFont(customFont: CustomFont) {
     deleteButton.onclick = async () => {
         if (confirm(`Are you sure you want to delete font ${fontNameInput.value}\nThis cannot be undone`)) {
             const font = fontNameInput.value
-            const storage: WudoohStorage = await sync.get([keyCustomFonts])
+            const storage: WudoohStorage = await sync.get(WudoohKeys.customFonts)
             const customFonts: Array<CustomFont> = storage.customFonts.filter((it: CustomFont) => it.fontName !== font)
             await sync.set({customFonts: customFonts})
             notifyAllTabsCustomFontsChanged(customFonts)
@@ -253,7 +244,7 @@ async function addButtonOnClick() {
     // If we reached here then all is valid!
     infoLabel.innerText = ""
 
-    const storage: WudoohStorage = await sync.get([keyCustomFonts])
+    const storage: WudoohStorage = await sync.get(WudoohKeys.customFonts)
     const customFonts: Array<CustomFont> = storage.customFonts
     const customFont: CustomFont = new CustomFont(fontName, localName, url)
     customFonts.push(customFont)
@@ -286,5 +277,4 @@ function customFontsAddListeners() {
     addButton.onclick = addButtonOnClick
 }
 
-analytics("/custom_fonts.html")
 customFontsAddListeners()

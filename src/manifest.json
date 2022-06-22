@@ -3,7 +3,7 @@
   "name": "Wudooh وضوح",
   "short_name": "Wudooh وضوح",
   "description": "Clarify Arabic script text",
-  "version": "2.0.1",
+  "version": "2.1",
   "minimum_chrome_version": "35",
   "permissions": [
     "storage",
@@ -25,8 +25,8 @@
       "all_frames": true,
       "run_at": "document_idle",
       "js": [
-        "shared.min.js",
-        "main.min.js"
+        "shared.js",
+        "main.js"
       ],
       "css": [
         "fonts.css"
@@ -35,15 +35,15 @@
   ],
   "background": {
     "scripts": [
-      "shared.min.js",
-      "background.min.js"
+      "shared.js",
+      "background.js"
     ],
     "persistent": false
   },
   "web_accessible_resources": [
     "fonts/*"
   ],
-  "content_security_policy": "script-src 'self' https://www.google-analytics.com; object-src 'self'",
+  "content_security_policy": "script-src 'self' ; object-src 'self'",
   "browser_specific_settings": {
     "gecko": {
       "id": "wudooh@wudooh.com"
