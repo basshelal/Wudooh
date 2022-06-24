@@ -1,3 +1,4 @@
+importScripts("./shared.js")
 /**
  * This is the code that runs on the background page of the extension.
  *
@@ -9,9 +10,6 @@
  * If some key has not been initialized then it will create it and set it to its default value
  */
 const onInstalled = async (details): Promise<void> => {
-    if (details.reason == "update" && runtime.getManifest().version > details.previousVersion) {
-        tabs.create("https://wudooh.app/updated")
-    }
     let storage: WudoohStorage = await sync.get(WudoohKeys.all())
     const promises: Array<Promise<void>> = []
     if (storage.textSize == null) promises.push(sync.set({textSize: DefaultWudoohStorage.textSize}))
@@ -24,7 +22,7 @@ const onInstalled = async (details): Promise<void> => {
     await Promise.all(promises)
     storage = await sync.get(WudoohKeys.all())
     if (storage.onOff) {
-        tabs.sendMessageAllTabs({reason: MessageReasons.updateAllText})
+        await (tabs.sendMessageAllTabs({reason: MessageReasons.updateAllText}))
     }
 }
 

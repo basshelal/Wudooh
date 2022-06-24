@@ -353,17 +353,4 @@ String.prototype.contains = function (string: string) {
     return this.indexOf(string) !== -1
 }
 
-interface Element {
-    currentTask: number;
-
-    postDelayed(millis: number, func: Function);
-}
-
-Element.prototype.postDelayed = function (millis: number, func: Function) {
-    let localTask = wait(millis, () => {
-        if (localTask === this.currentTask) func.call(this)
-    })
-    this.currentTask = localTask
-}
-
 // endregion Extensions

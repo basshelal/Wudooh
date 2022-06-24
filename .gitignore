@@ -5,3 +5,4 @@ scripts/tmp
 
 src/*.js
 scripts/*.js
+src/js/*.js

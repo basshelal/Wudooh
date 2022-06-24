@@ -58,6 +58,20 @@ const allWudoohFonts: Array<string> = [
     "Original"
 ]
 
+// TODO: Better way of having delayed task that changes if updated before ran
+interface Element {
+    currentTask: number;
+
+    postDelayed(millis: number, func: Function);
+}
+
+Element.prototype.postDelayed = function (millis: number, func: Function) {
+    let localTask = wait(millis, () => {
+        if (localTask === this.currentTask) func.call(this)
+    })
+    this.currentTask = localTask
+}
+
 async function initializeCustomFontsPage() {
     const storage: WudoohStorage = await sync.get(WudoohKeys.customFonts)
     displayedFonts = []

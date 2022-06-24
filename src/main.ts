@@ -247,15 +247,17 @@ async function toggleOff(): Promise<void> {
 
 async function addMessageListener(): Promise<void> {
     runtime.onMessage.addListener((message: Message) => {
-        if (message.reason == null) return
-        if (message.reason === MessageReasons.updateAllText) {
-            main()
-        }
-        if (message.reason === MessageReasons.injectCustomFonts) {
-            injectCustomFonts(message.data)
-        }
-        if (message.reason === MessageReasons.toggleOff) {
-            toggleOff()
+        console.log(message)
+        switch (message.reason) {
+            case MessageReasons.updateAllText:
+                main()
+                break
+            case MessageReasons.injectCustomFonts:
+                injectCustomFonts(message.data)
+                break
+            case MessageReasons.toggleOff:
+                toggleOff()
+                break
         }
     })
 }

@@ -1,5 +1,5 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "Wudooh وضوح",
   "short_name": "Wudooh وضوح",
   "description": "Clarify Arabic script text",
@@ -9,8 +9,13 @@
     "storage",
     "tabs"
   ],
-  "browser_action": {
-    "default_icon": "icons/icon256.png",
+  "action": {
+    "default_title": "Wudooh وضوح",
+    "default_icon": {
+      "16": "icons/icon256.png",
+      "24": "icons/icon256.png",
+      "32": "icons/icon256.png"
+    },
     "default_popup": "popup.html"
   },
   "icons": {
@@ -34,19 +39,19 @@
     }
   ],
   "background": {
-    "scripts": [
-      "shared.js",
-      "background.js"
-    ],
-    "persistent": false
+    "service_worker": "background.js"
   },
   "web_accessible_resources": [
-    "fonts/*"
-  ],
-  "content_security_policy": "script-src 'self' ; object-src 'self'",
-  "browser_specific_settings": {
-    "gecko": {
-      "id": "wudooh@wudooh.com"
+    {
+      "resources": [
+        "fonts/*"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
     }
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
   }
 }
