@@ -30,10 +30,10 @@ const importInput: HTMLInputElement = get<HTMLInputElement>("importInput")
 interface Element {
     currentTask: number;
 
-    postDelayed(millis: number, func: Function);
+    postDelayed(millis: number, func: Function): void;
 }
 
-Element.prototype.postDelayed = function (millis: number, func: Function) {
+Element.prototype.postDelayed = function (millis: number, func: Function): void {
     let localTask = wait(millis, () => {
         if (localTask === this.currentTask) func.call(this)
     })

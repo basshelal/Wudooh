@@ -4,12 +4,10 @@
  */
 const arabicRegex: RegExp = new RegExp("([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\]+([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\\W\\d]+)*)", "g")
 
-const arabicNumbersRegex: RegExp = new RegExp("([\u0660-\u0669\u06F0-\u06F9]+)", "g")
-
 const htmlEditables: Array<string> = ["textarea", "input", "text", "email", "number", "search", "tel", "url", "password"]
 
 /** The observer used in {@linkcode startObserver} to dynamically update any newly added Nodes */
-let observer: MutationObserver
+let observer: MutationObserver | null = null
 
 interface WudoohPlugin {
     /** Returns `true` if the node has been updated previously, this is set for you, do not modify */
@@ -64,9 +62,9 @@ class AbstractWudoohPlugin {
 
 class DefaultPlugin extends AbstractWudoohPlugin implements WudoohPlugin {
     /** Hostname of current URL, set in {@link urlRequiresUpdate} */
-    private urlHostname: string
+    private urlHostname!: string
     /** The {@link WudoohStorage} first fetched in {@link beforeUpdateAll} */
-    private storage: WudoohStorage
+    private storage!: WudoohStorage
     /** The {@link CustomSetting} of this site, if it exists, `undefined` otherwise */
     private customSetting?: CustomSetting | undefined
 
@@ -74,12 +72,13 @@ class DefaultPlugin extends AbstractWudoohPlugin implements WudoohPlugin {
         // true only if Wudooh is on and this url is not whitelisted
         this.urlHostname = url.hostname
         this.storage = await sync.get(WudoohKeys.all())
-        return this.storage.onOff && !this.storage.whitelisted.contains(this.urlHostname)
+        return (!!this.storage.onOff && this.storage.onOff) &&
+            (!!this.storage.whitelisted && !this.storage.whitelisted.contains(this.urlHostname))
     }
 
     async beforeUpdateAll(): Promise<void> {
-        this.customSetting = this.storage.customSettings.find((custom: CustomSetting) => custom.url === this.urlHostname)
-        injectCustomFonts(this.storage.customFonts)
+        this.customSetting = this.storage.customSettings ? this.storage.customSettings.find((custom: CustomSetting) => custom.url === this.urlHostname) : undefined
+        if (!!this.storage.customFonts) injectCustomFonts(this.storage.customFonts)
     }
 
     requiresUpdate(node: Node): boolean {
@@ -108,7 +107,7 @@ const YoutubePlugin: WudoohPlugin = {
         return url.hostname === "youtube.com" || url.hostname === "www.youtube.com"
     },
     requiresUpdate(node: Node): boolean {
-        return !this.hasNodeUpdated(node) && hasArabicScript(node) && !isNodeEditable(node)
+        return (!!this.hasNodeUpdated && !this.hasNodeUpdated(node)) && hasArabicScript(node) && !isNodeEditable(node)
     }
 }
 
@@ -118,12 +117,12 @@ const wudoohPlugins: Array<WudoohPlugin> = [YoutubePlugin]
  * Returns true if the passed in Node has been updated by Wudooh and false otherwise
  */
 function hasNodeBeenUpdated(node: Node): boolean {
-    return node.parentElement && node.parentElement.getAttribute("wudooh") === "true"
+    return !!node && !!node.parentElement && node.parentElement.getAttribute("wudooh") === "true"
 }
 
 /**
  * Returns true if this document has already been updated by Wudooh before,
- * this is done in {@linkcode notifyDocumentHasUpdated}
+ * this is done in {@link notifyDocumentHasUpdated}
  */
 function hasDocumentBeenUpdated(): boolean {
     return document.getElementById("wudoohMetaElement") !== null
@@ -131,45 +130,22 @@ function hasDocumentBeenUpdated(): boolean {
 
 /**
  * Returns whether the given node has any Arabic script or not, this is any script that matches arabicRegEx.
- * True if it does and false otherwise
+ * `true` if it does and false otherwise
  */
 function hasArabicScript(node: Node): boolean {
     return !!node.nodeValue && !!(node.nodeValue.match(arabicRegex))
 }
 
 /**
- * Checks whether the passed in node is editable or not.
- * An editable node is one that returns true to isContentEditable or has a tag name as
- * any one of the following:
- * "textarea", "input", "text", "email", "number", "search", "tel", "url", "password"
- *
- * @param node the node to check
- * @return true if the node is editable and false otherwise
+ * Checks whether the passed in node is editable or not, `true` if editable, `false` otherwise
+ * These will generally need to be ignored to avoid any conflicts with the site or the user's formatting
  */
 function isNodeEditable(node: Node): boolean {
+    if (!node) return false
     const element: HTMLElement = node as HTMLElement
     const nodeName: string = element.nodeName.toLowerCase()
 
     return (element.isContentEditable || (element.nodeType === Node.ELEMENT_NODE && htmlEditables.contains(nodeName)))
-}
-
-/**
- * Remaps the passed in numberCharacter from Eastern Arabic numeral form to Western Arabic numeral form (digit)
- * @param numberCharacter the string containing the single number character to remap
- * @return the string containing the single number character after remapping
- */
-function remapNumber(numberCharacter: string): string {
-    const char = numberCharacter.charAt(0)
-    if (char === "٠" || char === "۰") return "0"
-    if (char === "١" || char === "۱") return "1"
-    if (char === "٢" || char === "۲") return "2"
-    if (char === "٣" || char === "۳") return "3"
-    if (char === "٤" || char === "۴") return "4"
-    if (char === "٥" || char === "۵") return "5"
-    if (char === "٦" || char === "۶") return "6"
-    if (char === "٧" || char === "۷") return "7"
-    if (char === "٨" || char === "۸") return "8"
-    if (char === "٩" || char === "۹") return "9"
 }
 
 /**
@@ -185,7 +161,7 @@ function getArabicTextNodesIn(rootNode: Node): Array<Node> {
     )
     let arabicTextNodes: Array<Node> = []
 
-    let node: Node = treeWalker.nextNode()
+    let node: Node | null = treeWalker.nextNode()
     while (!!node) {
         if (hasArabicScript(node)) arabicTextNodes.push(node)
         node = treeWalker.nextNode()
@@ -214,9 +190,9 @@ async function updateNode(node: Node, textSize: number, lineHeight: number, font
 }
 
 async function updateByAdding(node: Node, textSize: number, lineHeight: number, font: string): Promise<void> {
-    const parent: Node = node.parentNode
+    const parent: Node | null = !!node ? node.parentNode : null
     // return if parent or node are null
-    if (!parent || !node) return
+    if (!parent) return
     // don't do anything if this node or its parent are editable
     if (isNodeEditable(parent) || isNodeEditable(node)) return
 
@@ -234,9 +210,10 @@ async function updateByAdding(node: Node, textSize: number, lineHeight: number, 
             "'>$&</span>"
     }
 
-    let text: string = node.nodeValue.replace(arabicRegex, newHTML)
+    if (!node.nodeValue) return
+    const text: string = node.nodeValue.replace(arabicRegex, newHTML)
 
-    let nextSibling: ChildNode = node.nextSibling
+    const nextSibling: ChildNode | null = node.nextSibling
 
     // the div is temporary and doesn't show up in the html
     let newElement: HTMLDivElement = document.createElement("div")
@@ -250,6 +227,7 @@ async function updateByAdding(node: Node, textSize: number, lineHeight: number, 
 }
 
 async function updateByChanging(node: Node, textSize: number, lineHeight: number, font: string): Promise<void> {
+    if (!node || !node.parentElement) return
     node.parentElement.style.fontSize = textSize + "em"
     node.parentElement.style.lineHeight = lineHeight + "em"
     if (font === "Original") node.parentElement.style.fontFamily = ""
@@ -339,9 +317,11 @@ async function toggleOff(): Promise<void> {
         observer = null
     }
     getArabicTextNodesIn(document.body).forEach((node: Node) => {
-        node.parentElement.style.fontSize = null
-        node.parentElement.style.lineHeight = null
-        node.parentElement.style.fontFamily = null
+        if (!!node && !!node.parentElement && !!node.parentElement.style) {
+            node.parentElement.style.fontSize = ""
+            node.parentElement.style.lineHeight = ""
+            node.parentElement.style.fontFamily = ""
+        }
     })
 }
 
@@ -363,24 +343,24 @@ async function addMessageListener(): Promise<void> {
 
 async function main(): Promise<void> {
     const storage: WudoohStorage = await sync.get(WudoohKeys.all())
-    let textSize: number = storage.textSize
-    let lineHeight: number = storage.lineHeight
-    let font: string = storage.font
-    const isOn: boolean = storage.onOff
-    const whitelisted: Array<string> = storage.whitelisted
-    const customSettings: Array<CustomSetting> = storage.customSettings
-    const customFonts: Array<CustomFont> = storage.customFonts
+    let textSize: number = storage.textSize ?? DefaultWudoohStorage.textSize!
+    let lineHeight: number = storage.lineHeight ?? DefaultWudoohStorage.lineHeight!
+    let font: string = storage.font ?? DefaultWudoohStorage.font!
+    const isOn: boolean = storage.onOff ?? DefaultWudoohStorage.onOff!
+    const whitelisted: Array<string> = storage.whitelisted ?? DefaultWudoohStorage.whitelisted!
+    const customSettings: Array<CustomSetting> = storage.customSettings ?? DefaultWudoohStorage.customSettings!
+    const customFonts: Array<CustomFont> = storage.customFonts ?? DefaultWudoohStorage.customFonts!
 
     const thisURL: string = new URL(document.URL).hostname
     const isWhitelisted: boolean = !!whitelisted.find((it) => it === thisURL)
 
-    const customSite: CustomSetting = customSettings.find((custom: CustomSetting) => custom.url === thisURL)
+    const customSite: CustomSetting | undefined = customSettings.find((custom: CustomSetting) => custom.url === thisURL)
 
     // Only do anything if the switch is on and this site is not whitelisted
     if (isOn && !isWhitelisted) {
         injectCustomFonts(customFonts)
         // If it's a custom site then change the textSize, lineHeight and font
-        if (customSite) {
+        if (!!customSite) {
             textSize = customSite.textSize
             lineHeight = customSite.lineHeight
             font = customSite.font

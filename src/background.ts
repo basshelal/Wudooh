@@ -9,7 +9,7 @@ importScripts("./common.js")
  * Runs on install or update to check if the storage has initialized all its values correctly.
  * If some key has not been initialized then it will create it and set it to its default value
  */
-const onInstalled = async (details): Promise<void> => {
+const onInstalled = async (): Promise<void> => {
     let storage: WudoohStorage = await sync.get(WudoohKeys.all())
     const promises: Array<Promise<void>> = []
     if (storage.textSize == null) promises.push(sync.set({textSize: DefaultWudoohStorage.textSize}))

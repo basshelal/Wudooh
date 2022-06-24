@@ -74,7 +74,7 @@ interface Message {
 
 type Browser = "chrome" | "firefox" | "edge" | "opera"
 
-const browserName: Browser = ((): Browser => {
+const browserName: Browser | null = ((): Browser | null => {
     const agent: string = navigator.userAgent.toLowerCase()
     if (agent.includes("firefox")) return "firefox"
     if (agent.includes("edg")) return "edge"
@@ -298,21 +298,27 @@ const tabs = {
         else browser.tabs.sendMessage(tabId, message)
     },
     async sendMessageAllTabs(message: Message): Promise<void> {
-        (await this.queryAllTabs()).forEach((tab: Tab) => tabs.sendMessage(tab.id, message))
+        (await this.queryAllTabs()).forEach((tab: Tab): void => {
+            if (!!tab.id) {
+                tabs.sendMessage(tab.id, message)
+            }
+        })
     }
 }
 
 async function injectCustomFonts(customFonts: Array<CustomFont>): Promise<Array<CustomFont>> {
-    let customFontsStyle: HTMLElement = get("wudoohCustomFontsStyle")
-    if (customFontsStyle) {
+    let customFontsStyle: HTMLElement | null = get("wudoohCustomFontsStyle")
+    if (!!customFontsStyle) {
         customFontsStyle.textContent = ""
         document.head.removeChild(customFontsStyle)
         customFontsStyle = null
     }
     customFontsStyle = document.createElement("style")
     customFontsStyle.id = "wudoohCustomFontsStyle"
-    customFonts.forEach((customFont: CustomFont) => {
-        customFontsStyle.textContent = customFontsStyle.textContent.concat(CustomFont.injectCSS(customFont))
+    customFonts.forEach((customFont: CustomFont): void => {
+        if (!!customFontsStyle && !!customFontsStyle.textContent) {
+            customFontsStyle.textContent = customFontsStyle.textContent.concat(CustomFont.injectCSS(customFont))
+        }
     })
     document.head.append(customFontsStyle)
     return customFonts
