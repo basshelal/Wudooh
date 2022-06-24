@@ -11,8 +11,108 @@ const htmlEditables: Array<string> = ["textarea", "input", "text", "email", "num
 /** The observer used in {@linkcode startObserver} to dynamically update any newly added Nodes */
 let observer: MutationObserver
 
-// TODO: Add "plugins" system that allows a callbacks before, during and after node updates to have custom behavior
-//  for sites (such as YouTube)
+interface WudoohPlugin {
+    /** Returns `true` if the node has been updated previously, this is set for you, do not modify */
+    hasNodeUpdated?: (node: Node) => boolean
+    /**
+     * Return `true` for updates to proceed on this document
+     * otherwise, no further callbacks will be made. This is called once
+     * This is required
+     */
+    readonly urlRequiresUpdate: (url: URL) => boolean | Promise<boolean>
+    /**
+     * Called before a single loop of multiple {@link requiresUpdate} calls,
+     * use this to set up any state or expensive computation (such as getting values from storage
+     * which will not change often) before the update loop
+     */
+    readonly beforeUpdateAll?: () => void | Promise<void>
+    /**
+     * Return `true` if this node will need to be updated in {@link update},
+     * otherwise, no further calls will be made for this node
+     * This is required
+     */
+    readonly requiresUpdate: (node: Node) => boolean | Promise<boolean>
+    /**
+     * Called immediately before {@link update}
+     */
+    readonly beforeUpdate?: (node: Node) => void | Promise<void>
+    /**
+     * The actual node updating function
+     */
+    readonly update?: (node: Node) => void | Promise<void>
+    /**
+     * Called immediately after {@link update}
+     * After this point the node will be able to be queried for {@link hasNodeUpdated}
+     */
+    readonly afterUpdate?: (node: Node) => void | Promise<void>
+    /**
+     * Called after a single loop of multiple {@link requiresUpdate} calls,
+     * the equivalent of {@link beforeUpdateAll}.
+     * Use this for any clean up required after {@link beforeUpdateAll}
+     */
+    readonly afterUpdateAll?: () => void | Promise<void>
+}
+
+/**
+ * Extend this class if your {@link WudoohPlugin} is a `class`.
+ * This provides you with the default implementation of {@link hasNodeUpdated} which should NOT
+ * be overridden.
+ */
+class AbstractWudoohPlugin {
+    hasNodeUpdated(node: Node): boolean {return hasNodeBeenUpdated(node)}
+}
+
+class DefaultPlugin extends AbstractWudoohPlugin implements WudoohPlugin {
+    /** Hostname of current URL, set in {@link urlRequiresUpdate} */
+    private urlHostname: string
+    /** The {@link WudoohStorage} first fetched in {@link beforeUpdateAll} */
+    private storage: WudoohStorage
+    /** The {@link CustomSetting} of this site, if it exists, `undefined` otherwise */
+    private customSetting?: CustomSetting | undefined
+
+    async urlRequiresUpdate(url: URL): Promise<boolean> {
+        // true only if Wudooh is on and this url is not whitelisted
+        this.urlHostname = url.hostname
+        this.storage = await sync.get(WudoohKeys.all())
+        return this.storage.onOff && !this.storage.whitelisted.contains(this.urlHostname)
+    }
+
+    async beforeUpdateAll(): Promise<void> {
+        this.customSetting = this.storage.customSettings.find((custom: CustomSetting) => custom.url === this.urlHostname)
+        injectCustomFonts(this.storage.customFonts)
+    }
+
+    requiresUpdate(node: Node): boolean {
+        return !this.hasNodeUpdated(node) && hasArabicScript(node) && !isNodeEditable(node)
+    }
+
+    beforeUpdate(node: Node): void {
+
+    }
+
+    update(node: Node): void {
+
+    }
+
+    afterUpdate(node: Node): void {
+
+    }
+
+    afterUpdateAll(): void {
+
+    }
+}
+
+const YoutubePlugin: WudoohPlugin = {
+    urlRequiresUpdate(url: URL): boolean {
+        return url.hostname === "youtube.com" || url.hostname === "www.youtube.com"
+    },
+    requiresUpdate(node: Node): boolean {
+        return !this.hasNodeUpdated(node) && hasArabicScript(node) && !isNodeEditable(node)
+    }
+}
+
+const wudoohPlugins: Array<WudoohPlugin> = [YoutubePlugin]
 
 /**
  * Returns true if the passed in Node has been updated by Wudooh and false otherwise
@@ -247,7 +347,6 @@ async function toggleOff(): Promise<void> {
 
 async function addMessageListener(): Promise<void> {
     runtime.onMessage.addListener((message: Message) => {
-        console.log(message)
         switch (message.reason) {
             case MessageReasons.updateAllText:
                 main()
@@ -295,6 +394,8 @@ async function main(): Promise<void> {
         startObserver(textSize, lineHeight, font)
         notifyDocumentHasUpdated()
     }
+    // TODO: Use a new message for has become whitelisted because this is just confusing and unintuitive
+    //       (despite working)
     // We've been updated and now we've become whitelisted
     if (hasDocumentBeenUpdated() && isWhitelisted) {
         toggleOff()

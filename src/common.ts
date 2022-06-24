@@ -257,7 +257,7 @@ const runtime: (typeof chrome.runtime | typeof browser.runtime) = (() => isChrom
  * An abstraction and simplification of the storage.sync API to make it use Promises
  */
 const sync = {
-    async get(keys: Array<WudoohKeysType> | WudoohKeysType = null): Promise<WudoohStorage> {
+    async get(keys: Array<WudoohKeysType> | WudoohKeysType): Promise<WudoohStorage> {
         return new Promise<WudoohStorage>(resolve => {
             if (isChromium) chrome.storage.sync.get(keys, storage => resolve(storage as WudoohStorage))
             else browser.storage.sync.get(keys).then(storage => resolve(storage as WudoohStorage))
@@ -298,7 +298,7 @@ const tabs = {
         else browser.tabs.sendMessage(tabId, message)
     },
     async sendMessageAllTabs(message: Message): Promise<void> {
-        (await this.queryAllTabs()).forEach((tab: Tab) => this.sendMessage(tab.id, message))
+        (await this.queryAllTabs()).forEach((tab: Tab) => tabs.sendMessage(tab.id, message))
     }
 }
 

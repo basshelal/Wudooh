@@ -1,4 +1,4 @@
-importScripts("./shared.js")
+importScripts("./common.js")
 /**
  * This is the code that runs on the background page of the extension.
  *
