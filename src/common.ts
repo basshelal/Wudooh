@@ -253,6 +253,8 @@ const DefaultWudoohStorage: WudoohStorage = {
 
 const runtime: (typeof chrome.runtime | typeof browser.runtime) = (() => isChromium ? chrome.runtime : browser.runtime)()
 
+// TODO: Below abstractions can be fully Promise calling if using MV3
+
 /**
  * An abstraction and simplification of the storage.sync API to make it use Promises
  */
@@ -306,6 +308,24 @@ const tabs = {
     }
 }
 
+const log = {
+    e(any: any): void {
+        if (!!console) console.error(any)
+    },
+    w(any: any): void {
+        if (!!console) console.warn(any)
+    },
+    i(any: any): void {
+        if (!!console) console.info(any)
+    },
+    d(any: any): void {
+        if (!!console) console.log(any)
+    },
+    v(any: any): void {
+        if (!!console) console.debug(any)
+    }
+}
+
 async function injectCustomFonts(customFonts: Array<CustomFont>): Promise<Array<CustomFont>> {
     let customFontsStyle: HTMLElement | null = get("wudoohCustomFontsStyle")
     if (!!customFontsStyle) {
@@ -345,10 +365,21 @@ function onDOMContentLoaded(listener: EventListenerOrEventListenerObject) {
 
 interface Array<T> {
     contains(element: T): boolean;
+    filterAsync(predicate: (value: T, index: number, array: T[]) => Promise<boolean>): Promise<Array<T>>
+    forEachAsync(callback: (value: T, index: number, array: T[]) => Promise<void>): Promise<void>
 }
 
 Array.prototype.contains = function <T>(element: T): boolean {
     return this.indexOf(element) !== -1
+}
+
+Array.prototype.filterAsync = async function <T>(predicate: (value: T, index: number, array: T[]) => Promise<boolean>): Promise<Array<T>> {
+    const booleans: Array<boolean> = await Promise.all(this.map((value, index, array) => predicate(value, index, array)))
+    return this.filter((_value, index) => booleans[index])
+}
+
+Array.prototype.forEachAsync = async function <T>(callback: (value: T, index: number, array: T[]) => Promise<void>): Promise<void> {
+    await Promise.all(this.map((value, index, array) => callback(value, index, array)))
 }
 
 interface String {
