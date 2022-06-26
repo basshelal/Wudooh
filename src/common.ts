@@ -361,6 +361,10 @@ function onDOMContentLoaded(listener: EventListenerOrEventListenerObject) {
     document.addEventListener("DOMContentLoaded", listener)
 }
 
+function onDOMContentLoadedDelayed(delay: number, listener: EventListenerOrEventListenerObject) {
+    onDOMContentLoaded(() => wait(delay, () => listener))
+}
+
 // region Extensions
 
 interface Array<T> {
