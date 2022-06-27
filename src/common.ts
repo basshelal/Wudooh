@@ -61,11 +61,11 @@ const defaultDelay: number = 250
 
 type MessageReasonType = "updateAllText" | "injectCustomFonts" | "toggleOff"
 
-const MessageReasons: { updateAllText: MessageReasonType, injectCustomFonts: MessageReasonType, toggleOff: MessageReasonType } = {
-    updateAllText: "updateAllText",
-    injectCustomFonts: "injectCustomFonts",
-    toggleOff: "toggleOff"
-}
+const MessageReasons = new (class {
+    public updateAllText: MessageReasonType = "updateAllText"
+    public injectCustomFonts: MessageReasonType = "injectCustomFonts"
+    public toggleOff: MessageReasonType = "toggleOff"
+})()
 
 interface Message {
     reason: MessageReasonType,

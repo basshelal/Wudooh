@@ -1,6 +1,10 @@
+type WudoohNodeModificationReason = "added" | "removed" | "dataChanged" | "unknown"
+
+type MaybePromise<T> = T | Promise<T>
+
 interface WudoohPlugin {
     /** Unique identifier or name of plugin, this is required */
-    id: string
+    readonly id: string
     /**
      * Set to `true` to signify that this plugin will be the only plugin to run on this URL when
      * {@link urlRequiresUpdate} returns `true`, this means that NO other plugin will run, including
@@ -15,62 +19,39 @@ interface WudoohPlugin {
     // ========================== Callbacks =====================================
     // ==========================================================================
 
-    /** Returns `true` if the node has been updated previously, this is set for you, do not modify */
-    hasNodeUpdated?: (node: Node) => boolean
     /**
      * Return `true` for updates to proceed on this document
      * otherwise, no further callbacks will be made. This is called once
      * This is required
      */
-    readonly urlRequiresUpdate: (url: URL) => boolean | Promise<boolean>
+    readonly urlRequiresUpdate: (url: URL) => MaybePromise<boolean>
     /**
-     * Called before a single loop of multiple {@link requiresUpdate} calls,
+     * Called before a single loop of multiple {@link update} calls,
      * use this to set up any state or expensive computation (such as getting values from storage
      * which will not change often) before the update loop
      */
-    readonly beforeUpdateAll?: () => void | Promise<void>
+    readonly beforeUpdateAll?: () => MaybePromise<void>
     /**
-     * Return `true` if this node will need to be updated in {@link update},
-     * otherwise, no further calls will be made for this node
-     * This is required
+     * The function that updates the node
      */
-    readonly requiresUpdate: (node: Node) => boolean | Promise<boolean>
+    readonly update?: (node: Node, modificationReason: WudoohNodeModificationReason) => MaybePromise<void>
     /**
-     * Called immediately before {@link update}
-     */
-    readonly beforeUpdate?: (node: Node) => void | Promise<void>
-    /**
-     * The actual node updating function
-     */
-    readonly update?: (node: Node) => void | Promise<void>
-    /**
-     * Called immediately after {@link update}
-     * After this point the node will be able to be queried for {@link hasNodeUpdated}
-     */
-    readonly afterUpdate?: (node: Node) => void | Promise<void>
-    /**
-     * Called after a single loop of multiple {@link requiresUpdate} calls,
+     * Called after a single loop of multiple {@link update} calls,
      * the equivalent of {@link beforeUpdateAll}.
      * Use this for any clean up required after {@link beforeUpdateAll}
      */
-    readonly afterUpdateAll?: () => void | Promise<void>
-
-    // TODO: Plugins need to also implement un-updating callbacks, meaning callbacks called
-    //  when Wudooh wants to revert the changes made
+    readonly afterUpdateAll?: () => MaybePromise<void>
 }
 
-/**
- * Extend this class if your {@link WudoohPlugin} is a `class`.
- * This provides you with the default implementation of {@link hasNodeUpdated} which should NOT
- * be overridden.
- */
 class AbstractWudoohPlugin {
     public hasNodeUpdated(node: Node): boolean {return hasNodeBeenUpdated(node)}
 }
 
 const DefaultPlugin = new (class DefaultPlugin extends AbstractWudoohPlugin implements WudoohPlugin {
+    /*override*/
     public id: string = "DefaultPlugin"
 
+    /*override*/
     public isExclusivePlugin: boolean = false
 
     /** Hostname of current URL, set in {@link urlRequiresUpdate} */
@@ -80,6 +61,7 @@ const DefaultPlugin = new (class DefaultPlugin extends AbstractWudoohPlugin impl
     /** The {@link CustomSetting} of this site, if it exists, `undefined` otherwise */
     private customSetting?: CustomSetting | undefined
 
+    /*override*/
     public async urlRequiresUpdate(url: URL): Promise<boolean> {
         // true only if Wudooh is on and this url is not whitelisted
         this.urlHostname = url.hostname
@@ -88,28 +70,24 @@ const DefaultPlugin = new (class DefaultPlugin extends AbstractWudoohPlugin impl
             (!!this.storage.whitelisted && !this.storage.whitelisted.contains(this.urlHostname))
     }
 
+    /*override*/
     public async beforeUpdateAll(): Promise<void> {
         this.customSetting = this.storage.customSettings ?
             this.storage.customSettings.find((custom: CustomSetting) => custom.url === this.urlHostname) : undefined
-        if (!!this.storage.customFonts) injectCustomFonts(this.storage.customFonts)
+        if (!!this.storage.customFonts) {
+            injectCustomFonts(this.storage.customFonts)
+        }
     }
 
-    public requiresUpdate(node: Node): boolean {
-        return !this.hasNodeUpdated(node) && hasArabicScript(node) && !isNodeEditable(node)
+    /*override*/
+    public update(node: Node,
+                  modificationReason: WudoohNodeModificationReason): void {
+        if (!this.hasNodeUpdated(node) && hasArabicScript(node) && !isNodeEditable(node)) {
+            console.log("Update called at: " + Date.now())
+        }
     }
 
-    public beforeUpdate(node: Node): void {
-
-    }
-
-    public update(node: Node): void {
-        console.log("Update called at: " + Date.now())
-    }
-
-    public afterUpdate(node: Node): void {
-
-    }
-
+    /*override*/
     public afterUpdateAll(): void {
 
     }
@@ -119,27 +97,30 @@ const DefaultPlugin = new (class DefaultPlugin extends AbstractWudoohPlugin impl
     }
 })()
 
-const YoutubePlugin: WudoohPlugin = {
-    id: "YoutubePlugin",
-    isExclusivePlugin: true,
-    urlRequiresUpdate(url: URL): boolean {
+const YoutubePlugin = new (class YoutubePlugin extends AbstractWudoohPlugin implements WudoohPlugin {
+    /*override*/
+    public id: string = "YoutubePlugin"
+    /*override*/
+    public isExclusivePlugin: boolean = true
+
+    /*override*/
+    public urlRequiresUpdate(url: URL): boolean {
         return url.hostname === "youtube.com" || url.hostname === "www.youtube.com"
-    },
-    requiresUpdate(node: Node): boolean {
+    }
+
+    public requiresUpdate(node: Node): boolean {
         return (!!this.hasNodeUpdated && !this.hasNodeUpdated(node)) && hasArabicScript(node) && !isNodeEditable(node)
     }
-}
+})()
 
 const NeverPlugin: WudoohPlugin = {
     id: "NeverPlugin",
-    urlRequiresUpdate(url: URL): boolean {return false},
-    requiresUpdate(node: Node): boolean {return false}
+    urlRequiresUpdate(url: URL): boolean {return false}
 }
 
 const AlwaysPlugin: WudoohPlugin = {
     id: "AlwaysPlugin",
-    urlRequiresUpdate(url: URL): boolean {return true},
-    requiresUpdate(node: Node): boolean {return false}
+    urlRequiresUpdate(url: URL): boolean {return true}
 }
 
 const wudoohPlugins: Array<WudoohPlugin> = [YoutubePlugin, NeverPlugin, AlwaysPlugin]

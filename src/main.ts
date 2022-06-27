@@ -2,7 +2,7 @@
  * This Arabic regex allows and accepts any non Arabic symbols next to Arabic symbols,
  * this means that it accepts anything as long as it has some Arabic symbol in it
  */
-const arabicRegex: RegExp = new RegExp("([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\]+([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\\W\\d]+)*)", "g")
+const arabicRegex: RegExp = new RegExp("[\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\]+([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\\W\\d]+)*", "g")
 
 const htmlEditables: Array<string> = ["textarea", "input", "text", "email", "number", "search", "tel", "url", "password"]
 
@@ -281,7 +281,8 @@ async function main(): Promise<void> {
 main()
 addMessageListener()
 
-async function loopOverNodes(rootNode: Node, plugins: Array<WudoohPlugin>): Promise<void> {
+async function updateAllNodes(rootNode: Node, plugins: Array<WudoohPlugin>,
+                              modificationReason: WudoohNodeModificationReason): Promise<void> {
     await plugins.forEachAsync(async (plugin: WudoohPlugin) => {
         if (!!plugin.beforeUpdateAll) {
             await plugin.beforeUpdateAll()
@@ -291,19 +292,10 @@ async function loopOverNodes(rootNode: Node, plugins: Array<WudoohPlugin>): Prom
     while (!!treeWalker.nextNode()) {
         const node: Node = treeWalker.currentNode
         await plugins.forEachAsync(async (plugin: WudoohPlugin) => {
-            const requiresUpdate: boolean = await plugin.requiresUpdate(node)
-            if (requiresUpdate) {
-                if (!!plugin.beforeUpdate) {
-                    await plugin.beforeUpdate(node)
-                }
-                if (!!plugin.update) {
-                    await plugin.update(node)
-                }
-                if (!!plugin.afterUpdate) {
-                    await plugin.afterUpdate(node)
-                }
-                // TODO: add HTML attribute to signify Wudooh has updated this node or HTMLElement or whatever
+            if (!!plugin.update) {
+                await plugin.update(node, modificationReason)
             }
+            // TODO: add HTML attribute to signify Wudooh has updated this node or HTMLElement or whatever
         })
     }
     await plugins.forEachAsync(async (plugin: WudoohPlugin) => {
@@ -313,7 +305,40 @@ async function loopOverNodes(rootNode: Node, plugins: Array<WudoohPlugin>): Prom
     })
 }
 
-(async () => {
+async function startMutationObserver(plugins: Array<WudoohPlugin>): Promise<void> {
+    if (!observer) {
+        const config: MutationObserverInit = {
+            attributes: false, // we don't care about attribute changes
+            attributeOldValue: false, // we don't care about attribute changes
+            characterData: true, // we get notified of any changes to character data
+            characterDataOldValue: true, // we keep the old value
+            childList: true, // we get notified about changes to a node's children
+            subtree: true // we get notified about any changes to any of a node's descendants
+        }
+
+        const callback: MutationCallback = (mutationsList: Array<MutationRecord>): void => {
+            mutationsList.forEach((record: MutationRecord) => {
+                if (record.type === "characterData") { // Node's data has changed
+                    if (record.target.nodeValue !== record.oldValue) {
+                        updateAllNodes(record.target, plugins, "dataChanged")
+                    }
+                } else if (record.type === "childList") { // Node's children have changed
+                    record.addedNodes.forEach((addedNode: Node) => {
+                        updateAllNodes(addedNode, plugins, "added")
+                    })
+                    record.removedNodes.forEach((removedNode: Node) => {
+                        updateAllNodes(removedNode, plugins, "removed")
+                    })
+                }
+            })
+        }
+
+        observer = new MutationObserver(callback)
+        observer.observe(document.body, config)
+    }
+}
+
+async function newMain(): Promise<void> {
     const url: URL = new URL(document.URL)
     let plugins: Array<WudoohPlugin> = await wudoohPlugins.filterAsync(async (plugin: WudoohPlugin): Promise<boolean> => {
         return plugin.urlRequiresUpdate(url)
@@ -328,8 +353,12 @@ async function loopOverNodes(rootNode: Node, plugins: Array<WudoohPlugin>): Prom
         log.v(`Exclusive: ${exclusivePlugin.id}`)
         plugins = [exclusivePlugin]
     }
-    onDOMContentLoadedDelayed(defaultDelay, async () => {
-        await loopOverNodes(document.body, plugins)
-        // TODO: Start mutation observer which will use loopOverNodes
-    })
-})()
+
+    await updateAllNodes(document.body, plugins, "unknown")
+    await startMutationObserver(plugins)
+}
+
+
+// TODO: Idea for possibly better performance! Have the content script run at "document_start" ie as the DOM is loading
+//  and only use the MutationObserver to modify Nodes as they come, with possibly a second run in case something was
+//  missed
