@@ -232,13 +232,13 @@ class CustomFont {
  * This adds type and key safety to any storage modifications.
  */
 interface WudoohStorage {
-    readonly textSize?: number;
-    readonly lineHeight?: number;
-    readonly onOff?: boolean;
-    readonly font?: string;
-    readonly whitelisted?: Array<string>;
-    readonly customSettings?: Array<CustomSetting>;
-    readonly customFonts?: Array<CustomFont>;
+    /*readonly*/ textSize?: number;
+    /*readonly*/ lineHeight?: number;
+    /*readonly*/ onOff?: boolean;
+    /*readonly*/ font?: string;
+    /*readonly*/ whitelisted?: Array<string>;
+    /*readonly*/ customSettings?: Array<CustomSetting>;
+    /*readonly*/ customFonts?: Array<CustomFont>;
 }
 
 const DefaultWudoohStorage: WudoohStorage = {
@@ -270,6 +270,34 @@ const sync = {
             if (isChromium) chrome.storage.sync.set(wudoohStorage, () => resolve())
             else browser.storage.sync.set(wudoohStorage).then(() => resolve())
         })
+    },
+    onChanged(callback: (changedKeys: Array<keyof WudoohStorage>, oldStorage: WudoohStorage, newStorage: WudoohStorage) => void): void {
+        if (isChromium) {
+            const listener = (changes: { [p: string]: chrome.storage.StorageChange }, areaName: AreaName): void => {
+                if (areaName === "sync") {
+                    const keysChanged: Array<keyof WudoohStorage> = []
+                    const oldStorage: any = {}
+                    const newStorage: any = {}
+                    for (const changesKey in changes) {
+                        if (Object.hasOwn(DefaultWudoohStorage, changesKey)) {
+                            keysChanged.push(changesKey as keyof WudoohStorage)
+                            oldStorage[changesKey] = changes[changesKey].oldValue
+                            newStorage[changesKey] = changes[changesKey].newValue
+                        }
+                    }
+                    if (keysChanged.length > 0) {
+                        callback(keysChanged, oldStorage as WudoohStorage, newStorage as WudoohStorage)
+                    }
+                }
+            }
+            if (!chrome.storage.onChanged.hasListener(listener)) {
+                chrome.storage.onChanged.addListener(listener)
+            }
+        } else {
+            browser.storage.onChanged.addListener((changes: { [p: string]: browser.storage.StorageChange }, areaName: string): void => {
+                // TODO: Implement!
+            })
+        }
     }
 }
 
@@ -365,16 +393,39 @@ function onDOMContentLoadedDelayed(delay: number, listener: EventListenerOrEvent
     onDOMContentLoaded(() => wait(delay, () => listener))
 }
 
+/**
+ * Checks whether the passed in node is editable or not, `true` if editable, `false` otherwise
+ * These will generally need to be ignored to avoid any conflicts with the site or the user's formatting
+ */
+function isNodeEditable(node: Node): boolean {
+    if (!!node && node instanceof HTMLElement && node.nodeType === Node.ELEMENT_NODE) {
+        const htmlEditables: Array<string> = ["textarea", "input"]
+        const tagName: string = node.tagName.toLowerCase()
+        // TODO: Should we include isContentEditable?? This can be true on non text inputs such as any formatted
+        //  input text such as an email form for example
+        return node.isContentEditable || htmlEditables.contains(tagName)
+    } else return false
+}
+
+function now(): number {return Date.now()}
+
+function nowString(): string {return new Date().toISOString()}
+
 // region Extensions
 
 interface Array<T> {
     contains(element: T): boolean;
+    clear(): void;
     filterAsync(predicate: (value: T, index: number, array: T[]) => Promise<boolean>): Promise<Array<T>>
     forEachAsync(callback: (value: T, index: number, array: T[]) => Promise<void>): Promise<void>
 }
 
 Array.prototype.contains = function <T>(element: T): boolean {
     return this.indexOf(element) !== -1
+}
+
+Array.prototype.clear = function <T>(): void {
+    this.splice(0, this.length)
 }
 
 Array.prototype.filterAsync = async function <T>(predicate: (value: T, index: number, array: T[]) => Promise<boolean>): Promise<Array<T>> {

@@ -94,6 +94,7 @@ async function injectTemporaryCustomFont(customFont: CustomFont) {
 
 async function notifyAllTabsCustomFontsChanged(customFonts: Array<CustomFont>) {
     injectCustomFonts(customFonts)
+    // TODO: Probably don't need to pass the fonts around since they'll be in storage anyway
     tabs.sendMessageAllTabs({reason: MessageReasons.injectCustomFonts, data: customFonts})
 }
 

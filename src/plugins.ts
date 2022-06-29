@@ -1,4 +1,6 @@
-type WudoohNodeModificationReason = "added" | "removed" | "dataChanged" | "unknown"
+import AreaName = chrome.storage.AreaName
+
+type WudoohNodeModificationReason = "newlyLoaded" | "added" | "removed" | "dataChanged" | "unknown"
 
 type MaybePromise<T> = T | Promise<T>
 
@@ -43,7 +45,7 @@ interface WudoohPlugin {
     readonly afterUpdateAll?: () => MaybePromise<void>
 }
 
-class AbstractWudoohPlugin {
+class AbstractWudoohPlugin { // TODO: Delete me!
     public hasNodeUpdated(node: Node): boolean {return hasNodeBeenUpdated(node)}
 }
 
@@ -61,11 +63,26 @@ const DefaultPlugin = new (class DefaultPlugin extends AbstractWudoohPlugin impl
     /** The {@link CustomSetting} of this site, if it exists, `undefined` otherwise */
     private customSetting?: CustomSetting | undefined
 
+    private initialized: boolean = false
+
+    public async init(): Promise<void> {
+        if (!this.initialized) {
+            sync.onChanged((changedKeys: Array<keyof WudoohStorage>, oldStorage: WudoohStorage, newStorage: WudoohStorage) => {
+                changedKeys.forEach((key: keyof WudoohStorage) : void=> {
+                    // @ts-ignore
+                    this.storage[key] = newStorage[key]
+                })
+            })
+            this.initialized = true
+        }
+    }
+
     /*override*/
     public async urlRequiresUpdate(url: URL): Promise<boolean> {
         // true only if Wudooh is on and this url is not whitelisted
         this.urlHostname = url.hostname
         this.storage = await sync.get(WudoohKeys.all())
+        this.init()
         return (!!this.storage.onOff && this.storage.onOff) &&
             (!!this.storage.whitelisted && !this.storage.whitelisted.contains(this.urlHostname))
     }
@@ -123,4 +140,28 @@ const AlwaysPlugin: WudoohPlugin = {
     urlRequiresUpdate(url: URL): boolean {return true}
 }
 
-const wudoohPlugins: Array<WudoohPlugin> = [YoutubePlugin, NeverPlugin, AlwaysPlugin]
+function randomColor(): string {
+    return "#" + Math.floor(Math.random() * 16777215).toString(16)
+}
+
+const TestPlugin = new (class TestPlugin extends AbstractWudoohPlugin implements WudoohPlugin {
+    public id: string = "TestPlugin"
+
+    public isExclusivePlugin: boolean = true
+
+    public urlRequiresUpdate(url: URL): boolean {return true}
+
+    public beforeUpdateAll(): void {
+        log.i("Before update all at: " + nowString())
+    }
+
+    public async update(node: Node, modificationReason: WudoohNodeModificationReason): Promise<void> {
+        const element: HTMLElement | null = node.parentElement
+        if (!!element) {
+            element.style.background = randomColor()
+        }
+    }
+
+})
+
+const wudoohPlugins: Array<WudoohPlugin> = [TestPlugin]

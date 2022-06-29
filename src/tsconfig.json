@@ -3,7 +3,7 @@
     "strict": true,
     "target": "ESNext",
     "sourceMap": false,
-    "removeComments": false,
+    "removeComments": false
   },
   "exclude": [
     "../node_modules"
