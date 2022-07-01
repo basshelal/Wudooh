@@ -1,8 +1,18 @@
 {
   "name": "wudooh",
-  "version": "2.1",
-  "description": "",
-  "main": "",
+  "version": "3",
+  "description": "Wudooh browser extension for improving Arabic script on webpages",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/basshelal/Wudooh.git"
+  },
+  "author": "Bassam Helal",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/basshelal/Wudooh/issues"
+  },
+  "homepage": "https://github.com/basshelal/Wudooh",
+  "readme": "https://github.com/basshelal/Wudooh/README.md",
   "scripts": {
     "minifyMain": "uglifyjs -c -m --output src/main.min.js -- src/main.js",
     "minifyPopup": "uglifyjs -c -m --output src/popup.min.js -- src/popup.js",
@@ -15,19 +25,12 @@
     "buildChrome": "run-s minifyAll chrome",
     "buildFirefox": "run-s minifyAll firefox",
     "build": "run-s buildChrome",
-    "test": "echo \"Error: no test specified\" && exit 1"
+
+    "watch": "webpack --config webpack/webpack.dev.js --watch",
+    "build-new": "webpack --config webpack/webpack.prod.js",
+    "clean": "rimraf dist",
+    "test": "jest"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/basshelal/Wudooh.git"
-  },
-  "author": "Bassam Helal",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/basshelal/Wudooh/issues"
-  },
-  "homepage": "https://github.com/basshelal/Wudooh",
-  "readme": "https://github.com/basshelal/Wudooh/README.md",
   "devDependencies": {
     "@types/chrome": "0.0.190",
     "@types/firefox-webext-browser": "^94.0.1",
@@ -50,7 +53,15 @@
     "jest": "^28.1.1",
     "ts-jest": "^28.0.5",
     "sinon-chrome": "^3.0.1",
-    "jest-environment-jsdom": "^28.1.1"
+    "jest-environment-jsdom": "^28.1.1",
+    "copy-webpack-plugin": "^9.1.0",
+    "glob": "^7.2.3",
+    "prettier": "^2.7.1",
+    "rimraf": "^3.0.2",
+    "ts-loader": "^8.4.0",
+    "webpack": "^5.73.0",
+    "webpack-cli": "^4.10.0",
+    "webpack-merge": "^5.8.0"
   },
   "dependencies": {
   }

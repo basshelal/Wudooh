@@ -1,6 +1,6 @@
-@import "animations.css";
-@import "material.css";
-@import "fonts.css";
+@import "public/animations.css";
+@import "public/material.css";
+@import "public/fonts.css";
 
 /* The main parts of the HTML, but not the items */
 header, body, footer {

@@ -66,4 +66,4 @@ async function displayTotalUsers() {
 
 specifics()
 index()
-displayTotalUsers()
+//displayTotalUsers()

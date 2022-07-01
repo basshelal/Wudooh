@@ -3,12 +3,28 @@
   <component name="JsonSchemaMappingsProjectConfiguration">
     <state>
       <map>
+        <entry key="Chrome Extension">
+          <value>
+            <SchemaInfo>
+              <option name="name" value="Chrome Extension" />
+              <option name="relativePathToSchema" value="https://json.schemastore.org/chrome-manifest.json" />
+              <option name="applicationDefined" value="true" />
+              <option name="patterns">
+                <list>
+                  <Item>
+                    <option name="path" value="src/manifest.json" />
+                  </Item>
+                </list>
+              </option>
+            </SchemaInfo>
+          </value>
+        </entry>
         <entry key="JSON schema v7">
           <value>
             <SchemaInfo>
               <option name="name" value="JSON schema v7" />
               <option name="relativePathToSchema" value="http://json-schema.org/draft-07/schema" />
-              <option name="schemaVersion" value="JSON schema version 7" />
+              <option name="schemaVersion" value="JSON Schema version 7" />
               <option name="applicationDefined" value="true" />
               <option name="patterns">
                 <list>

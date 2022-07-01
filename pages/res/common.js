@@ -30,10 +30,14 @@ const langs = [en, ar, fa];
 const arLangs = [ar, fa];
 const isArScript = arLangs.contains(lang);
 class Translator {
+    currentLocaleId;
+    defaultLocaleId = "en";
+    localeIds = [];
+    locales = [];
+    currentLocale;
+    defaultLocale;
+    isInitialized;
     constructor(currentLocale, locales) {
-        this.defaultLocaleId = "en";
-        this.localeIds = [];
-        this.locales = [];
         const promises = [];
         this.currentLocaleId = currentLocale;
         this.localeIds = locales;

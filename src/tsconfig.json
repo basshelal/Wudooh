@@ -1,9 +1,14 @@
 {
   "compilerOptions": {
     "strict": true,
-    "target": "ESNext",
+    "target": "ES6",
+    "module": "CommonJS",
+    "esModuleInterop": true,
     "sourceMap": false,
-    "removeComments": false
+    "removeComments": false,
+    "outDir": "../dist/js/",
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact",
   },
   "exclude": [
     "../node_modules"
