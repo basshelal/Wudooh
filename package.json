@@ -13,6 +13,7 @@
   },
   "homepage": "https://github.com/basshelal/Wudooh",
   "readme": "https://github.com/basshelal/Wudooh/README.md",
+  "type": "module",
   "scripts": {
     "minifyMain": "uglifyjs -c -m --output src/main.min.js -- src/main.js",
     "minifyPopup": "uglifyjs -c -m --output src/popup.min.js -- src/popup.js",

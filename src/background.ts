@@ -1,9 +1,20 @@
-importScripts("./common.js")
+import {
+    DefaultWudoohStorage,
+    extensions,
+    MessageReasons,
+    runtime,
+    sync,
+    tabs,
+    WudoohKeys,
+    WudoohStorage
+} from "./common"
 /**
  * This is the code that runs on the background page of the extension.
  *
  * Here we only run code that will execute when the extension is installed or updated.
  */
+
+extensions()
 
 /**
  * Runs on install or update to check if the storage has initialized all its values correctly.

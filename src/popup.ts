@@ -1,31 +1,46 @@
-const mainDiv: HTMLDivElement = get<HTMLDivElement>("main")
+import {
+    CustomFont,
+    CustomSetting, defaultDelay, extensions,
+    get,
+    injectCustomFonts, MessageReasons,
+    sync,
+    Tab,
+    tabs,
+    wait,
+    WudoohKeys,
+    WudoohStorage
+} from "./common"
+
+extensions()
+
+const mainDiv: HTMLDivElement = get<HTMLDivElement>("main")!
 
 // Custom Fonts
-const fontsStyle: HTMLStyleElement = get<HTMLStyleElement>("wudoohCustomFontsStyle")
+const fontsStyle: HTMLStyleElement = get<HTMLStyleElement>("wudoohCustomFontsStyle")!
 
 // Inputs
-const sizeSlider: HTMLInputElement = get<HTMLInputElement>("size")
-const heightSlider: HTMLInputElement = get<HTMLInputElement>("height")
-const onOffSwitch: HTMLInputElement = get<HTMLInputElement>("onOffSwitch")
-const fontSelect: HTMLSelectElement = get<HTMLSelectElement>("font-select")
-const overrideSiteSwitch: HTMLInputElement = get<HTMLInputElement>("overrideSettingsSwitch")
-const whiteListSwitch: HTMLInputElement = get<HTMLInputElement>("whitelistSwitch")
+const sizeSlider: HTMLInputElement = get<HTMLInputElement>("size")!
+const heightSlider: HTMLInputElement = get<HTMLInputElement>("height")!
+const onOffSwitch: HTMLInputElement = get<HTMLInputElement>("onOffSwitch")!
+const fontSelect: HTMLSelectElement = get<HTMLSelectElement>("font-select")!
+const overrideSiteSwitch: HTMLInputElement = get<HTMLInputElement>("overrideSettingsSwitch")!
+const whiteListSwitch: HTMLInputElement = get<HTMLInputElement>("whitelistSwitch")!
 
 // Labels
-const sizeValue: HTMLLabelElement = get<HTMLLabelElement>("sizeValue")
-const heightValue: HTMLLabelElement = get<HTMLLabelElement>("heightValue")
-const overrideSettingsValue: HTMLLabelElement = get<HTMLLabelElement>("overrideSettingsLabel")
-const whitelistedValue: HTMLLabelElement = get<HTMLLabelElement>("whitelistedLabel")
+const sizeValue: HTMLLabelElement = get<HTMLLabelElement>("sizeValue")!
+const heightValue: HTMLLabelElement = get<HTMLLabelElement>("heightValue")!
+const overrideSettingsValue: HTMLLabelElement = get<HTMLLabelElement>("overrideSettingsLabel")!
+const whitelistedValue: HTMLLabelElement = get<HTMLLabelElement>("whitelistedLabel")!
 
 // Website Info
-const websiteText: HTMLHeadingElement = get<HTMLHeadingElement>("website")
-const websiteIcon: HTMLImageElement = get<HTMLImageElement>("websiteIcon")
+const websiteText: HTMLHeadingElement = get<HTMLHeadingElement>("website")!
+const websiteIcon: HTMLImageElement = get<HTMLImageElement>("websiteIcon")!
 
 // Import / Export
-const exportButton: HTMLButtonElement = get<HTMLButtonElement>("exportButton")
-const exportAnchor: HTMLAnchorElement = get<HTMLAnchorElement>("exportAnchor")
-const importButton: HTMLButtonElement = get<HTMLButtonElement>("importButton")
-const importInput: HTMLInputElement = get<HTMLInputElement>("importInput")
+const exportButton: HTMLButtonElement = get<HTMLButtonElement>("exportButton")!
+const exportAnchor: HTMLAnchorElement = get<HTMLAnchorElement>("exportAnchor")!
+const importButton: HTMLButtonElement = get<HTMLButtonElement>("importButton")!
+const importInput: HTMLInputElement = get<HTMLInputElement>("importInput")!
 
 interface Element {
     currentTask: number;
@@ -44,7 +59,7 @@ async function initializeUI(): Promise<void> {
     const storage: WudoohStorage = await sync.get(WudoohKeys.all())
     const currentTabs: Array<Tab> = await tabs.queryCurrentTab()
 
-    const injectedFonts: Array<CustomFont> = await injectCustomFonts(storage.customFonts)
+    const injectedFonts: Array<CustomFont> = await injectCustomFonts(storage.customFonts!)
     injectedFonts.forEach((customFont: CustomFont) => {
         const fontName: string = customFont.fontName
         const option: HTMLOptionElement = document.createElement("option")
@@ -55,16 +70,16 @@ async function initializeUI(): Promise<void> {
     })
 
     // If the extension is off then hide the main div
-    onOffSwitch.checked = storage.onOff
+    onOffSwitch.checked = storage.onOff!
     if (storage.onOff) mainDiv.style.maxHeight = "100%"
     else mainDiv.style.maxHeight = "0"
 
     const thisTab: Tab = currentTabs[0]
-    const thisURL: string = new URL(thisTab.url).hostname
+    const thisURL: string = new URL(thisTab.url!).hostname
 
     const customSettings: Array<CustomSetting> = storage.customSettings as Array<CustomSetting>
     const whiteListed: Array<string> = storage.whitelisted as Array<string>
-    const custom: CustomSetting = customSettings.find((custom: CustomSetting) => custom.url === thisURL)
+    const custom: CustomSetting = customSettings.find((custom: CustomSetting) => custom.url === thisURL)!
     const isCustom: boolean = !!custom
 
     let textSize: number
@@ -75,9 +90,9 @@ async function initializeUI(): Promise<void> {
         lineHeight = custom.lineHeight
         font = custom.font
     } else {
-        textSize = storage.textSize
-        lineHeight = storage.lineHeight
-        font = storage.font
+        textSize = storage.textSize!
+        lineHeight = storage.lineHeight!
+        font = storage.font!
     }
 
     // Initialize all the HTMLElements to the values from storage
@@ -125,9 +140,9 @@ async function updateTextSize(): Promise<void> {
     const currentTabs = await tabs.queryCurrentTab()
     const wudoohStorage: WudoohStorage = await sync.get(WudoohKeys.customSettings)
 
-    const thisURL: string = new URL(currentTabs[0].url).hostname
-    const customSettings: Array<CustomSetting> = wudoohStorage.customSettings
-    const custom: CustomSetting = customSettings.find((custom: CustomSetting) => custom.url === thisURL)
+    const thisURL: string = new URL(currentTabs[0].url!).hostname
+    const customSettings: Array<CustomSetting> = wudoohStorage.customSettings!
+    const custom: CustomSetting = customSettings.find((custom: CustomSetting) => custom.url === thisURL)!
 
     if (!!custom) {
         custom.textSize = newSize
@@ -144,9 +159,9 @@ async function updateLineHeight(): Promise<void> {
     const currentTabs = await tabs.queryCurrentTab()
     const wudoohStorage: WudoohStorage = await sync.get(WudoohKeys.customSettings)
 
-    const thisURL: string = new URL(currentTabs[0].url).hostname
-    const customSettings: Array<CustomSetting> = wudoohStorage.customSettings
-    const custom: CustomSetting = customSettings.find((custom: CustomSetting) => custom.url === thisURL)
+    const thisURL: string = new URL(currentTabs[0].url!).hostname
+    const customSettings: Array<CustomSetting> = wudoohStorage.customSettings!
+    const custom: CustomSetting = customSettings.find((custom: CustomSetting) => custom.url === thisURL)!
 
     if (!!custom) {
         custom.lineHeight = newHeight
@@ -163,9 +178,9 @@ async function changeFont(): Promise<void> {
     const currentTabs = await tabs.queryCurrentTab()
     const wudoohStorage: WudoohStorage = await sync.get(WudoohKeys.customSettings)
 
-    const thisURL: string = new URL(currentTabs[0].url).hostname
-    const customSettings: Array<CustomSetting> = wudoohStorage.customSettings
-    const custom: CustomSetting = customSettings.find((custom: CustomSetting) => custom.url === thisURL)
+    const thisURL: string = new URL(currentTabs[0].url!).hostname
+    const customSettings: Array<CustomSetting> = wudoohStorage.customSettings!
+    const custom: CustomSetting = customSettings.find((custom: CustomSetting) => custom.url === thisURL)!
 
     fontSelect.style.fontFamily = newFont
     if (!!custom) {
@@ -180,9 +195,9 @@ async function changeFont(): Promise<void> {
 
 async function toggleOverrideSiteSettings(): Promise<void> {
     const currentTabs = await tabs.queryCurrentTab()
-    const thisURL: string = new URL(currentTabs[0].url).hostname
+    const thisURL: string = new URL(currentTabs[0].url!).hostname
     let wudoohStorage: WudoohStorage = await sync.get(WudoohKeys.customSettings)
-    let customSettings: Array<CustomSetting> = wudoohStorage.customSettings
+    let customSettings: Array<CustomSetting> = wudoohStorage.customSettings!
 
     if (overrideSiteSwitch.checked) {
         customSettings.push(new CustomSetting(
@@ -201,15 +216,15 @@ async function toggleOverrideSiteSettings(): Promise<void> {
     let textSize: number
     let lineHeight: number
     let font: string
-    let custom: CustomSetting = customSettings.find((custom: CustomSetting) => custom.url === thisURL)
+    let custom: CustomSetting = customSettings.find((custom: CustomSetting) => custom.url === thisURL)!
     if (!!custom) {
         textSize = custom.textSize
         lineHeight = custom.lineHeight
         font = custom.font
     } else {
-        textSize = wudoohStorage.textSize
-        lineHeight = wudoohStorage.lineHeight
-        font = wudoohStorage.font
+        textSize = wudoohStorage.textSize!
+        lineHeight = wudoohStorage.lineHeight!
+        font = wudoohStorage.font!
     }
 
     sizeSlider.value = textSize.toString()
@@ -223,9 +238,9 @@ async function toggleOverrideSiteSettings(): Promise<void> {
 
 async function toggleWhitelist() {
     const currentTabs: Array<Tab> = await tabs.queryCurrentTab()
-    const thisURL: string = new URL(currentTabs[0].url).hostname
+    const thisURL: string = new URL(currentTabs[0].url!).hostname
     const wudoohStorage: WudoohStorage = await sync.get(WudoohKeys.whitelisted)
-    let whitelisted: Array<string> = wudoohStorage.whitelisted
+    let whitelisted: Array<string> = wudoohStorage.whitelisted!
 
     if (whiteListSwitch.checked) {
         whitelisted = whitelisted.filter((it: string) => it != thisURL)
@@ -248,7 +263,7 @@ async function exportSettings(): Promise<void> {
 }
 
 async function importSettings(): Promise<void> {
-    const file: File = importInput.files[0]
+    const file: File = importInput.files![0]
     const reader: FileReader = new FileReader()
     reader.onload = async (event: ProgressEvent) => {
         // @ts-ignore
@@ -266,12 +281,19 @@ async function importSettings(): Promise<void> {
 
         const errorMessages: Array<string> = []
 
+        // @ts-ignore
         const textSize: number = result[WudoohKeys.textSize]
+        // @ts-ignore
         const lineHeight: number = result[WudoohKeys.lineHeight]
+        // @ts-ignore
         const onOff: boolean = result[WudoohKeys.onOff]
+        // @ts-ignore
         const font: string = result[WudoohKeys.font]
+        // @ts-ignore
         const whitelisted: Array<string> = result[WudoohKeys.whitelisted]
+        // @ts-ignore
         const customSettings: Array<CustomSetting> = result[WudoohKeys.customSettings]
+        // @ts-ignore
         const customFonts: Array<CustomFont> = result[WudoohKeys.customFonts]
 
         if (textSize === null) {
@@ -330,6 +352,7 @@ async function importSettings(): Promise<void> {
         initializeUI()
     }
     reader.readAsText(file)
+    // @ts-ignore
     importInput.value = null
 }
 

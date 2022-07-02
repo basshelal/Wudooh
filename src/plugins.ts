@@ -1,10 +1,21 @@
-import AreaName = chrome.storage.AreaName
+import {
+    CustomSetting, extensions, hasArabicScript,
+    injectCustomFonts,
+    isNodeEditable,
+    log,
+    nowString, randomColor,
+    sync,
+    WudoohKeys,
+    WudoohStorage
+} from "./common"
 
-type WudoohNodeModificationReason = "newlyLoaded" | "added" | "removed" | "dataChanged" | "unknown"
+extensions()
 
-type MaybePromise<T> = T | Promise<T>
+export type WudoohNodeModificationReason = "newlyLoaded" | "added" | "removed" | "dataChanged" | "unknown"
 
-interface WudoohPlugin {
+export type MaybePromise<T> = T | Promise<T>
+
+export interface WudoohPlugin {
     /** Unique identifier or name of plugin, this is required */
     readonly id: string
     /**
@@ -45,11 +56,7 @@ interface WudoohPlugin {
     readonly afterUpdateAll?: () => MaybePromise<void>
 }
 
-class AbstractWudoohPlugin { // TODO: Delete me!
-    public hasNodeUpdated(node: Node): boolean {return hasNodeBeenUpdated(node)}
-}
-
-const DefaultPlugin = new (class DefaultPlugin extends AbstractWudoohPlugin implements WudoohPlugin {
+export const DefaultPlugin = new (class DefaultPlugin implements WudoohPlugin {
     /*override*/
     public id: string = "DefaultPlugin"
 
@@ -68,7 +75,7 @@ const DefaultPlugin = new (class DefaultPlugin extends AbstractWudoohPlugin impl
     public async init(): Promise<void> {
         if (!this.initialized) {
             sync.onChanged((changedKeys: Array<keyof WudoohStorage>, oldStorage: WudoohStorage, newStorage: WudoohStorage) => {
-                changedKeys.forEach((key: keyof WudoohStorage) : void=> {
+                changedKeys.forEach((key: keyof WudoohStorage): void => {
                     // @ts-ignore
                     this.storage[key] = newStorage[key]
                 })
@@ -96,6 +103,11 @@ const DefaultPlugin = new (class DefaultPlugin extends AbstractWudoohPlugin impl
         }
     }
 
+    public hasNodeUpdated(node: Node): boolean {
+        return true
+        // TODO: Implement!
+    }
+
     /*override*/
     public update(node: Node,
                   modificationReason: WudoohNodeModificationReason): void {
@@ -114,7 +126,7 @@ const DefaultPlugin = new (class DefaultPlugin extends AbstractWudoohPlugin impl
     }
 })()
 
-const YoutubePlugin = new (class YoutubePlugin extends AbstractWudoohPlugin implements WudoohPlugin {
+export const YoutubePlugin = new (class YoutubePlugin implements WudoohPlugin {
     /*override*/
     public id: string = "YoutubePlugin"
     /*override*/
@@ -125,26 +137,27 @@ const YoutubePlugin = new (class YoutubePlugin extends AbstractWudoohPlugin impl
         return url.hostname === "youtube.com" || url.hostname === "www.youtube.com"
     }
 
+    public hasNodeUpdated(node: Node): boolean {
+        return true
+        // TODO: Implement!
+    }
+
     public requiresUpdate(node: Node): boolean {
         return (!!this.hasNodeUpdated && !this.hasNodeUpdated(node)) && hasArabicScript(node) && !isNodeEditable(node)
     }
 })()
 
-const NeverPlugin: WudoohPlugin = {
+export const NeverPlugin: WudoohPlugin = {
     id: "NeverPlugin",
     urlRequiresUpdate(url: URL): boolean {return false}
 }
 
-const AlwaysPlugin: WudoohPlugin = {
+export const AlwaysPlugin: WudoohPlugin = {
     id: "AlwaysPlugin",
     urlRequiresUpdate(url: URL): boolean {return true}
 }
 
-function randomColor(): string {
-    return "#" + Math.floor(Math.random() * 16777215).toString(16)
-}
-
-const TestPlugin = new (class TestPlugin extends AbstractWudoohPlugin implements WudoohPlugin {
+export const TestPlugin = new (class TestPlugin implements WudoohPlugin {
     public id: string = "TestPlugin"
 
     public isExclusivePlugin: boolean = true
@@ -164,4 +177,4 @@ const TestPlugin = new (class TestPlugin extends AbstractWudoohPlugin implements
 
 })
 
-const wudoohPlugins: Array<WudoohPlugin> = [TestPlugin]
+export const wudoohPlugins: Array<WudoohPlugin> = [TestPlugin]

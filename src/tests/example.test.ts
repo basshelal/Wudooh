@@ -1,6 +1,7 @@
 import "chromedriver" // don't remove this! Needed by "selenium-webdriver" for Chrome
 import {Browser, Builder, ThenableWebDriver} from "selenium-webdriver"
 import sinonChrome from "sinon-chrome"
+import {wait} from "../common"
 
 let driver: ThenableWebDriver
 

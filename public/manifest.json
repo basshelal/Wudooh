@@ -30,9 +30,7 @@
       "all_frames": true,
       "run_at": "document_start",
       "js": [
-        "common.js",
-        "plugins.js",
-        "main.js"
+        "js/main.js"
       ],
       "css": [
         "fonts.css"
@@ -40,7 +38,8 @@
     }
   ],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "js/background.js",
+    "type": "module"
   },
   "web_accessible_resources": [
     {

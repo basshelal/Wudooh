@@ -1,8 +1,17 @@
-/**
- * This Arabic regex allows and accepts any non Arabic symbols next to Arabic symbols,
- * this means that it accepts anything as long as it has some Arabic symbol in it
- */
-const arabicRegex: RegExp = new RegExp("[\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\]+([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\\W\\d]+)*", "g")
+import {
+    arabicRegex, extensions, hasArabicScript,
+    injectCustomFonts,
+    isNodeEditable,
+    log,
+    Message,
+    MessageReasons,
+    now,
+    onDOMContentLoaded,
+    runtime
+} from "./common"
+import {WudoohNodeModificationReason, WudoohPlugin, wudoohPlugins} from "./plugins"
+
+extensions()
 
 /** The observer used in {@linkcode startObserver} to dynamically update any newly added Nodes */
 let observer: MutationObserver | null = null
@@ -20,14 +29,6 @@ function hasNodeBeenUpdated(node: Node): boolean {
  */
 function hasDocumentBeenUpdated(): boolean {
     return document.getElementById("wudoohMetaElement") !== null
-}
-
-/**
- * Returns whether the given node has any Arabic script or not, this is any script that matches arabicRegEx.
- * `true` if it does and false otherwise
- */
-function hasArabicScript(node: Node): boolean {
-    return !!node.nodeValue && !!(node.nodeValue.match(arabicRegex))
 }
 
 /**

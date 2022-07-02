@@ -6,9 +6,9 @@
  */
 
 // Import Types
-type Tab = chrome.tabs.Tab | browser.tabs.Tab
+export type Tab = chrome.tabs.Tab | browser.tabs.Tab
 
-type WudoohKeysType =
+export type WudoohKeysType =
     "textSize" |
     "lineHeight" |
     "onOff" |
@@ -17,7 +17,7 @@ type WudoohKeysType =
     "customSettings" |
     "customFonts"
 
-interface WudoohKeysInterface {
+export interface WudoohKeysInterface {
     textSize: WudoohKeysType;
     customSettings: WudoohKeysType;
     customFonts: WudoohKeysType;
@@ -28,7 +28,7 @@ interface WudoohKeysInterface {
     all(): Array<WudoohKeysType>
 }
 
-const WudoohKeys: WudoohKeysInterface = {
+export const WudoohKeys: WudoohKeysInterface = {
     /** The font size percent, between 100 and 300 */
     textSize: "textSize",
     /** The line height percent, between 100 and 300 */
@@ -57,24 +57,24 @@ const WudoohKeys: WudoohKeysInterface = {
     }
 }
 
-const defaultDelay: number = 250
+export const defaultDelay: number = 250
 
-type MessageReasonType = "updateAllText" | "injectCustomFonts" | "toggleOff"
+export type MessageReasonType = "updateAllText" | "injectCustomFonts" | "toggleOff"
 
-const MessageReasons = new (class {
+export const MessageReasons = new (class {
     public updateAllText: MessageReasonType = "updateAllText"
     public injectCustomFonts: MessageReasonType = "injectCustomFonts"
     public toggleOff: MessageReasonType = "toggleOff"
 })()
 
-interface Message {
+export interface Message {
     reason: MessageReasonType,
     data?: any
 }
 
-type Browser = "chrome" | "firefox" | "edge" | "opera"
+export type Browser = "chrome" | "firefox" | "edge" | "opera"
 
-const browserName: Browser | null = ((): Browser | null => {
+export const browserName: Browser | null = ((): Browser | null => {
     const agent: string = navigator.userAgent.toLowerCase()
     if (agent.includes("firefox")) return "firefox"
     if (agent.includes("edg")) return "edge"
@@ -83,7 +83,7 @@ const browserName: Browser | null = ((): Browser | null => {
     return null
 })()
 
-const isChromium: boolean = ((): boolean => {
+export const isChromium: boolean = ((): boolean => {
     return browserName === "chrome" || browserName === "edge" || browserName === "opera"
 })()
 
@@ -91,7 +91,7 @@ const isChromium: boolean = ((): boolean => {
  * Represents a site that uses different settings from the global settings
  * The settings themselves may be the same as the global but they will change independently
  */
-class CustomSetting {
+export class CustomSetting {
     /** The hostname url of this web site */
     url: string
     /** The font size percent to use on this site */
@@ -132,7 +132,7 @@ class CustomSetting {
     }
 }
 
-class CustomFont {
+export class CustomFont {
 
     fontName: string
 
@@ -231,17 +231,24 @@ class CustomFont {
  * Represents the storage that Wudooh uses.
  * This adds type and key safety to any storage modifications.
  */
-interface WudoohStorage {
-    /*readonly*/ textSize?: number;
-    /*readonly*/ lineHeight?: number;
-    /*readonly*/ onOff?: boolean;
-    /*readonly*/ font?: string;
-    /*readonly*/ whitelisted?: Array<string>;
-    /*readonly*/ customSettings?: Array<CustomSetting>;
-    /*readonly*/ customFonts?: Array<CustomFont>;
+export interface WudoohStorage {
+    /*readonly*/
+    textSize?: number;
+    /*readonly*/
+    lineHeight?: number;
+    /*readonly*/
+    onOff?: boolean;
+    /*readonly*/
+    font?: string;
+    /*readonly*/
+    whitelisted?: Array<string>;
+    /*readonly*/
+    customSettings?: Array<CustomSetting>;
+    /*readonly*/
+    customFonts?: Array<CustomFont>;
 }
 
-const DefaultWudoohStorage: WudoohStorage = {
+export const DefaultWudoohStorage: WudoohStorage = {
     textSize: 125,
     lineHeight: 145,
     onOff: true,
@@ -251,14 +258,14 @@ const DefaultWudoohStorage: WudoohStorage = {
     customFonts: []
 }
 
-const runtime: (typeof chrome.runtime | typeof browser.runtime) = (() => isChromium ? chrome.runtime : browser.runtime)()
+export const runtime: (typeof chrome.runtime | typeof browser.runtime) = (() => isChromium ? chrome.runtime : browser.runtime)()
 
 // TODO: Below abstractions can be fully Promise calling if using MV3
 
 /**
  * An abstraction and simplification of the storage.sync API to make it use Promises
  */
-const sync = {
+export const sync = {
     async get(keys: Array<WudoohKeysType> | WudoohKeysType): Promise<WudoohStorage> {
         return new Promise<WudoohStorage>(resolve => {
             if (isChromium) chrome.storage.sync.get(keys, storage => resolve(storage as WudoohStorage))
@@ -273,13 +280,13 @@ const sync = {
     },
     onChanged(callback: (changedKeys: Array<keyof WudoohStorage>, oldStorage: WudoohStorage, newStorage: WudoohStorage) => void): void {
         if (isChromium) {
-            const listener = (changes: { [p: string]: chrome.storage.StorageChange }, areaName: AreaName): void => {
+            const listener = (changes: { [p: string]: chrome.storage.StorageChange }, areaName: chrome.storage.AreaName): void => {
                 if (areaName === "sync") {
                     const keysChanged: Array<keyof WudoohStorage> = []
                     const oldStorage: any = {}
                     const newStorage: any = {}
                     for (const changesKey in changes) {
-                        if (Object.hasOwn(DefaultWudoohStorage, changesKey)) {
+                        if (DefaultWudoohStorage.hasOwnProperty(changesKey)) {
                             keysChanged.push(changesKey as keyof WudoohStorage)
                             oldStorage[changesKey] = changes[changesKey].oldValue
                             newStorage[changesKey] = changes[changesKey].newValue
@@ -304,7 +311,7 @@ const sync = {
 /**
  * An abstraction and simplification of the tabs API to make it use Promises
  */
-const tabs = {
+export const tabs = {
     async create(url: string): Promise<Tab> {
         return new Promise<Tab>(resolve => {
             if (isChromium) chrome.tabs.create({url: url}, tab => resolve(tab))
@@ -336,7 +343,7 @@ const tabs = {
     }
 }
 
-const log = {
+export const log = {
     e(any: any): void {
         if (!!console) console.error(any)
     },
@@ -354,7 +361,21 @@ const log = {
     }
 }
 
-async function injectCustomFonts(customFonts: Array<CustomFont>): Promise<Array<CustomFont>> {
+/**
+ * This Arabic regex allows and accepts any non Arabic symbols next to Arabic symbols,
+ * this means that it accepts anything as long as it has some Arabic symbol in it
+ */
+export const arabicRegex: RegExp = new RegExp("[\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\]+([\u0600-\u06FF\u0750-\u077F\u08a0-\u08ff\uFB50-\uFDFF\uFE70-\uFEFF\\W\\d]+)*", "g")
+
+/**
+ * Returns whether the given node has any Arabic script or not, this is any script that matches arabicRegEx.
+ * `true` if it does and false otherwise
+ */
+export function hasArabicScript(node: Node): boolean {
+    return !!node.nodeValue && !!(node.nodeValue.match(arabicRegex))
+}
+
+export async function injectCustomFonts(customFonts: Array<CustomFont>): Promise<Array<CustomFont>> {
     let customFontsStyle: HTMLElement | null = get("wudoohCustomFontsStyle")
     if (!!customFontsStyle) {
         customFontsStyle.textContent = ""
@@ -377,27 +398,31 @@ async function injectCustomFonts(customFonts: Array<CustomFont>): Promise<Array<
  *
  * @param elementId the id of the element to get
  */
-function get<T extends HTMLElement>(elementId: string): T | null {
+export function get<T extends HTMLElement>(elementId: string): T | null {
     return document.getElementById(elementId) as T | null
 }
 
-function wait(millis: number, func: Function): number {
+export function wait(millis: number, func: Function): number {
     return setTimeout(func, millis)
 }
 
-function onDOMContentLoaded(listener: EventListenerOrEventListenerObject) {
+export function onDOMContentLoaded(listener: EventListenerOrEventListenerObject) {
     document.addEventListener("DOMContentLoaded", listener)
 }
 
-function onDOMContentLoadedDelayed(delay: number, listener: EventListenerOrEventListenerObject) {
+export function onDOMContentLoadedDelayed(delay: number, listener: EventListenerOrEventListenerObject) {
     onDOMContentLoaded(() => wait(delay, () => listener))
+}
+
+export function randomColor(): string {
+    return "#" + Math.floor(Math.random() * 16777215).toString(16)
 }
 
 /**
  * Checks whether the passed in node is editable or not, `true` if editable, `false` otherwise
  * These will generally need to be ignored to avoid any conflicts with the site or the user's formatting
  */
-function isNodeEditable(node: Node): boolean {
+export function isNodeEditable(node: Node): boolean {
     if (!!node && node instanceof HTMLElement && node.nodeType === Node.ELEMENT_NODE) {
         const htmlEditables: Array<string> = ["textarea", "input"]
         const tagName: string = node.tagName.toLowerCase()
@@ -407,42 +432,68 @@ function isNodeEditable(node: Node): boolean {
     } else return false
 }
 
-function now(): number {return Date.now()}
+export function now(): number {return Date.now()}
 
-function nowString(): string {return new Date().toISOString()}
+export function nowString(): string {return new Date().toISOString()}
 
-// region Extensions
+declare global {
+    interface Array<T> {
+        contains(element: T): boolean;
+        clear(): void;
+        filterAsync(predicate: (value: T, index: number, array: T[]) => Promise<boolean>): Promise<Array<T>>
+        forEachAsync(callback: (value: T, index: number, array: T[]) => Promise<void>): Promise<void>
+    }
 
-interface Array<T> {
-    contains(element: T): boolean;
-    clear(): void;
-    filterAsync(predicate: (value: T, index: number, array: T[]) => Promise<boolean>): Promise<Array<T>>
-    forEachAsync(callback: (value: T, index: number, array: T[]) => Promise<void>): Promise<void>
+    interface String {
+        contains(string: string): boolean
+    }
+
+    // TODO: Better way of having delayed task that changes if updated before ran
+    interface Element {
+        currentTask: number;
+
+        postDelayed(millis: number, func: Function): void;
+    }
 }
 
-Array.prototype.contains = function <T>(element: T): boolean {
-    return this.indexOf(element) !== -1
-}
+export function extensions(): void {
+    if (!Array.prototype.contains) {
+        Array.prototype.contains = function <T>(element: T): boolean {
+            return this.indexOf(element) !== -1
+        }
+    }
 
-Array.prototype.clear = function <T>(): void {
-    this.splice(0, this.length)
-}
+    if (!Array.prototype.clear) {
+        Array.prototype.clear = function <T>(): void {
+            this.splice(0, this.length)
+        }
+    }
 
-Array.prototype.filterAsync = async function <T>(predicate: (value: T, index: number, array: T[]) => Promise<boolean>): Promise<Array<T>> {
-    const booleans: Array<boolean> = await Promise.all(this.map((value, index, array) => predicate(value, index, array)))
-    return this.filter((_value, index) => booleans[index])
-}
+    if (!Array.prototype.filterAsync) {
+        Array.prototype.filterAsync = async function <T>(predicate: (value: T, index: number, array: T[]) => Promise<boolean>): Promise<Array<T>> {
+            const booleans: Array<boolean> = await Promise.all(this.map((value, index, array) => predicate(value, index, array)))
+            return this.filter((_value, index) => booleans[index])
+        }
+    }
 
-Array.prototype.forEachAsync = async function <T>(callback: (value: T, index: number, array: T[]) => Promise<void>): Promise<void> {
-    await Promise.all(this.map((value, index, array) => callback(value, index, array)))
-}
+    if (!Array.prototype.forEachAsync) {
+        Array.prototype.forEachAsync = async function <T>(callback: (value: T, index: number, array: T[]) => Promise<void>): Promise<void> {
+            await Promise.all(this.map((value, index, array) => callback(value, index, array)))
+        }
+    }
 
-interface String {
-    contains(string: string): boolean
-}
+    if (!String.prototype.contains) {
+        String.prototype.contains = function (string: string) {
+            return this.indexOf(string) !== -1
+        }
+    }
 
-String.prototype.contains = function (string: string) {
-    return this.indexOf(string) !== -1
+    if (typeof Element !== "undefined" && !Element.prototype.postDelayed) {
+        Element.prototype.postDelayed = function (millis: number, func: Function) {
+            let localTask = wait(millis, () => {
+                if (localTask === this.currentTask) func.call(this)
+            })
+            this.currentTask = localTask
+        }
+    }
 }
-
-// endregion Extensions

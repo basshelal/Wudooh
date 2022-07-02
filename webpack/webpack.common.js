@@ -1,26 +1,31 @@
-const webpack = require("webpack");
-const path = require("path");
-const CopyPlugin = require("copy-webpack-plugin");
+import CopyPlugin from "copy-webpack-plugin";
+import path from "path";
+import {fileURLToPath} from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const srcDir = path.join(__dirname, "..", "src");
 
-module.exports = {
+export default {
     entry: {
-      popup: path.join(srcDir, 'popup.tsx'),
-      options: path.join(srcDir, 'options.tsx'),
-      background: path.join(srcDir, 'background.ts'),
-      content_script: path.join(srcDir, 'content_script.tsx'),
+        common: path.join(srcDir, "common.ts"),
+        background: path.join(srcDir, "background.ts"),
+        popup: path.join(srcDir, "popup.ts"),
+        custom_fonts: path.join(srcDir, "custom_fonts.ts"),
+        main: path.join(srcDir, "main.ts"),
     },
     output: {
         path: path.join(__dirname, "../dist/js"),
         filename: "[name].js",
     },
     optimization: {
-        splitChunks: {
-            name: "vendor",
-            chunks(chunk) {
-              return chunk.name !== 'background';
-            }
-        },
+        minimize: false,
+        // splitChunks: {
+        //     name: "vendor",
+        //     chunks(chunk) {
+        //         return chunk.name !== 'background';
+        //     }
+        // },
     },
     module: {
         rules: [
@@ -36,7 +41,7 @@ module.exports = {
     },
     plugins: [
         new CopyPlugin({
-            patterns: [{ from: ".", to: "../", context: "public" }],
+            patterns: [{from: ".", to: "../", context: "public"}],
             options: {},
         }),
     ],

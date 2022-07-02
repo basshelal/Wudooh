@@ -1,14 +1,29 @@
+import {
+    CustomFont,
+    defaultDelay,
+    extensions,
+    get,
+    injectCustomFonts,
+    MessageReasons,
+    sync,
+    tabs,
+    WudoohKeys,
+    WudoohStorage
+} from "./common"
+
+extensions()
+
 // TODO code is kind of messy here, need to clean up after Beta
 
-const template = get<HTMLTemplateElement>("template")
-const fontsDiv = get<HTMLDivElement>("fontsDiv")
-const fontNameInput = get<HTMLInputElement>("fontNameInput")
-const localNameInput = get<HTMLInputElement>("localNameInput")
-const urlInput = get<HTMLInputElement>("urlInput")
-const addButton = get<HTMLButtonElement>("addButton")
-const infoLabel = get<HTMLParagraphElement>("infoLabel")
-const fontTest = get("fontTest")
-const templateDiv = template.content.querySelector("div")
+const template: HTMLTemplateElement = get<HTMLTemplateElement>("template")!
+const fontsDiv: HTMLDivElement = get<HTMLDivElement>("fontsDiv")!
+const fontNameInput: HTMLInputElement = get<HTMLInputElement>("fontNameInput")!
+const localNameInput: HTMLInputElement = get<HTMLInputElement>("localNameInput")!
+const urlInput: HTMLInputElement = get<HTMLInputElement>("urlInput")!
+const addButton: HTMLButtonElement = get<HTMLButtonElement>("addButton")!
+const infoLabel: HTMLParagraphElement = get<HTMLParagraphElement>("infoLabel")!
+const fontTest: HTMLElement = get("fontTest")!
+const templateDiv: HTMLDivElement = template.content.querySelector("div")!
 
 // Use this to reduce the number of requests made to chrome storage
 let displayedFonts: Array<string> = []
@@ -58,24 +73,10 @@ const allWudoohFonts: Array<string> = [
     "Original"
 ]
 
-// TODO: Better way of having delayed task that changes if updated before ran
-interface Element {
-    currentTask: number;
-
-    postDelayed(millis: number, func: Function);
-}
-
-Element.prototype.postDelayed = function (millis: number, func: Function) {
-    let localTask = wait(millis, () => {
-        if (localTask === this.currentTask) func.call(this)
-    })
-    this.currentTask = localTask
-}
-
 async function initializeCustomFontsPage() {
     const storage: WudoohStorage = await sync.get(WudoohKeys.customFonts)
     displayedFonts = []
-    const customFonts: Array<CustomFont> = await injectCustomFonts(storage.customFonts)
+    const customFonts: Array<CustomFont> = await injectCustomFonts(storage.customFonts!)
     customFonts.forEach((it: CustomFont) => {
         displayFont(it)
         displayedFonts.push(it.fontName)
@@ -123,7 +124,7 @@ function displayFont(customFont: CustomFont) {
     }
 
     function savedFontName(): string {
-        return rootDiv.getAttribute("fontName")
+        return rootDiv.getAttribute("fontName")!
     }
 
     checkIcon.style.display = "none"
@@ -140,10 +141,10 @@ function displayFont(customFont: CustomFont) {
 
     fontTitle.style.fontFamily = fontName
 
-    async function editCustomFont(propertyToChange: string, newValue: string) {
+    async function editCustomFont(propertyToChange: keyof CustomFont, newValue: string) {
         const storage: WudoohStorage = await sync.get(WudoohKeys.customFonts)
-        const customFonts: Array<CustomFont> = storage.customFonts
-        const syncFont: CustomFont = customFonts.find(it => it.fontName === savedFontName())
+        const customFonts: Array<CustomFont> = storage.customFonts!
+        const syncFont: CustomFont = customFonts.find(it => it.fontName === savedFontName())!
 
         syncFont[propertyToChange] = newValue
         customFonts[customFonts.indexOf(syncFont)] = syncFont
@@ -193,19 +194,19 @@ function displayFont(customFont: CustomFont) {
         if (confirm(`Are you sure you want to delete font ${fontNameInput.value}\nThis cannot be undone`)) {
             const font = fontNameInput.value
             const storage: WudoohStorage = await sync.get(WudoohKeys.customFonts)
-            const customFonts: Array<CustomFont> = storage.customFonts.filter((it: CustomFont) => it.fontName !== font)
+            const customFonts: Array<CustomFont> = storage.customFonts!.filter((it: CustomFont) => it.fontName !== font)
             await sync.set({customFonts: customFonts})
             notifyAllTabsCustomFontsChanged(customFonts)
             displayedFonts = customFonts.map(it => it.fontName)
-            rootDiv.parentNode.removeChild(rootDiv)
+            rootDiv.parentNode!.removeChild(rootDiv)
         }
     }
 
     fontsDiv.appendChild(rootDiv)
 }
 
-function inputOnInput() {
-    this.postDelayed(defaultDelay, () => {
+function inputOnInput(this: any) {
+    (this as Element).postDelayed(defaultDelay, () => {
         const fontName = fontNameInput.value
         const url = urlInput.value
         const localName = localNameInput.value
@@ -232,9 +233,9 @@ function inputOnInput() {
 }
 
 async function addButtonOnClick() {
-    let fontName = fontNameInput.value
-    let url = urlInput.value
-    let localName = localNameInput.value
+    let fontName: string | null = fontNameInput.value
+    let url: string | null = urlInput.value
+    let localName: string | null = localNameInput.value
 
     if (fontName == "") fontName = null
     if (url == "") url = null
@@ -260,8 +261,8 @@ async function addButtonOnClick() {
     infoLabel.innerText = ""
 
     const storage: WudoohStorage = await sync.get(WudoohKeys.customFonts)
-    const customFonts: Array<CustomFont> = storage.customFonts
-    const customFont: CustomFont = new CustomFont(fontName, localName, url)
+    const customFonts: Array<CustomFont> = storage.customFonts!
+    const customFont: CustomFont = new CustomFont(fontName, localName!, url!)
     customFonts.push(customFont)
     await sync.set({customFonts: customFonts})
 

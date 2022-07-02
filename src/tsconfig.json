@@ -2,7 +2,6 @@
   "compilerOptions": {
     "strict": true,
     "target": "ES6",
-    "module": "CommonJS",
     "esModuleInterop": true,
     "sourceMap": false,
     "removeComments": false,
