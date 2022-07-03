@@ -136,6 +136,8 @@ export class CustomSetting {
     }
 }
 
+// TODO: This can be simplified to name and url which may be a localName since they both serve the same purpose and
+//  only 1 is needed
 export class CustomFont {
 
     fontName: string
@@ -348,21 +350,11 @@ export const tabs = {
 }
 
 export const log = {
-    e(any: any): void {
-        if (!!console) console.error(any)
-    },
-    w(any: any): void {
-        if (!!console) console.warn(any)
-    },
-    i(any: any): void {
-        if (!!console) console.info(any)
-    },
-    d(any: any): void {
-        if (!!console) console.log(any)
-    },
-    v(any: any): void {
-        if (!!console) console.debug(any)
-    }
+    e: console.error,
+    w: console.warn,
+    i: console.info,
+    d: console.log,
+    v: console.debug
 }
 
 /**
@@ -440,7 +432,12 @@ export function now(): number {return Date.now()}
 
 export function nowString(): string {return new Date().toISOString()}
 
-export function  getAllWudoohFonts(): Array<CustomFont> {
+export async function getAllWudoohFonts(): Promise<Array<CustomFont>> {
+
+    const response: Response = await fetch("https://raw.githubusercontent.com/basshelal/Wudooh/master/fonts/fonts.json")
+    if (response.ok) {
+        const fonts = response.json() as unknown as Array<{ name: string, location: string }>
+    }
     // TODO: See if we can have all fonts fetched from a server (like Github) so that we can add and remove fonts
     //  without extension updates, this makes the extension size significantly smaller too since we don't have to
     //  bundle with all the fonts, the only issue is the need for internet, though that should generally be the case
