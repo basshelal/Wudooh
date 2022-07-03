@@ -1,15 +1,15 @@
 import {
     CustomFont,
-    CustomSetting, defaultDelay, extensions,
+    CustomSetting, defaultDelay,
     get,
     injectCustomFonts, MessageReasons,
     sync,
     Tab,
     tabs,
-    wait,
     WudoohKeys,
     WudoohStorage
 } from "./common"
+import {extensions} from "./extensions"
 
 extensions()
 
@@ -41,19 +41,6 @@ const exportButton: HTMLButtonElement = get<HTMLButtonElement>("exportButton")!
 const exportAnchor: HTMLAnchorElement = get<HTMLAnchorElement>("exportAnchor")!
 const importButton: HTMLButtonElement = get<HTMLButtonElement>("importButton")!
 const importInput: HTMLInputElement = get<HTMLInputElement>("importInput")!
-
-interface Element {
-    currentTask: number;
-
-    postDelayed(millis: number, func: Function): void;
-}
-
-Element.prototype.postDelayed = function (millis: number, func: Function): void {
-    let localTask = wait(millis, () => {
-        if (localTask === this.currentTask) func.call(this)
-    })
-    this.currentTask = localTask
-}
 
 async function initializeUI(): Promise<void> {
     const storage: WudoohStorage = await sync.get(WudoohKeys.all())

@@ -1,5 +1,5 @@
 import {
-    CustomSetting, extensions, hasArabicScript,
+    CustomSetting, hasArabicScript,
     injectCustomFonts,
     isNodeEditable,
     log,
@@ -8,6 +8,7 @@ import {
     WudoohKeys,
     WudoohStorage
 } from "./common"
+import {extensions} from "./extensions"
 
 extensions()
 

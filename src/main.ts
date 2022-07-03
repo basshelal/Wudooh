@@ -1,5 +1,5 @@
 import {
-    arabicRegex, extensions, hasArabicScript,
+    arabicRegex, hasArabicScript,
     injectCustomFonts,
     isNodeEditable,
     log,
@@ -10,6 +10,7 @@ import {
     runtime
 } from "./common"
 import {WudoohNodeModificationReason, WudoohPlugin, wudoohPlugins} from "./plugins"
+import {extensions} from "./extensions"
 
 extensions()
 

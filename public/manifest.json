@@ -16,7 +16,7 @@
       "24": "icons/icon256.png",
       "32": "icons/icon256.png"
     },
-    "default_popup": "popup.html"
+    "default_popup": "newpopup.html"
   },
   "icons": {
     "128": "icons/icon128.png",

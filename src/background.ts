@@ -1,6 +1,5 @@
 import {
     DefaultWudoohStorage,
-    extensions,
     MessageReasons,
     runtime,
     sync,
@@ -8,6 +7,7 @@ import {
     WudoohKeys,
     WudoohStorage
 } from "./common"
+import {extensions} from "./extensions"
 /**
  * This is the code that runs on the background page of the extension.
  *

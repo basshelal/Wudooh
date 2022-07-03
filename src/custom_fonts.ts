@@ -1,7 +1,6 @@
 import {
     CustomFont,
     defaultDelay,
-    extensions,
     get,
     injectCustomFonts,
     MessageReasons,
@@ -10,6 +9,7 @@ import {
     WudoohKeys,
     WudoohStorage
 } from "./common"
+import {extensions} from "./extensions"
 
 extensions()
 

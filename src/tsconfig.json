@@ -6,8 +6,8 @@
     "sourceMap": false,
     "removeComments": false,
     "outDir": "../dist/js/",
-    "jsx": "react-jsx",
-    "jsxImportSource": "preact",
+    "moduleResolution": "Node",
+    "jsx": "react"
   },
   "exclude": [
     "../node_modules"
